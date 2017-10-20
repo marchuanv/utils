@@ -1,6 +1,6 @@
 function Timer(isInterval){
   let milliseconds=1000;
-  function internalStart(){
+  function internalStart(callback){
     if (isInterval){
          setTimeout.apply(this, [function(){
             callback.apply(this);

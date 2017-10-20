@@ -1,5 +1,8 @@
 function Timer(isInterval){
-  this.seconds=1000;
+  let seconds=1000;
+  this.setTime=function(_seconds){
+    seconds=_seconds;
+  };
   this.start=function(callback){
       if (isInterval){
          setTimeout.apply(this, function(){
@@ -11,7 +14,7 @@ function Timer(isInterval){
           callback.apply(this);
         }, this.seconds);
       }
-  }
+  };
 };
 module.exports={
   getRandomNumber: function(min, max){

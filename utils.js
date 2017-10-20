@@ -5,14 +5,14 @@ function Timer(isInterval){
   };
   this.start=function(callback){
       if (isInterval){
-         setTimeout.apply(this, function(){
+         setTimeout.apply(this, [function(){
             callback.apply(this);
             this.start(callback);
-          }, seconds);
+          }, seconds]);
       } else {
-        setTimeout.apply(this, function(){
+        setTimeout.apply(this, [function(){
           callback.apply(this);
-        }, seconds);
+        }, seconds]);
       }
   };
 };

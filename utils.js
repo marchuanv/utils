@@ -1,18 +1,18 @@
 function Timer(isInterval){
-  let seconds=1000;
-  this.setTime=function(_seconds){
-    seconds=_seconds;
+  let milliseconds=1000;
+  this.setTime=function(_milliseconds){
+    milliseconds=_milliseconds;
   };
   this.start=function(callback){
       if (isInterval){
          setTimeout.apply(this, [function(){
             callback.apply(this);
             this.start(callback);
-          }, seconds]);
+          }, milliseconds]);
       } else {
         setTimeout.apply(this, [function(){
           callback.apply(this);
-        }, seconds]);
+        }, milliseconds]);
       }
   };
 };

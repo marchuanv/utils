@@ -1,0 +1,19 @@
+{
+  "name": "utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "utils.js",
+  "engines": {
+    "node": "6.9.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marchuanv/utils.git"
+  },
+  "author": "marchuan van der merwe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marchuanv/utils/issues"
+  },
+  "homepage": "https://github.com/marchuanv/utils#readme"
+}

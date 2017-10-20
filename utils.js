@@ -8,11 +8,11 @@ function Timer(isInterval){
          setTimeout.apply(this, function(){
             callback.apply(this);
             this.start(callback);
-          }, this.seconds);
+          }, seconds);
       } else {
         setTimeout.apply(this, function(){
           callback.apply(this);
-        }, this.seconds);
+        }, seconds);
       }
   };
 };

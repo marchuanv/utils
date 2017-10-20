@@ -1,19 +1,22 @@
 function Timer(isInterval){
   let milliseconds=1000;
-  this.setTime=function(_milliseconds){
-    milliseconds=_milliseconds;
-  };
-  this.start=function(callback){
-      if (isInterval){
+  function internalStart(){
+    if (isInterval){
          setTimeout.apply(this, [function(){
             callback.apply(this);
-            this.start(callback);
+            internalStart.apply(this,[callback]);
           }, milliseconds]);
       } else {
         setTimeout.apply(this, [function(){
           callback.apply(this);
         }, milliseconds]);
       }
+  };
+  this.setTime=function(_milliseconds){
+    milliseconds=_milliseconds;
+  };
+  this.start=function(callback){
+      internalStart.apply(this, [callback]);
   };
 };
 module.exports={

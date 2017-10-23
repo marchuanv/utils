@@ -41,6 +41,7 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBo
         cbFail(err);
     });
     if (isNewRequest==true){
+        response.setEncoding('utf8');
         response.on('data', function (bodyStr) {
             if (response.statusCode==200){
                const bodyObj=parseJSON(bodyStr);
@@ -54,7 +55,6 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBo
             console.log();
        });
      }else{
-         response.setEncoding('utf8');
          const bodyObj=parseJSON(requestBodyStr);
          if (bodyObj){
             response.statusCode = 200;

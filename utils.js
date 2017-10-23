@@ -23,13 +23,8 @@ function Timer(isInterval){
 
 function handleHttpResponse(request, response, cbSuccess){
     let body = [];
-    response.on('data', function (body) {
-      if (response.statusCode==200){
-        cbSuccess(body);
-      }else{
-        const resMessage=`HTTP: ${request.url} request responded with status: ${response.statusCode}`;
-        console.error(resMessage);
-      }
+    response.on('data', function (chunk) {
+      body.push(chunk);
     });
     response.on('end', function () {
         const bodyStr = Buffer.concat(body).toString();

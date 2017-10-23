@@ -21,11 +21,14 @@ function Timer(isInterval){
   };
 };
 
-function handleHttpResponse(response, cbSuccess, cbFail){
+function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
     let body = [];
     response.on('data', function (chunk) {
       body.push(chunk);
     });
+    if (isNewRequest==true){
+      return;
+    }
     response.on('end', function () {
        
        response.setHeader('Content-Type', 'application/json');
@@ -113,7 +116,7 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       console.log('handling new request response.');
       request.on('response', function (_response) {
           console.log('request response received, responding to requester.');
-          handleHttpResponse(_response, cbPass, cbFail);
+          handleHttpResponse(_response, cbPass, cbFail, true);
       });
       request.write(jsonData);
       request.end();

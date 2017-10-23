@@ -40,6 +40,7 @@ function handleHttpResponse(response, cbSuccess){
             return;
         }
         if (response.statusCode==200){
+            console.log('response from remote host was received as successful');
             cbSuccess(body);
         }else{
             const resMessage=`HTTP: request responded with status: ${response.statusCode}`;

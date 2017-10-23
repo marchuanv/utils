@@ -64,6 +64,7 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       return;
    }
    if (!request){
+     console.log('creating new request.');
       const addressSplit=url.replace('http://','').replace('https://','').split(':');
       const hostName = addressSplit[0].split('/')[0];
       var port=80;
@@ -85,9 +86,12 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       console.log(`HTTP: ${err}`);
    });
    if (response){
+      console.log('handling exist request response.');
       handleHttpResponse(request, response, cbPass);
    }else{
+     console.log('handling new request response.');
       request.on('response', function (_response) {
+          console.log('request response received, responding to requester.');
           handleHttpResponse(request, response, cbPass);
       });
       request.write(jsonData);

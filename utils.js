@@ -27,7 +27,7 @@ function handleHttpResponse(response, cbSuccess){
       body.push(chunk);
     });
     response.on('end', function () {
-        
+       
        response.setHeader('Content-Type', 'application/json');
         const bodyStr = Buffer.concat(body).toString();
         try{
@@ -105,7 +105,6 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
      request.on('end', () => {
           console.log('handling existing request response.');
           handleHttpResponse(response, cbPass);
-          
      });
    }else{
       console.log('handling new request response.');

@@ -21,7 +21,7 @@ function Timer(isInterval){
   };
 };
 
-function handleHttpResponse(response, cbSuccess){
+function handleHttpResponse(response, cbSuccess, cbFail){
     let body = [];
     response.on('data', function (chunk) {
       body.push(chunk);
@@ -38,6 +38,7 @@ function handleHttpResponse(response, cbSuccess){
             response.statusCode = 500;
             response.write({message:'HTTP: error parsing request body to json'});
             response.end();
+            cbFail(err);
             return;
         }
         if (response.statusCode==200){
@@ -56,6 +57,7 @@ function handleHttpResponse(response, cbSuccess){
             response.end();
             console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
             console.log();
+            cbFail(resMessage);
         }
     });
 };
@@ -99,18 +101,19 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
    }
    request.on('error', function(err){
       console.log(`HTTP: ${err}`);
+      cbFail(err);
    });
    request.on('data', function(){});
    if (response){
      request.on('end', () => {
           console.log('handling existing request response.');
-          handleHttpResponse(response, cbPass);
+          handleHttpResponse(response, cbPass, cbFail);
      });
    }else{
       console.log('handling new request response.');
       request.on('response', function (_response) {
           console.log('request response received, responding to requester.');
-          handleHttpResponse(_response, cbPass);
+          handleHttpResponse(_response, cbPass, cbFail);
       });
       request.write(jsonData);
       request.end();

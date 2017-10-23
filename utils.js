@@ -28,6 +28,7 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
         response.write({message: err});
         response.end();
         console.error(err);
+        cbFail(err);
     });
     response.on('data', function (chunk) {
       body.push(chunk);
@@ -37,6 +38,7 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
       return;
     }
     response.on('end', function () {
+       console.log('RESPONSE END');
        response.setHeader('Content-Type', 'application/json');
         const bodyStr = Buffer.concat(body).toString();
         try{

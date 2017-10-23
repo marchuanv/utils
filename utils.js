@@ -67,8 +67,6 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, jsonData)
             }else{
               cbFail(`request failed with http status code ${response.statusCode}`);
             }
-            console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
-            console.log();
        });
      }else{
         response.setHeader('Content-Type', 'application/json');
@@ -76,8 +74,6 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, jsonData)
         response.write(jsonData);
         response.end();
         cbSuccess(jsonData);
-        console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
-        console.log();
      }
 };
 

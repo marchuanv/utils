@@ -118,10 +118,11 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
        request.on('data', function(chunk) {
          body.push(chunk);
        }).on('end', function() {
-          console.log('body',body);
-            const requestBodyStr = Buffer.concat(body).toString();
+       
+            const requestBody = Buffer.concat(body).toString();
+            console.log('requestBody',requestBody);
             console.log('handling existing request response.');
-            handleHttpResponse(response, cbPass, cbFail, false, requestBodyStr);
+            handleHttpResponse(response, cbPass, cbFail, false, requestBody);
        });
    }else{ //NEW REQUEST
       console.log('handling new request response.');

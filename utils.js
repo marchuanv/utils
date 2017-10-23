@@ -89,9 +89,9 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
    request.on('error', function(err){
       console.log(`HTTP: ${err}`);
    });
-   if (response){
+   if (request){
       console.log('handling existing request response.');
-      handleHttpResponse(response, cbPass);
+      handleHttpResponse(request, cbPass);
    }else{
       console.log('handling new request response.');
       request.on('response', function (_response) {

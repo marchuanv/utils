@@ -37,7 +37,6 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
       return;
     }
     response.on('end', function () {
-       
        response.setHeader('Content-Type', 'application/json');
         const bodyStr = Buffer.concat(body).toString();
         try{
@@ -50,25 +49,13 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
             response.end();
             cbFail(err);
             return;
-        }
-        if (response.statusCode==200){
-          
-            response.write({message: "successful"});
-            response.end();
-            
-            cbSuccess(body);
-            console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
-            console.log();
-        }else{
-            const resMessage=`HTTP: request responded with status: ${response.statusCode}`;
-            console.error(resMessage);
-            response.statusCode = 500;
-            response.write({message: resMessage });
-            response.end();
-            console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
-            console.log();
-            cbFail(resMessage);
-        }
+        }    
+        response.statusCode = 200;
+        response.write({message: "successful"});
+        response.end();
+        cbSuccess(body);
+        console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
+        console.log();
     });
 };
 

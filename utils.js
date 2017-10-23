@@ -47,9 +47,18 @@ function handleHttpResponse(request, response, cbSuccess){
     });
 };
 
-function handleHttpRequest(url, jsonData, cbPass, cbFail, req, res){
+function handleHttpRequest(url, data, cbPass, cbFail, req, res){
    var request=req;
    var response=res;
+   var jsonData;
+   if (typeof data !== 'string'){
+     try{
+        jsonData = JSON.parse(data);
+     }catch(err){
+       cbFail('HTTP: failed to parse data to json');
+       return;
+     }
+   }
    if (!request && !url){
       console.log('HTTP: have to provide either an existing http request object or a url to create a new request.');
       return;

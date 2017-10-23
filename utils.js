@@ -37,5 +37,6 @@ module.exports={
   },
   createTimer: function(isInterval){
     return new Timer(isInterval);
-  }
+  },
+  getHostAndPortFromUrl: getHostAndPortFromUrl
 };

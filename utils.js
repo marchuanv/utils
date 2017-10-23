@@ -98,5 +98,5 @@ module.exports={
   createTimer: function(isInterval){
     return new Timer(isInterval);
   },
-  handleJsonRequest: handleJsonRequest
+  handleHttpRequest: handleHttpRequest
 };

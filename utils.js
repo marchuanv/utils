@@ -21,7 +21,17 @@ function Timer(isInterval){
   };
 };
 
-function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest) {  
+function parseJSON(jsonString){
+    try{
+      console.log('parsing object to JSON');
+      return JSON.parse(jsonString);
+    }catch(err){
+      console.error(err);
+      return null;
+    }
+};
+
+function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBodyStr) {  
     response.setHeader('Content-Type', 'application/json');
     response.on('error', function (err) {
         console.error(err);
@@ -31,35 +41,34 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest) {
         cbFail(err);
     });
     if (isNewRequest==true){
-      response.on('data', function (body) {
-        if (response.statusCode==200){
-           cbSuccess(body);
-        }else{
-          cbFail(`request failed with http status code ${response.statusCode}`);
-        }
-      });
-      return;
-    }
-  
-    let body = [];
-    try{
-      console.log('HTTP: parsing request body to JSON');
-      const bodyStr = Buffer.concat(body).toString();
-      JSON.parse(bodyStr);
-    }catch(err){
-        console.error(err);
-        response.statusCode = 500;
-        response.write({message:'HTTP: error parsing request body to json'});
-        response.end();
-        cbFail(err);
-        return;
-    }    
-    response.statusCode = 200;
-    response.write({message: "successful"});
-    response.end();
-    cbSuccess(body);
-    console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
-    console.log();
+        response.on('data', function (bodyStr) {
+            if (response.statusCode==200){
+               const bodyObj=parseJSON(bodyStr);
+               if (bodyObj){
+                  cbSuccess(bodyObj);
+               }
+            }else{
+              cbFail(`request failed with http status code ${response.statusCode}`);
+            }
+            console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
+            console.log();
+       });
+     }else{
+         const bodyObj=parseJSON(requestBodyStr);
+         if (bodyObj){
+            response.statusCode = 200;
+            response.write({message: "successful"});
+            response.end();
+            cbSuccess(bodyObj);
+         }else{
+            response.statusCode = 500;
+            response.write({message:"failed"});
+            response.end();
+            cbFail();
+         }
+        console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
+        console.log();
+     }
 };
 
 function handleHttpRequest(url, data, cbPass, cbFail, req, res){
@@ -104,11 +113,14 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       cbFail(err);
    });
    if (response){
-     request.on('data', function(){
-     }).on('end', () => {
-          console.log('handling existing request response.');
-          handleHttpResponse(response, cbPass, cbFail);
-     });
+       let body = [];
+       request.on('data', function(chunk) {
+         body.push(chunk);
+       }).on('end', function() {
+            const requestBodyStr = Buffer.concat(body).toString();
+            console.log('handling existing request response.');
+            handleHttpResponse(response, cbPass, cbFail, false, requestBodyStr);
+       });
    }else{
       console.log('handling new request response.');
       request.on('response', function (_response) {

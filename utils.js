@@ -110,12 +110,11 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       console.log('handling new request response.');
       request.on('response', function (_response) {
           console.log('request response received, responding to requester.');
-          handleHttpResponse(response, cbPass);
+          handleHttpResponse(_response, cbPass);
       });
       request.write(jsonData);
       request.end();
    }
-  
 };
 
 module.exports={

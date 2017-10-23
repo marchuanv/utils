@@ -51,6 +51,9 @@ function handleHttpResponse(response, cbSuccess){
         }else{
             const resMessage=`HTTP: request responded with status: ${response.statusCode}`;
             console.error(resMessage);
+            response.statusCode = 500;
+            response.write({message: resMessage });
+            response.end();
             console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
             console.log();
         }

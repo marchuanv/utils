@@ -49,6 +49,8 @@ function handleHttpResponse(response, cbSuccess){
 };
 
 function handleHttpRequest(url, data, cbPass, cbFail, req, res){
+   console.log();
+   console.log(`////////////////////////////// HTTP: handling request  /////////////////////////////////`);
    var request=req;
    var response=res;
    var jsonData;
@@ -98,6 +100,8 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       request.write(jsonData);
       request.end();
    }
+   console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
+   console.log();
 };
 
 module.exports={

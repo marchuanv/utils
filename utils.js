@@ -52,7 +52,7 @@ function handleHttpResponse(request, response, cbSuccess){
     });
 };
 
-function handleHttpRequest(url, cbPass, req, res){
+function handleHttpRequest(url, jsonData, cbPass, cbFail, req, res){
    var request=req;
    var response=res;
    if (!request && !url){
@@ -86,7 +86,7 @@ function handleHttpRequest(url, cbPass, req, res){
       request.on('response', function (_response) {
           handleHttpResponse(request, response, cbPass);
       });
-      request.write(jsonString);
+      request.write(jsonData);
       request.end();
    }
 };

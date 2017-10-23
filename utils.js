@@ -51,9 +51,9 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
    var request=req;
    var response=res;
    var jsonData;
-   if (typeof data !== 'string'){
+   if (typeof data === 'string'){
      try{
-        jsonData = JSON.parse(data);
+        jsonData = JSON.stringify(data);
      }catch(err){
        cbFail('HTTP: failed to parse data to json');
        return;

@@ -40,9 +40,9 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
     response.on('end', function () {
        console.log('RESPONSE END');
        response.setHeader('Content-Type', 'application/json');
-        const bodyStr = Buffer.concat(body).toString();
         try{
           console.log('HTTP: parsing request body to JSON');
+          const bodyStr = Buffer.concat(body).toString();
           JSON.parse(bodyStr);
         }catch(err){
             console.error(err);

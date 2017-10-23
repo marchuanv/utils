@@ -58,7 +58,7 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBo
          const bodyObj=parseJSON(requestBodyStr);
          if (bodyObj){
             response.statusCode = 200;
-            response.write({message: "successful"});
+            response.write("{'message': 'successful'}");
             response.end();
             cbSuccess(bodyObj);
          }else{
@@ -118,11 +118,9 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
        request.on('data', function(chunk) {
          body.push(chunk);
        }).on('end', function() {
-       
-            const requestBody = Buffer.concat(body).toString();
-            console.log('requestBody',requestBody);
+            const requestBodyStr = Buffer.concat(body).toString();
             console.log('handling existing request response.');
-            handleHttpResponse(response, cbPass, cbFail, false, requestBody);
+            handleHttpResponse(response, cbPass, cbFail, false, requestBodyStr);
        });
    }else{ //NEW REQUEST
       console.log('handling new request response.');

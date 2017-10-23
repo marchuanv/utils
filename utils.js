@@ -21,8 +21,9 @@ function Timer(isInterval){
   };
 };
 
-function handleJsonResponse(request, response, cbSuccess){
-   response.on('data', function (body) {
+function handleHttpResponse(request, response, cbSuccess){
+    let body = [];
+    response.on('data', function (body) {
       if (response.statusCode==200){
         cbSuccess(body);
       }else{
@@ -30,24 +31,42 @@ function handleJsonResponse(request, response, cbSuccess){
         console.error(resMessage);
       }
     });
+    response.on('end', function () {
+        const bodyStr = Buffer.concat(body).toString();
+        try{
+          console.log('HTTP: parsing request body to JSON');
+          JSON.parse(bodyStr);
+        }catch(err){
+            response.statusCode = 500;
+            response.setHeader('Content-Type', 'Content-Type': 'application/json');
+            response.write({message:'HTTP: error parsing request body to json'});
+            response.end();
+            return;
+        }
+        if (response.statusCode==200){
+            cbSuccess(body);
+        }else{
+            const resMessage=`HTTP: request responded with status: ${response.statusCode}`;
+            console.error(resMessage);
+        }
+    });
 };
 
-function handleJsonRequest(url, request, response, cbPass){
-  
-  if (response){
-    handleJsonResponse(request, response, cbPass);
-    return;
-  }
-  
-   var options; 
-   if (url){
+function handleHttpRequest(url, cbPass, req, res){
+   var request=req;
+   var response=res;
+   if (!request && !url){
+      console.log('HTTP: have to provide either an existing http request object or a url to create a new request.');
+      return;
+   }
+   if (!request){
       const addressSplit=url.replace('http://','').replace('https://','').split(':');
       const hostName = addressSplit[0].split('/')[0];
       var port=80;
       if (addressSplit[1]){
           port = addressSplit[1].split('/')[0];
       }
-      options = {
+      const options = {
           host: hostName,
           port: port, 
           method:'POST',
@@ -56,29 +75,20 @@ function handleJsonRequest(url, request, response, cbPass){
               'Content-Length': Buffer.byteLength(jsonString)
           }
       };
+      request=http.request(options);
    }
+   request.on('error', function(err){
+      console.log(`HTTP: ${err}`);
+   });
    if (response){
-      
-   }else if (options){
-    _request=http.request(options);
+      handleHttpResponse(request, response, cbPass);
+   }else{
+      request.on('response', function (_response) {
+          handleHttpResponse(request, response, cbPass);
+      });
+      request.write(jsonString);
+      request.end();
    }
-   _request.on('error', function (err) {
-        console.log(`http error`,err);
-        cbError(err);
-    });
-   _request.on('response', function (_response) {
-        _response.setEncoding('utf8');
-        _response.on('data', function (body) {
-          const resMessage=`HttpHandler: ${options.host} responded with status: ${_response.statusCode}`;
-          if (_response.statusCode==200){
-            cbSuccess();
-          }else{
-            cbError(resMessage);
-          }
-        });
-    });
-    _request.write(jsonString);
-    _request.end();
 };
 
 module.exports={
@@ -88,5 +98,5 @@ module.exports={
   createTimer: function(isInterval){
     return new Timer(isInterval);
   },
-  getHostAndPortFromUrl: getHostAndPortFromUrl
+  handleJsonRequest: handleJsonRequest
 };

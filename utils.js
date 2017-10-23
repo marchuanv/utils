@@ -27,8 +27,8 @@ function handleHttpResponse(response, cbSuccess){
       body.push(chunk);
     });
     response.on('end', function () {
-        console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
-        console.log();
+        
+       response.setHeader('Content-Type', 'application/json');
         const bodyStr = Buffer.concat(body).toString();
         try{
           console.log('HTTP: parsing request body to JSON');
@@ -42,11 +42,18 @@ function handleHttpResponse(response, cbSuccess){
             return;
         }
         if (response.statusCode==200){
-            console.log('response from remote host was received as successful');
+          
+            response.write({message: "successful"});
+            response.end();
+            
             cbSuccess(body);
+            console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
+            console.log();
         }else{
             const resMessage=`HTTP: request responded with status: ${response.statusCode}`;
             console.error(resMessage);
+            console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
+            console.log();
         }
     });
 };

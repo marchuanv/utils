@@ -36,7 +36,6 @@ function handleHttpResponse(response, cbSuccess){
         }catch(err){
             console.error(err);
             response.statusCode = 500;
-            response.setHeader('Content-Type','application/json');
             response.write({message:'HTTP: error parsing request body to json'});
             response.end();
             return;

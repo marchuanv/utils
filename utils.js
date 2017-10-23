@@ -69,7 +69,7 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
    console.log(`////////////////////////////// HTTP: handling request  /////////////////////////////////`);
    var request=req;
    var response=res;
-   var jsonData;
+   var jsonData=data;
    if (!request && !url){
       console.log('HTTP: have to provide either an existing http request object or a url to create a new request.');
       return;
@@ -84,18 +84,17 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       if (addressSplit[1]){
           port = addressSplit[1].split('/')[0];
       }
-     console.log('data ',data );
-     
-      if (data && typeof data !== 'string'){
+      if (!data){
+          cbFail('HTTP: data cant be null or empty');
+          return;
+      }
+      if (typeof data !== 'string'){
            try{
               jsonData = JSON.stringify(data);
            }catch(err){
              cbFail('HTTP: failed to parse data to json');
              return;
            }
-      }else if (!data){
-          cbFail('HTTP: data cant be null or empty');
-          return;
       }
       const options = {
           host: hostName,

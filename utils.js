@@ -27,6 +27,8 @@ function handleHttpResponse(response, cbSuccess){
       body.push(chunk);
     });
     response.on('end', function () {
+        console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
+        console.log();
         const bodyStr = Buffer.concat(body).toString();
         try{
           console.log('HTTP: parsing request body to JSON');
@@ -94,6 +96,7 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
      request.on('end', () => {
           console.log('handling existing request response.');
           handleHttpResponse(response, cbPass);
+          
      });
    }else{
       console.log('handling new request response.');
@@ -104,8 +107,7 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       request.write(jsonData);
       request.end();
    }
-   console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
-   console.log();
+  
 };
 
 module.exports={

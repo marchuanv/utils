@@ -27,6 +27,7 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
       body.push(chunk);
     });
     if (isNewRequest==true){
+      cbSuccess();
       return;
     }
     response.on('end', function () {

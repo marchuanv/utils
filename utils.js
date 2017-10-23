@@ -33,7 +33,6 @@ function parseJSON(jsonString){
 
 function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBodyStr) {  
     response.setHeader('Content-Type', 'application/json');
-    response.setEncoding('utf8');
     response.on('error', function (err) {
         console.error(err);
         response.statusCode = 500;
@@ -55,6 +54,7 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBo
             console.log();
        });
      }else{
+         response.setEncoding('utf8');
          const bodyObj=parseJSON(requestBodyStr);
          if (bodyObj){
             response.statusCode = 200;

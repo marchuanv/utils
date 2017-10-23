@@ -67,7 +67,7 @@ function handleHttpRequest(url, jsonData, cbPass, cbFail, req, res){
           method:'POST',
           headers: {
               'Content-Type': 'application/json',
-              'Content-Length': Buffer.byteLength(jsonString)
+              'Content-Length': Buffer.byteLength(jsonData)
           }
       };
       request=http.request(options);

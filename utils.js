@@ -56,7 +56,7 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBo
        });
      }else{
         response.statusCode = 200;
-        response.write({message': "successful"});
+        response.write({message: "successful"});
         response.end();
         cbSuccess(requestBodyStr);
         console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);

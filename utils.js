@@ -70,17 +70,6 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
    var request=req;
    var response=res;
    var jsonData;
-   if (data && typeof data !== 'string'){
-     try{
-        jsonData = JSON.stringify(data);
-     }catch(err){
-       cbFail('HTTP: failed to parse data to json');
-       return;
-     }
-   }else if (!data){
-      cbFail('HTTP: data cant be null or empty');
-      return;
-   }
    if (!request && !url){
       console.log('HTTP: have to provide either an existing http request object or a url to create a new request.');
       return;
@@ -92,6 +81,17 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       var port=80;
       if (addressSplit[1]){
           port = addressSplit[1].split('/')[0];
+      }
+      if (data && typeof data !== 'string'){
+           try{
+              jsonData = JSON.stringify(data);
+           }catch(err){
+             cbFail('HTTP: failed to parse data to json');
+             return;
+           }
+      }else if (!data){
+          cbFail('HTTP: data cant be null or empty');
+          return;
       }
       const options = {
           host: hostName,

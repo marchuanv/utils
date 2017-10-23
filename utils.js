@@ -77,6 +77,9 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
        cbFail('HTTP: failed to parse data to json');
        return;
      }
+   }else if (!data){
+      cbFail('HTTP: data cant be null or empty');
+      return;
    }
    if (!request && !url){
       console.log('HTTP: have to provide either an existing http request object or a url to create a new request.');

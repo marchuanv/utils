@@ -23,6 +23,12 @@ function Timer(isInterval){
 
 function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
     let body = [];
+    response.on('error', function (err) {
+        response.statusCode = 500;
+        response.write({message: err});
+        response.end();
+        console.error(err);
+    });
     response.on('data', function (chunk) {
       body.push(chunk);
     });

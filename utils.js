@@ -24,10 +24,10 @@ function Timer(isInterval){
 function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
     let body = [];
     response.on('error', function (err) {
+        console.error(err);
         response.statusCode = 500;
         response.write({message: err});
         response.end();
-        console.error(err);
         cbFail(err);
     });
     response.on('data', function (chunk) {
@@ -37,6 +37,7 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest){
       cbSuccess(body[0]);
       return;
     }
+    console.log('BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     response.on('end', function () {
        console.log('RESPONSE END');
        response.setHeader('Content-Type', 'application/json');

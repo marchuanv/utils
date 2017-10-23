@@ -75,13 +75,17 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       return;
    }
    if (!request){
-     console.log('creating new request.');
-      const addressSplit=url.replace('http://','').replace('https://','').split(':');
+      console.log('creating new request.');
+      const addressSplit=url.replace('http://','')
+                            .replace('https://','')
+                            .split(':');
       const hostName = addressSplit[0].split('/')[0];
       var port=80;
       if (addressSplit[1]){
           port = addressSplit[1].split('/')[0];
       }
+     console.log('data ',data );
+     
       if (data && typeof data !== 'string'){
            try{
               jsonData = JSON.stringify(data);
@@ -129,7 +133,6 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
           console.log('request response received, responding to requester.');
           handleHttpResponse(_response, cbPass, cbFail, true);
       });
-     console.log('new request data ',jsonData );
       request.write(jsonData);
       request.end();
    }

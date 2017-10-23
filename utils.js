@@ -31,7 +31,24 @@ function parseJSON(jsonString){
     }
 };
 
-function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBodyStr) {  
+function getJSON(data, cbFail){
+    if (data){
+        if (typeof data !== 'string'){
+           try{
+              return JSON.stringify(data);
+           }catch(err){
+             cbFail('HTTP: failed to parse data to json');
+             return;
+           }
+        }
+        return data;
+    }else{
+      cbFail('HTTP: data cant be null or empty');
+      return;
+    }
+};
+
+function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, jsonData) {  
     response.on('error', function (err) {
         console.error(err);
         response.statusCode = 500;
@@ -56,9 +73,9 @@ function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBo
      }else{
         response.setHeader('Content-Type', 'application/json');
         response.statusCode = 200;
-        response.write('{"message": "successful"}');
+        response.write(jsonData);
         response.end();
-        cbSuccess(requestBodyStr);
+        cbSuccess(jsonData);
         console.log(`////////////////////////////// HTTP: done  /////////////////////////////////`);
         console.log();
      }
@@ -84,18 +101,7 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
       if (addressSplit[1]){
           port = addressSplit[1].split('/')[0];
       }
-      if (!data){
-          cbFail('HTTP: data cant be null or empty');
-          return;
-      }
-      if (typeof data !== 'string'){
-           try{
-              jsonData = JSON.stringify(data);
-           }catch(err){
-             cbFail('HTTP: failed to parse data to json');
-             return;
-           }
-      }
+      jsonData=getJSON(data, cbFail);
       const options = {
           host: hostName,
           port: port, 
@@ -118,9 +124,15 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
        }).on('end', function() {
             var requestBodyStr;
             try{
-                requestBodyStr=Buffer.concat(body).toString();
+                const requestMethod=request.method.toLowerCase();
                 console.log('handling existing request response.');
-                handleHttpResponse(response, cbPass, cbFail, false, requestBodyStr);
+                if (requestMethod=="post"){
+                  requestBodyStr=Buffer.concat(body).toString();
+                  handleHttpResponse(response, cbPass, cbFail, false, requestBodyStr);
+                }else if (requestMethod=="get"){
+                  const resData=getJSON(data, cbFail);
+                  handleHttpResponse(response, cbPass, cbFail, false, resData);
+                }
             }catch(err){
               console.error(err);
               cbFail(err);

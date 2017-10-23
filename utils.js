@@ -129,6 +129,7 @@ function handleHttpRequest(url, data, cbPass, cbFail, req, res){
           console.log('request response received, responding to requester.');
           handleHttpResponse(_response, cbPass, cbFail, true);
       });
+     console.log('new request data ',jsonData );
       request.write(jsonData);
       request.end();
    }

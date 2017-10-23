@@ -33,6 +33,7 @@ function parseJSON(jsonString){
 
 function handleHttpResponse(response, cbSuccess, cbFail, isNewRequest, requestBodyStr) {  
     response.setHeader('Content-Type', 'application/json');
+    response.setEncoding('utf8');
     response.on('error', function (err) {
         console.error(err);
         response.statusCode = 500;

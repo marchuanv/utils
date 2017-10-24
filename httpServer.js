@@ -26,6 +26,7 @@ process.on('message', (msg) => {
                 if (receiveRequestMessage.path==urlPathname){
                     receiveRequestMessage.request=req.body;
                     process.send(receiveRequestMessage);
+                    receiveRequestMessages.splice(i,1);
                 }
             };
             res.statusCode = 200;

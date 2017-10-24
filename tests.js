@@ -1,43 +1,34 @@
 const HttpServer=require('./httpServer.js');
 const httpServer=new HttpServer();
 
-httpServer.getHost(true, function(exitServer, makeRequest, receiveRequest){
-	receiveRequest('/', function(request, response) {
-		response.status(200).send({message:"test1"});
-	});
+httpServer.start(function success(){
 	console.log();
 	console.log('///////////////////////////// TEST 01 START /////////////////////////////');
-	makeRequest('http://localhost:3000',{}, function pass(jsonObj){
-		console.log('TEST PASSED', jsonObj);
-		exitServer();
-		console.log('///////////////////////////// TEST 01 END /////////////////////////////');
-		console.log();
-	},function fail(bodyString){
-		console.log('TEST FAILED',bodyString);
-		exitServer();
-		console.log('///////////////////////////// TEST 01 END /////////////////////////////');
-		console.log();
-	});
+},function fail(){
 });
 
-httpServer.getHost(false, function(exitServer, makeRequest, receiveRequest){
-	receiveRequest('/', function(request, response){
-		response.setHeader('Content-Type', 'application/json');
-        response.statusCode = 200;
-        response.write({message: "test2"});
-        response.end();
-	});
+httpServer.receive('/', function success(requestData, respond) {
+	if (requestData.message != "requestdata"){
+		console.log('TEST FAILED: ',requestData);
+		exitServer();
+		console.log('///////////////////////////// TEST 01 END /////////////////////////////');
+		console.log();
+		httpServer.stop();
+	}else{
+		respond({message: "responsedata"});
+	}
+},function fail(err){
+	console.log(err);
+});
+
+httpServer.send('http://localhost:3000', { message:"requestdata"}, function pass(jsonObj){
+	console.log('TEST PASSED', jsonObj);
+	console.log('///////////////////////////// TEST 01 END /////////////////////////////');
 	console.log();
-	console.log('///////////////////////////// TEST 02 START /////////////////////////////');
-	makeRequest('http://localhost:3000',{}, function pass(jsonObj){
-		console.log('TEST PASSED', jsonObj);
-		console.log('///////////////////////////// TEST 02 END /////////////////////////////');
-		console.log();
-		exitServer();
-	},function fail(bodyString){
-		console.log('TEST FAILED',bodyString);
-		exitServer();
-		console.log('///////////////////////////// TEST 02 END /////////////////////////////');
-		console.log();
-	});
+	httpServer.stop();
+},function fail(bodyString){
+	console.log('TEST FAILED',bodyString);
+	console.log('///////////////////////////// TEST 01 END /////////////////////////////');
+	console.log();
+	httpServer.stop();
 });

@@ -6,12 +6,18 @@ var httpServer;
 const receiveRequestMessages=[];
 process.on('message', (msg) => {
     if (msg.name=='receiveRequest'){
-        receiveRequestMessages.push(msg);
+       
+          receiveRequestMessages.push(msg);
     }
     if (msg.name=='startServer' && !httpServer){
         const hostPort= process.env.PORT || 3000;
         const http=require('http');
         httpServer=http.createServer(function(req, res){
+
+            const body = [];
+            const urlParts = url.parse(req.url, true);
+            const urlPathname = urlParts.pathname;
+
             res.on('error',function(err){
               process.send({
                   Id: msg.Id,
@@ -19,22 +25,80 @@ process.on('message', (msg) => {
                   reason: `HttpServer: ${err}`
               });
             });
-            const urlParts = url.parse(req.url, true);
-            const urlPathname = urlParts.pathname;
-            for (var i = receiveRequestMessages.length - 1; i >= 0; i--) {
-                var receiveRequestMessage=receiveRequestMessages[i];
-                if (receiveRequestMessage.path==urlPathname){
-                    receiveRequestMessage.request=req.body;
-                    process.send(receiveRequestMessage);
-                    receiveRequestMessages.splice(i,1);
+            req.on('data', function (chunk) {
+              body.push(chunk);
+            });
+            req.on('end', function () {
+            });
+
+            const intervalTimer = common.createTimer(true);
+            intervalTimer.setTime(1000);
+            const timeOut = common.createTimer(false);
+            timeOut.setTime(60000);
+
+            intervalTimer.start(function(){
+                console.log('HttpServer: checking received messages for new request');
+                for (var i=0; i < receiveRequestMessages.length; i++) {
+                    var receiveRequestMessage=receiveRequestMessages.splice(i,1)[0];
+                    if (receiveRequestMessage.path==urlPathname){
+                        if (receiveRequestMessage.request) {
+                            if (receiveRequestMessage.response){
+                              console.log();
+                              console.log('MESSAGE WITH RESPONSE: ', receiveRequestMessage);
+                              console.log();
+                              res.statusCode = 200;
+                              const json=JSON.stringify(receiveRequestMessage.response);
+                              res.end(json);
+                              intervalTimer.stop();
+                              break;
+                            }else{
+                                console.log();
+                                console.log('MESSAGE WITH NO RESPONSE: ', receiveRequestMessage);
+                                console.log();
+                                process.send({
+                                  Id: msg.Id,
+                                  name: "fail",
+                                  reason: 'HttpServer: message did not have any response data'
+                                });
+                                res.statusCode = 500;
+                                res.end();
+                                intervalTimer.stop();
+                                break;
+                            }
+                        }else{
+                            console.log();
+                            console.log('MESSAGE WITH NO REQUEST: ', receiveRequestMessage);
+                            console.log();
+                            const requestBody=Buffer.concat(body).toString();
+                            receiveRequestMessage.request=JSON.parse(requestBody);
+                            process.send(receiveRequestMessage);
+                            break;
+                        }
+                    }else{
+                      receiveRequestMessages.push(receiveRequestMessage);
+                    }
+                };
+            });
+            timeOut.start(function(){
+              console.log('timeout waiting for response.');
+                if (res.headersSent==false){
+                    process.send({
+                      Id: msg.Id,
+                      name: "fail",
+                      reason: 'HttpServer: timeout waiting for response'
+                    });
+                    res.statusCode = 500;
+                    res.end();
                 }
-            };
-            res.statusCode = 200;
-            res.end();
+                intervalTimer.stop();
+            });
+        });
+        httpServer.listen(hostPort,function(){
+            process.send(msg);
         });
     }
     if (msg.name=='exitServer'){
-       process.send(msg);
+       console.log('stopping server');
        httpServer.close(function() { 
           process.exit();
        });
@@ -52,7 +116,11 @@ process.on('message', (msg) => {
         }
         const jsonData=common.getJSONString(msg.request);
         if (!jsonData){
-            cbFail('HttpServer: data parameter is not a valid object');
+            process.send({
+              Id: msg.Id,
+              name: "fail",
+              reason: 'HttpServer: data parameter is not a valid object'
+            });
             return;
         }
         const options = {
@@ -72,100 +140,123 @@ process.on('message', (msg) => {
               reason: `HttpServer: ${err}`
             });
         });
-        var responseBody;
+
+        var responseData=null;
+        var response=null;
         request.on('response', function (res) {
             res.setEncoding('utf8');
+            response=res;
             res.on('data', function (body) {
-              msg.response=bodyObj;
-              process.send(msg);
+              responseData=body;
             });
         });
         request.write(jsonData);
         request.end();
+
+        const intervalTimer = common.createTimer(true);
+        intervalTimer.setTime(1000);
+        intervalTimer.start(function(){
+            if (response){
+                if (response.statusCode!=200){
+                   process.send({
+                      Id: msg.Id,
+                      name: "fail",
+                      reason: `HttpServer: response http status code is ${response.statusCode}`
+                   });
+                   intervalTimer.stop();
+                }else{
+                    msg.response=responseData;
+                    process.send(msg);
+                    intervalTimer.stop();
+                }
+            }else{
+              console.log('waiting for response from server');
+            }
+        });
     }
 });
 
-function HttpServer(_messages){
-  
-  const { fork } = require('child_process');
-  const forked = fork('httpServer.js');
-
-  const messages=[_messages];
-  if (!messages){
-    messages=[];
-  }
-
-  forked.on('message', (msg) => {
-      for (var i = messages.length - 1; i >= 0; i--) {
-          var message=messages[i];
-          console.log('message: ',message);
+function HttpServer(){
+  const messages=[];
+  const cp = require('child_process');
+  const subprocess = cp.fork('httpServer.js');
+  subprocess.on('message', (msg) => {
+      for (var i = 0; i < messages.length; i++) {
+          var message=messages.splice(i,1)[0];
           if (msg.Id==message.Id){
               if (msg.name=='receiveRequest'){
-                  message.callback(msg.request);
-                  messages.splice(i,1);
-              }
-              if (msg.name=='exitServer'){
-                  new HttpServer(messages);
-                  message.callback('server stopped');
-                  messages.splice(i,1);
+                  if (!msg.response){
+                      message.callback(msg.request, function complete(data){
+                         message.response=data;
+                         message.request=msg.request;
+                         messages.push(message);
+                         subprocess.send(message);
+                      });
+                  }
               }
               if (msg.name=='makeRequest'){
                   message.callback(msg.response);
-                  messages.splice(i,1);
               }
               if (msg.name=='startServer'){
-                  message.callback('server started');
-                  messages.splice(i,1);
+                  message.callback();  
               }
-              if (msg.name=='fail'){
-                if (message.callbackFail){
-                  message.callbackFail(msg.reason);
-                  messages.splice(i,1);
-                }
-              }
+          }else if (msg.name=='fail'){
+            if (message.callbackFail){
+              message.callbackFail(msg.reason);
+            }
+          } else {
+            messages.push(message);
           }
       };
   });
-
-  this.getHost=function(isExpress, callback){
+  this.start=function(callback, callbackFail){
       const messageId=common.newGuid();
-      const message={
+      const newMsg={
         Id: messageId,
         name: 'startServer',
-        callback: callback
+        callback: callback,
+        callbackFail: callbackFail
       };
-      forked.send(message);
-      callback(function _exitServer(callback, callbackFail){
-         const message={
-            Id: messageId,
-            name:'exitServer',
-            callback: callback,
-            callbackFail: callbackFail
-         };
-         messages.push(message);
-         forked.send(message);
-      }, function _makeRequest(url, data, callback, callbackFail){
-         const message={
-            Id: messageId,
-            url: url,
-            request: data,
-            name: 'makeRequest',
-            callback: callback,
-            callbackFail: callbackFail
-         };
-         messages.push(message);
-         forked.send(message);
-      }, function _receiveRequest(path, callback, callbackFail){
-         const message={
-            Id: messageId,
-            name: 'receiveRequest',
-            path: path,
-            callback: callback,
-            callbackFail: callbackFail
-         };
-         messages.push(message);
-         forked.send(message);
-      });
+      subprocess.send(newMsg);
+      messages.push(newMsg);
+  };
+  this.stop=function(){
+      const messageId=common.newGuid();
+       const newMsg={
+          Id: messageId,
+          name:'exitServer',
+          callback: null,
+          callbackFail: null
+       };
+       messages.push(newMsg);
+       subprocess.send(newMsg);
+  };
+
+  this.send=function(url, data, callback, callbackFail){
+       const messageId=common.newGuid();
+       const newMsg={
+          Id: messageId,
+          url: url,
+          request: data,
+          name: 'makeRequest',
+          callback: callback,
+          callbackFail: callbackFail
+       };
+       messages.push(newMsg);
+       subprocess.send(newMsg);
+  };
+
+  this.receive=function(path, callback, callbackFail){
+      const messageId=common.newGuid();
+       const newMsg={
+          Id: messageId,
+          name: 'receiveRequest',
+          path: path,
+          callback: callback,
+          callbackFail: callbackFail
+       };
+       messages.push(newMsg);
+       subprocess.send(newMsg);
   };
 };
-module.exports=new HttpServer;
+module.exports=HttpServer;

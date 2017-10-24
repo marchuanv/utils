@@ -1,4 +1,5 @@
-const httpServer=require('./httpServer.js');
+const HttpServer=require('./httpServer.js');
+const httpServer=new HttpServer();
 
 httpServer.getHost(true, function(exitServer, makeRequest, receiveRequest){
 	receiveRequest('/', function(request, response) {

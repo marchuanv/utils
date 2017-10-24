@@ -167,4 +167,4 @@ function HttpServer(_messages){
       });
   };
 };
-module.exports=new HttpServer();
+module.exports=new HttpServer;

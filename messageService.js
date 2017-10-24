@@ -1,6 +1,7 @@
 const cp = require('child_process');
 function MessageService(processFile){
 
+	  var thisService=this;
 	  const messages=[];
 	  var _process = process;
 	  var location='child process';
@@ -10,7 +11,7 @@ function MessageService(processFile){
 	  }
 	  _process.addListener('close', function(){
 	    console.log('http server child process exiting');
-	      //new MessageService(processFile);
+	     thisService=new MessageService(processFile);
 	  });
 	  _process.addListener('error', function(err){
 	      console.log(err);
@@ -33,7 +34,7 @@ function MessageService(processFile){
 	  		}
 	  };
 
-	  this.send=function(Id, data) {
+	  thisService.send=function(Id, data) {
 	  		const message={
 	  			Id: Id,
 	  			data: {}
@@ -66,7 +67,7 @@ function MessageService(processFile){
 		  	console.log('////////////////////////////// SENDING MESSAGE END //////////////////////////');
 		  	console.log();
 	  };
-	  this.receive=function(Id, callback){
+	  thisService.receive=function(Id, callback){
 	  	 _process.on('message', (message) => {
 	  	 	if (message.Id==Id){
 		  	 	console.log();
@@ -86,7 +87,7 @@ function MessageService(processFile){
 	  	 	}
 	  	 });
 	  };
-	  this.get=function	(Id, callback){
+	  thisService.get=function	(Id, callback){
   		  getMessage(Id, function(_message){
   		  		callback(_message.data);
   		  });

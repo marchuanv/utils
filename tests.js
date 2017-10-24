@@ -9,8 +9,7 @@ httpServer.start(function success(){
 
 httpServer.receive('/', function success(requestData, respond) {
 	if (requestData.message != "requestdata"){
-		console.log('TEST FAILED: ',requestData);
-		exitServer();
+		console.log('TEST FAILED AT RECEIVE: ',requestData);
 		console.log('///////////////////////////// TEST 01 END /////////////////////////////');
 		console.log();
 		httpServer.stop();
@@ -27,7 +26,7 @@ httpServer.send('http://localhost:3000', { message:"requestdata"}, function pass
 	console.log();
 	httpServer.stop();
 },function fail(bodyString){
-	console.log('TEST FAILED',bodyString);
+	console.log('TEST FAILED AT SEND',bodyString);
 	console.log('///////////////////////////// TEST 01 END /////////////////////////////');
 	console.log();
 	httpServer.stop();

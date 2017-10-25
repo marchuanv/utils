@@ -9,7 +9,7 @@ function MessageService(utils, processFile, _subscriptions){
 		}
 		
 	  	function terminate(err){
-	  		if (!proccess.send){
+	  		if (!process.send){
 				//restart service at parent process
 				thisService=new MessageService(utils, processFile, thisService.subscriptions);
 	  		}else if (process.send) {process.exit();

@@ -1,7 +1,10 @@
-function MessageService(processFile){
+function MessageService(processFile, _messages){
 
 	  var thisService=this;
-	  const messages=[];
+	  thisService.messages=_messages;
+	  if (!thisService.messages){
+	  	thisService.messages=[];
+	  }
 	  var _process = process;
 	  var location='child process';
 	  if (processFile){
@@ -9,7 +12,13 @@ function MessageService(processFile){
 	  	  _process=cp.fork(processFile);
 	  	  location='parent process';
 		  _process.on('exit', function(code) {
-	            thisService=MessageService(processFile);
+	            thisService=MessageService(processFile, thisService.messages);
+	            for (var i = 0; i < thisService.messages.length; i++) {
+	            	const msg=thisService.messages[i];
+	            	if (msg.action=='send'){
+	            		thisService.send(msg.Id,msg.data);
+	            	}
+	            };
 	        });
 		  _process.addListener('error', function(err){
 		      console.log(err);
@@ -19,8 +28,8 @@ function MessageService(processFile){
 
 	  function getMessage(Id, callback, callbackFail){
 	  		var exists=false;
-	  		for (var i = messages.length - 1; i >= 0; i--) {
-	  			const msg=messages[i];
+	  		for (var i = thisService.messages.length - 1; i >= 0; i--) {
+	  			const msg=thisService.messages[i];
 	  			if (msg.Id==Id){
 	  					callback(msg);
 	  					exists=true;
@@ -35,7 +44,8 @@ function MessageService(processFile){
 	  thisService.send=function(Id, data) {
 	  		const message={
 	  			Id: Id,
-	  			data: {}
+	  			data: {},
+	  			action:'send'
 	  		};
 	  		const localMessage={
 	  			Id: Id,
@@ -59,7 +69,7 @@ function MessageService(processFile){
 			  	};
 		  	    _process.send(message);
 	  	  	},function notFound(){
-		  		messages.push(localMessage);
+		  		thisService.messages.push(localMessage);
 		  		_process.send(message);
 		  	});
 		  	console.log('////////////////////////////// SENDING MESSAGE END //////////////////////////');
@@ -77,7 +87,7 @@ function MessageService(processFile){
 			  	  };
 	  	 		  callback(_message.data);
 			  	},function notFound(){
-			  		messages.push(message);
+			  		thisService.messages.push(message);
 			  		callback(message.data);
 			  	});
 		  	 	console.log('////////////////////////////// RECEIVING MESSAGE END //////////////////////////');

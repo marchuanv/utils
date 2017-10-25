@@ -4,6 +4,8 @@ const messageService = new MessageService(`${__dirname}/httpServiceInstance.js`)
 
 function HttpService(){
 
+  console.log("BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+
   messageService.receive('makeRequest', function(message){
       if (message.responded==true){
         if (message.responseData){

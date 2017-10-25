@@ -1,4 +1,3 @@
-const cp = require('child_process');
 function MessageService(processFile){
 
 	  var thisService=this;
@@ -6,6 +5,7 @@ function MessageService(processFile){
 	  var _process = process;
 	  var location='child process';
 	  if (processFile){
+		const cp = require('child_process');
 	  	_process=cp.fork(processFile);
 	  	location='parent process';
 	  }

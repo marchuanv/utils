@@ -1,6 +1,6 @@
-const common=require(`${__dirname}/common.js`);
+const utils=require(`${__dirname}/utils.js`);
 const MessageService=require(`${__dirname}/messageService.js`);
-const messageService = new MessageService(`${__dirname}/httpServerInstance.js`);
+const messageService = new MessageService(`${__dirname}/httpServiceInstance.js`);
 
 function HttpServer(){
 
@@ -34,7 +34,7 @@ function HttpServer(){
   });
 
   this.start=function(callback, callbackFail){
-      const messageId=common.newGuid();
+      const messageId=utils.newGuid();
       messageService.send('startServer',{
         Id: messageId,
         callback: callback,
@@ -42,7 +42,7 @@ function HttpServer(){
       });
   };
   this.stop=function(){
-      const messageId=common.newGuid();
+      const messageId=utils.newGuid();
       messageService.send('exitServer',{
         Id: messageId,
         callback: null,
@@ -50,7 +50,7 @@ function HttpServer(){
       });
   };
   this.send=function(url, data, callback, callbackFail){
-      const messageId=common.newGuid();
+      const messageId=utils.newGuid();
       messageService.send('makeRequest',{
           Id: messageId,
           url: url,
@@ -60,7 +60,7 @@ function HttpServer(){
       });
   };
   this.receive=function(path, callback, callbackFail){
-      const messageId=common.newGuid();
+      const messageId=utils.newGuid();
       messageService.send('receiveRequest',{
           Id: messageId,
           path: path,

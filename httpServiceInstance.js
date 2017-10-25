@@ -1,4 +1,4 @@
-const common=require('./common.js');
+const utils=require('./utils.js');
 const http=require('http');
 const url  = require('url');
 const MessageService=require('./messageService.js')
@@ -71,7 +71,7 @@ messageService.receive('makeRequest', function(message){
     if (addressSplit[1]){
         port = addressSplit[1].split('/')[0];
     }
-    const jsonData=common.getJSONString(requestData);
+    const jsonData=utils.getJSONString(requestData);
     if (!jsonData){
         messageService.send('fail',{
           name: "fail",

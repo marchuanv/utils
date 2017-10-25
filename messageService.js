@@ -52,6 +52,7 @@ function MessageService(utils, processFile, _subscriptions){
 	  	var location='child process';
 	  	var messaging;
 	  	if (processFile){
+	  		console.log('MESSAGE SERVICE CREATE ON PARENT PROCESS');
 		  	location='parent process';
 			const cp = require('child_process');
 	  		childProcess=cp.fork(processFile);
@@ -65,6 +66,7 @@ function MessageService(utils, processFile, _subscriptions){
 			childProcess.on( 'SIGTERM',terminate);
 			messaging=childProcess;
 	  	}else{
+	  		console.log('MESSAGE SERVICE CREATE ON CHILD PROCESS');
 		  	process.on('exit', terminate);
 	       	process.on('SIGINT', terminate);
 	       	process.on('SIGUSR1', terminate);

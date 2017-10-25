@@ -82,10 +82,8 @@ module.exports={
     const newObj={};
     for(var i in data){
       try{
-        if (typeof data[i] !== 'function'){
-          JSON.stringify(data[i]);
-          newObj[i]=data[i];
-        }
+        JSON.stringify(data[i]);
+        newObj[i]=data[i];
       }catch(err){
       }
     };

@@ -1,21 +1,30 @@
+var restartTimer;
 function MessageService(utils, processFile){
 
   	var thisService=this;
+  	if (!restartTimer){
+  		restartTimer=utils.createTimer(true);
+  	}
   	thisService.Id=utils.newGuid();
 	thisService.subscriptions=[];
+
   	function terminate(err){
   		if (!process.send){
   			console.log(err);
-  			console.log(`/// RESTARTING  ///`);
-			thisService = new MessageService(utils, processFile);
-			const len=thisService.subscriptions.length;
-			console.log('len',len);
-			for (var i = 0; i < thisService.subscriptions.length; i++) {
-				const sub=thisService.subscriptions[0];
-				const changedData=utils.removeUnserialisableFields(sub.data);
-				console.log(`replaying:`, sub);
-				thisService.send(sub.subscriberName, changedData);
-			};
+  			if (restartTimer.started==false){
+  				console.log(`/// RESTARTING  ///`);
+	  			const subscriptions = thisService.subscriptions.slice();
+				thisService = new MessageService(utils, processFile);
+	  			restartTimer.start(function(){
+					for (var i = 0; i < subscriptions.length; i++) {
+						const sub=subscriptions[0];
+						const changedData=utils.removeUnserialisableFields(sub.data);
+						console.log(`replaying:`, sub.subscriberName);
+						thisService.send(sub.subscriberName, changedData);
+					};
+					restartTimer.stop();
+	  			});
+  			}
   		}else if (process.send) {
   			console.log("reason: ", err);
   			console.log(`/// CHILD PROCESS TERMINATED ///`);
@@ -90,6 +99,7 @@ function MessageService(utils, processFile){
 		messaging.send(message);
   		console.log(`sent message at ${location}:`,message.subscriberName);
   	};
+
   	thisService.receive=function(subscriberName, callback){
   	 	messaging.on('message', (message) => {
   	 		if (message=='heartbeat'){
@@ -126,10 +136,12 @@ function MessageService(utils, processFile){
 	  	 	}
   	 	});
   	};
+
   	thisService.get=function(subscriberName, callback){
 		  getSubscriptions(subscriberName, function(_message){
 		  		callback(_message.data);
 		  });
   	};
+
 };
 module.exports=MessageService;

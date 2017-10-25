@@ -9,15 +9,12 @@ function MessageService(utils, processFile, _subscriptions){
 		}
 		
 	  	function terminate(err){
-	  		if (childProcess && childProcess.exit){
-				childProcess.exit();
-
+	  		if (!proccess.send){
 				//restart service at parent process
 				thisService=new MessageService(utils, processFile, thisService.subscriptions);
-
-	  		}else if (err && err.toString().indexOf('Error')>=0) {
-	  			console.log(`//////////////////////////// TERMINATED AT ${location}, REASON:${err} ///////////////////////////////`);
-	  			messaging.exit();
+	  		}else if (process.send) {
+	  			console.log(`//////////////////////////// CHILD PROCESS TERMINATED///////////////////////////////`);
+	  			.exit();
 	  		}
 	  	};
 	  	function getSubscriptions(subscriberName, callback, callbackFail){

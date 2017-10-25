@@ -77,5 +77,18 @@ module.exports={
   },
   consoleReset :function () {
     return process.stdout.write('\033c');
+  },
+  removeUnserialisableFields: function(data){
+    const newObj={};
+    for(var i in data){
+      try{
+        if (typeof data[i] !== 'function'){
+          JSON.stringify(data[i]);
+          newObj[i]=data[i];
+        }
+      }catch(err){
+      }
+    };
+    return newObj;
   }
 };

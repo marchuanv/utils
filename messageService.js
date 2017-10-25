@@ -1,23 +1,28 @@
-function MessageService(utils, processFile, _subscriptions){
+function MessageService(utils, processFile){
 
   	var thisService=this;
   	thisService.Id=utils.newGuid();
-	thisService.publishes=[];
-	thisService.subscriptions=_subscriptions;
-	if (!thisService.subscriptions){
-		thisService.subscriptions=[];
-	}
-	
+	thisService.subscriptions=[];
   	function terminate(err){
   		if (!process.send){
-  			console.log(`//////////////////////////// RESTARTING CHILD PROCESS FOR MESSAGE SERVICE: ${thisService.Id} ///////////////////////////////`);
-			//restart service at parent process
-			//thisService=new MessageService(utils, processFile, thisService.subscriptions);
+  			console.log(err);
+  			console.log(`/// RESTARTING  ///`);
+			thisService = new MessageService(utils, processFile);
+			const len=thisService.subscriptions.length;
+			console.log('len',len);
+			for (var i = 0; i < thisService.subscriptions.length; i++) {
+				const sub=thisService.subscriptions[0];
+				const changedData=utils.removeUnserialisableFields(sub.data);
+				console.log(`replaying:`, sub);
+				thisService.send(sub.subscriberName, changedData);
+			};
   		}else if (process.send) {
-  			console.log(`//////////////////////////// CHILD PROCESS TERMINATED///////////////////////////////`);
+  			console.log("reason: ", err);
+  			console.log(`/// CHILD PROCESS TERMINATED ///`);
   			process.exit();
   		}
   	};
+
   	function getSubscriptions(subscriberName, callback, callbackFail){
   		var exists=false;
   		for (var i = thisService.subscriptions.length - 1; i >= 0; i--) {
@@ -64,8 +69,8 @@ function MessageService(utils, processFile, _subscriptions){
 		messaging=childProcess;
   	}else{
 	  	process.on('exit', terminate);
-       	process.on('SIGINT', terminate);
-       	process.on('SIGUSR1', terminate);
+      	process.on('SIGINT', terminate);
+      	process.on('SIGUSR1', terminate);
 		process.on('SIGUSR2', terminate);
       	process.on('error', terminate);
 		process.on('close', terminate);
@@ -75,27 +80,14 @@ function MessageService(utils, processFile, _subscriptions){
   	}
 
   	thisService.send=function(subscriberName, data) {
+  		const changedData=utils.removeUnserialisableFields(data);
   		const message={
   			subscriberName: subscriberName,
-  			data: {}
+  			data: changedData
   		};
-  		const localMessage={
-  			subscriberName: subscriberName,
-  			data: {}
-  		};
-	  	for(var i in data){
-  			try{
-  				if (typeof data[i] !== 'function'){
-	  				JSON.stringify(data[i]);
-	  				message.data[i]=data[i];
-  				}
-				localMessage.data[i]=data[i];
-  			}catch(err){
-  				localMessage.data[i]=data[i];
-  			}
-  		};
+  		const localMessage={ subscriberName: subscriberName, data: data };
 		updateSubscription(localMessage.subscriberName, localMessage.data);
-  		messaging.send(message);
+		messaging.send(message);
   		console.log(`sent message at ${location}:`,message.subscriberName);
   	};
   	thisService.receive=function(subscriberName, callback){

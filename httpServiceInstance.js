@@ -52,8 +52,10 @@ messageService.receive('receiveRequest', function(data, complete){
     if (path==requestPath){
       if (res){
         if (responseData){
+          const respondDataJson=utils.getJSONString(responseData);
+          throw 'TEST';
           res.statusCode = 200;
-          res.end(JSON.stringify(responseData));
+          res.end(respondDataJson);
         }else{
             messageService.send('fail',{
               name: "fail",

@@ -9,7 +9,6 @@ function MessageService(utils, processFile, _subscriptions){
 		}
 		
 	  	function terminate(err){
-	  		console.log(`//////////////////////////// TERMINATED AT ${location}, REASON:${err} ///////////////////////////////`);
 	  		if (childProcess && childProcess.exit){
 				childProcess.exit();
 
@@ -17,6 +16,7 @@ function MessageService(utils, processFile, _subscriptions){
 				thisService=new MessageService(utils, processFile, thisService.subscriptions);
 
 	  		}else{
+	  			console.log(`//////////////////////////// TERMINATED AT ${location}, REASON:${err} ///////////////////////////////`);
 	  			process.exit();
 	  		}
 	  	};

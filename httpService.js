@@ -2,8 +2,6 @@ const MessageService=require(`./messageService.js`);
 
 function HttpService(utils){
 
-  console.log('utils',utils);
-
   const messageService = new MessageService(`${__dirname}/httpServiceInstance.js`);
 
   messageService.receive('makeRequest', function(message){

@@ -5,6 +5,11 @@ const MessageService=require('./messageService.js')
 const messageService = new MessageService(utils);
 
 messageService.receive('httpListen', function(data, complete){
+    if (data.server){
+      console.log('already an instance of the http server running');
+      complete();
+      return;
+    }
     const hostPort= process.env.PORT || 3000;
     const http=require('http');
     data.server=http.createServer(function(req, res){
@@ -30,22 +35,13 @@ messageService.receive('httpListen', function(data, complete){
             });
         });
     });
-    try{
-    
-      data.server.listen(hostPort,function(){
+    data.server.listen(hostPort,function(){
         console.log();
         console.log('////////////////// HTTP SERVER STARTED ////////////////////');
         console.log();
         messageService.send('httpListen',data);
         complete();
-      });
-    }catch(err){
-       messageService.send('fail',{
-        name: "fail",
-        reason: `HttpServer: ${err}`
-       });
-        complete();
-    }
+    });
 });
 
 messageService.receive('receiveRequest', function(data, complete){
@@ -53,7 +49,6 @@ messageService.receive('receiveRequest', function(data, complete){
     const path=data.path;
     const requestPath=data.requestPath;
     const responseData=data.responseData;
-    complete();
     if (path==requestPath){
       if (res){
         if (responseData){
@@ -69,6 +64,7 @@ messageService.receive('receiveRequest', function(data, complete){
         }
       }
     }
+    complete();
 });
 
 messageService.receive('makeRequest', function(message, complete){
@@ -107,7 +103,6 @@ messageService.receive('makeRequest', function(message, complete){
           reason: `HttpServer: ${err}`
         });
     });
-    complete();
     request.on('response', function (res) {
         res.setEncoding('utf8');
         res.on('data', function (body) {
@@ -119,6 +114,7 @@ messageService.receive('makeRequest', function(message, complete){
     });
     request.write(jsonData);
     request.end();
+    complete();
 });
 
 messageService.receive('exitServer', function(message, complete){

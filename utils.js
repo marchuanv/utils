@@ -24,10 +24,12 @@ function Timer(isInterval){
   };
   this.start=function(callback){
       this.started=true;
+      console.log('timer started');
       internalStart.apply(this, [callback]);
   };
   this.stop=function(){
     this.started=false;
+    console.log('timer stopped');
     stop=true;
   };
 };

@@ -59,10 +59,10 @@ function HttpService(utils){
       messageService.send('httpListen',{
         Id: messageId,
         callback: function(){
-          console.log('server is listening at traffic');
+            console.log('server is listening at traffic');
         },  
         callbackFail: function(){
-          console.log('failed to start server');
+            console.log('failed to start server');
         }
       });
       messageId=utils.newGuid();

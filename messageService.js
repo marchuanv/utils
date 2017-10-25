@@ -5,15 +5,16 @@ function MessageService(processFile){
 	  var _process = process;
 	  var location='child process';
 	  if (processFile){
-		const cp = require('child_process');
-	  	_process=cp.fork(processFile);
-	  	location='parent process';
+		  const cp = require('child_process');
+	  	  _process=cp.fork(processFile);
+	  	  location='parent process';
+		  _process.on('exit', function(code) {
+	            thisService=MessageService(processFile);
+	        });
+		  _process.addListener('error', function(err){
+		      console.log(err);
+		  });
 	  }
-	  _process.addListener('close', function(){
-	  });
-	  _process.addListener('error', function(err){
-	      console.log(err);
-	  });
 	  console.log('message bus configured for ',location);
 
 	  function getMessage(Id, callback, callbackFail){

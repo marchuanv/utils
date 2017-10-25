@@ -1,6 +1,6 @@
 const utils=require(`./utils.js`);
 const MessageService=require(`./messageService.js`);
-const messageService = new MessageService(`${__dirname}\\httpServiceInstance.js`);
+const messageService = new MessageService(`./httpServiceInstance.js`);
 
 function HttpService(){
 

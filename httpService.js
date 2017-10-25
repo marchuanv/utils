@@ -1,18 +1,14 @@
-function HttpServer(){
+const utils=require(`./utils.js`);
+const MessageService=require(`./messageService.js`);
+const messageService = new MessageService(`${__dirname}\\httpServiceInstance.js`);
 
-  const utils=require(`${__dirname}\\utils.js`);
-  const MessageService=require(`${__dirname}\\messageService.js`);
-  const messageService = new MessageService(`${__dirname}\\httpServiceInstance.js`);
+function HttpService(){
 
   messageService.receive('makeRequest', function(message){
       if (message.responded==true){
         if (message.responseData){
             message.callback(message.responseData);
-        }else{
-            console.log('request responded with no data.');  
         }
-      }else{
-        console.log('request failed.');
       }
   });
 
@@ -69,4 +65,4 @@ function HttpServer(){
       });
   };
 };
-module.exports=HttpServer;
+module.exports=HttpService;

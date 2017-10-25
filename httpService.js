@@ -19,7 +19,7 @@ function HttpService(utils){
       });
   });
 
-  messageService.receive('startServer', function(message){
+  messageService.receive('httpListen', function(message){
       message.callback();
   });
 
@@ -29,24 +29,18 @@ function HttpService(utils){
       }
   });
 
-  this.start=function(callback, callbackFail){
-      const messageId=utils.newGuid();
-      messageService.send('startServer',{
-        Id: messageId,
-        callback: callback,
-        callbackFail: callbackFail
-      });
-  };
-  this.stop=function(){
-      const messageId=utils.newGuid();
-      messageService.send('exitServer',{
-        Id: messageId,
-        callback: null,
-        callbackFail: null
-      });
-  };
   this.send=function(url, data, callback, callbackFail){
-      const messageId=utils.newGuid();
+      var messageId=utils.newGuid();
+      messageService.send('httpListen',{
+        Id: messageId,
+        callback: function(){
+          console.log('server is listening at traffic');
+        },  
+        callbackFail: function(){
+          console.log('failed to start server');
+        },
+      });
+      messageId=utils.newGuid();
       messageService.send('makeRequest',{
           Id: messageId,
           url: url,
@@ -56,7 +50,17 @@ function HttpService(utils){
       });
   };
   this.receive=function(path, callback, callbackFail){
-      const messageId=utils.newGuid();
+      var messageId=utils.newGuid();
+      messageService.send('httpListen',{
+        Id: messageId,
+        callback: function(){
+          console.log('server is listening at traffic');
+        },  
+        callbackFail: function(){
+          console.log('failed to start server');
+        },
+      });
+      messageId=utils.newGuid();
       messageService.send('receiveRequest',{
           Id: messageId,
           path: path,

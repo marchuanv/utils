@@ -4,7 +4,7 @@ const url  = require('url');
 const MessageService=require('./messageService.js')
 const messageService = new MessageService();
 
-messageService.receive('startServer', function(data){
+messageService.receive('httpListen', function(data){
     if (!data.server){
       const hostPort= process.env.PORT || 3000;
       const http=require('http');
@@ -32,7 +32,7 @@ messageService.receive('startServer', function(data){
           });
       });
       data.server.listen(hostPort,function(){
-        messageService.send('startServer',data);
+        messageService.send('httpListen',data);
       });
     }
 });
@@ -109,8 +109,5 @@ messageService.receive('makeRequest', function(message){
 });
 
 messageService.receive('exitServer', function(){
-  messageService.get('startServer', function(data){
-     console.log('stopping server');
      process.exit();
-  }); 
 });

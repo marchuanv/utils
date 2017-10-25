@@ -1,8 +1,8 @@
-const utils=require(`${__dirname}\\utils.js`);
-const MessageService=require(`${__dirname}\\messageService.js`);
-const messageService = new MessageService(`${__dirname}\\httpServiceInstance.js`);
-
 function HttpServer(){
+
+  const utils=require(`${__dirname}\\utils.js`);
+  const MessageService=require(`${__dirname}\\messageService.js`);
+  const messageService = new MessageService(`${__dirname}\\httpServiceInstance.js`);
 
   messageService.receive('makeRequest', function(message){
       if (message.responded==true){

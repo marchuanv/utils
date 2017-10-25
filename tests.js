@@ -1,18 +1,18 @@
-const HttpServer=require('./httpService.js');
-const httpServer=new HttpServer();
+const utils=require('./utils.js');
+const httpService=new utils.createHttpService();
 
-httpServer.start(function success(){
+httpService.start(function success(){
 	console.log();
 	console.log('///////////////////////////// TEST 01 START /////////////////////////////');
 },function fail(){
 });
 
-httpServer.receive('/', function success(requestData, respond) {
+httpService.receive('/', function success(requestData, respond) {
 	if (requestData.message != "requestdata"){
 		console.log('TEST FAILED AT RECEIVE: ',requestData);
 		console.log('///////////////////////////// TEST 01 END /////////////////////////////');
 		console.log();
-		httpServer.stop();
+		httpService.stop();
 	}else{
 		respond({message: "responsedata"});
 	}
@@ -20,14 +20,14 @@ httpServer.receive('/', function success(requestData, respond) {
 	console.log(err);
 });
 
-httpServer.send('http://localhost:3000', { message:"requestdata"}, function pass(jsonObj){
+httpService.send('http://localhost:3000', { message:"requestdata"}, function pass(jsonObj){
 	console.log('TEST PASSED', jsonObj);
 	console.log('///////////////////////////// TEST 01 END /////////////////////////////');
 	console.log();
-	httpServer.stop();
+	httpService.stop();
 },function fail(bodyString){
 	console.log('TEST FAILED AT SEND',bodyString);
 	console.log('///////////////////////////// TEST 01 END /////////////////////////////');
 	console.log();
-	httpServer.stop();
+	httpService.stop();
 });

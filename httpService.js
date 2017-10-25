@@ -1,10 +1,10 @@
-const utils=require(`./utils.js`);
 const MessageService=require(`./messageService.js`);
-const messageService = new MessageService(`${__dirname}/httpServiceInstance.js`);
 
-function HttpService(){
+function HttpService(utils){
 
-  console.log("BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+  console.log('utils',utils);
+
+  const messageService = new MessageService(`${__dirname}/httpServiceInstance.js`);
 
   messageService.receive('makeRequest', function(message){
       if (message.responded==true){

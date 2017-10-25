@@ -1,3 +1,5 @@
+const HttpService=require('./httpService.js');
+
 function Timer(isInterval){
   let milliseconds=1000;
   let stop=false;
@@ -29,37 +31,7 @@ function Timer(isInterval){
     stop=true;
   };
 };
-function getJSONObject(jsonString){
-    try{
-      console.log('parsing object to JSON');
-      return JSON.parse(jsonString);
-    }catch(err){
-      return null;
-    }
-};
-function getJSONString(data){
-    if (data){
-        if (typeof data !== 'string'){
-           try{
-              return JSON.stringify(data);
-           }catch(err){
-             return null;
-           }
-        }
-        return data;
-    }else{
-      return null;
-    }
-};
-function generateUUID() {
-    var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (d + Math.random()*16)%16 | 0;
-        d = Math.floor(d/16);
-        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-    });
-    return uuid;
-};
+
 module.exports={
   getRandomNumber: function(min, max){
     return Math.floor(Math.random()*(max-min+1)+min);
@@ -67,8 +39,38 @@ module.exports={
   createTimer: function(isInterval){
     return new Timer(isInterval);
   },
-  getJSONString: getJSONString,
-  getJSONObject: getJSONObject,
-  newGuid: generateUUID,
-  HttpService: require('./httpService.js')
+  getJSONString: function(data){
+       if (data){
+          if (typeof data !== 'string'){
+             try{
+                return JSON.stringify(data);
+             }catch(err){
+               return null;
+             }
+          }
+          return data;
+      }else{
+        return null;
+      }
+  },
+  getJSONObject: function(){
+     try{
+        console.log('parsing object to JSON');
+        return JSON.parse(jsonString);
+      }catch(err){
+        return null;
+      }
+  },
+  newGuid: function(){
+      var d = new Date().getTime();
+      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = (d + Math.random()*16)%16 | 0;
+          d = Math.floor(d/16);
+          return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+      });
+      return uuid;
+  },
+  createHttpService: function(){
+    return new HttpService(module.exports);
+  }
 };

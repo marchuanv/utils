@@ -12,7 +12,8 @@ function MessageService(processFile, _messages){
 	  	  _process=cp.fork(processFile);
 	  	  location='parent process';
 		  _process.on('exit', function(code) {
-	            thisService=MessageService(processFile, thisService.messages);
+		  		console.log('thisService.messages',thisService.messages);
+	            thisService= new MessageService(processFile, thisService.messages);
 	            for (var i = 0; i < thisService.messages.length; i++) {
 	            	const msg=thisService.messages[i];
 	            	if (msg.action=='send'){

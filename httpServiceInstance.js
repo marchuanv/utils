@@ -7,7 +7,6 @@ const messageService = new MessageService(utils);
 messageService.receive('httpListen', function(data, complete){
     const hostPort= process.env.PORT || 3000;
     const http=require('http');
-    try{
     data.server=http.createServer(function(req, res){
         const body = [];
         const urlParts = url.parse(req.url, true);
@@ -31,6 +30,7 @@ messageService.receive('httpListen', function(data, complete){
             });
         });
     });
+    try{
     
       data.server.listen(hostPort,function(){
         console.log();

@@ -2,28 +2,33 @@ const MessageService=require(`./messageService.js`);
 
 function HttpService(utils){
 
-  const messageService = new MessageService(`${__dirname}/httpServiceInstance.js`);
+  const messageService = new MessageService(utils, `${__dirname}/httpServiceInstance.js`);
 
-  messageService.receive('makeRequest', function(message){
+  messageService.receive('makeRequest', function(message, complete){
+      complete();
       if (message.responded==true){
         if (message.responseData){
             message.callback(message.responseData);
+
         }
       }
   });
 
-  messageService.receive('receiveRequest', function(message){
+  messageService.receive('receiveRequest', function(message, complete){
+      complete();
       message.callback(message.requestData, function complete(data){
           message.responseData=data;
           messageService.send('receiveRequest', message);
       });
   });
 
-  messageService.receive('httpListen', function(message){
+  messageService.receive('httpListen', function(message, complete){
+      complete();
       message.callback();
   });
 
-  messageService.receive('fail', function(message){
+  messageService.receive('fail', function(message, complete){
+      complete();
       if (message.callbackFail){
          message.callbackFail(message.reason);
       }
@@ -38,7 +43,7 @@ function HttpService(utils){
         },  
         callbackFail: function(){
           console.log('failed to start server');
-        },
+        }
       });
       messageId=utils.newGuid();
       messageService.send('makeRequest',{
@@ -58,7 +63,7 @@ function HttpService(utils){
         },  
         callbackFail: function(){
           console.log('failed to start server');
-        },
+        }
       });
       messageId=utils.newGuid();
       messageService.send('receiveRequest',{

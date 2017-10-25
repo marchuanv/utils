@@ -6,7 +6,6 @@ httpService.receive('/', function success(requestData, respond) {
 		console.log('TEST FAILED AT RECEIVE: ',requestData);
 		console.log('///////////////////////////// TEST 01 END /////////////////////////////');
 		console.log();
-		httpService.stop();
 	}else{
 		respond({message: "responsedata"});
 	}

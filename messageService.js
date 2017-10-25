@@ -1,37 +1,26 @@
-function MessageService(processFile, _messages){
+function MessageService(utils, processFile, _subscriptions){
 
-	  var thisService=this;
-	  thisService.messages=_messages;
-	  if (!thisService.messages){
-	  	thisService.messages=[];
-	  }
-	  var _process = process;
-	  var location='child process';
-	  if (processFile){
-		  const cp = require('child_process');
-	  	  _process=cp.fork(processFile);
-	  	  location='parent process';
-		  _process.on('exit', function(code) {
-		  		console.log('thisService.messages',thisService.messages);
-	            thisService= new MessageService(processFile, thisService.messages);
-	            for (var i = 0; i < thisService.messages.length; i++) {
-	            	const msg=thisService.messages[i];
-	            	if (msg.action=='send'){
-	            		thisService.send(msg.Id,msg.data);
-	            	}
-	            };
-	        });
-		  _process.addListener('error', function(err){
-		      console.log(err);
-		  });
-	  }
-	  console.log('message bus configured for ',location);
-
-	  function getMessage(Id, callback, callbackFail){
+	  	var thisService=this;
+	  
+		thisService.publishes=[];
+		thisService.subscriptions=_subscriptions;
+		if (!thisService.subscriptions){
+			thisService.subscriptions=[];
+		}
+		
+	  	function terminate(err){
+	  		if (childProcess && childProcess.exit){
+				childProcess.exit();
+	  		}else{
+	  			process.exit();
+	  		}
+	  		console.log(`//////////////////////////// TERMINATED AT ${location}, REASON:${err} ///////////////////////////////`);
+	  	};
+	  	function getSubscriptions(subscriberName, callback, callbackFail){
 	  		var exists=false;
-	  		for (var i = thisService.messages.length - 1; i >= 0; i--) {
-	  			const msg=thisService.messages[i];
-	  			if (msg.Id==Id){
+	  		for (var i = thisService.subscriptions.length - 1; i >= 0; i--) {
+	  			const msg=thisService.subscriptions[i];
+	  			if (msg.subscriberName==subscriberName){
 	  					callback(msg);
 	  					exists=true;
 	  					break;
@@ -40,66 +29,110 @@ function MessageService(processFile, _messages){
 	  		if (!exists && callbackFail){
 	  				callbackFail();
 	  		}
-	  };
+	  	};
 
-	  thisService.send=function(Id, data) {
+	  	function updateSubscription(subscriberName, data, cbNotFound){
+		  	getSubscriptions(subscriberName, function(localMessage){
+			  	for(var i in data){
+			  	   localMessage.data[i]=data[i];
+			  	};
+	  	  	}, function notFound(){
+			  	 thisService.subscriptions.push({
+			  	 	subscriberName: subscriberName,
+			  	 	data: data
+			  	 });
+			});
+	  	};
+
+	  	var childProcess;
+	  	var location='child process';
+	  	var messaging;
+	  	if (processFile){
+		  	location='parent process';
+			const cp = require('child_process');
+	  		childProcess=cp.fork(processFile);
+		  	childProcess.on('exit', terminate);
+	       	childProcess.on('SIGINT', terminate);
+	       	childProcess.on('SIGUSR1', terminate);
+			childProcess.on('SIGUSR2', terminate);
+	       	childProcess.on('error', terminate);
+			childProcess.on('close', terminate);
+			childProcess.on('uncaughtException', terminate);
+			childProcess.on( 'SIGTERM',terminate);
+			messaging=childProcess;
+	  	}else{
+		  	process.on('exit', terminate);
+	       	process.on('SIGINT', terminate);
+	       	process.on('SIGUSR1', terminate);
+			process.on('SIGUSR2', terminate);
+	       	process.on('error', terminate);
+			process.on('close', terminate);
+			process.on('uncaughtException', terminate);
+			process.on( 'SIGTERM',terminate);
+			messaging=process;
+	  	}
+
+	  	thisService.send=function(subscriberName, data) {
 	  		const message={
-	  			Id: Id,
-	  			data: {},
-	  			action:'send'
+	  			subscriberName: subscriberName,
+	  			data: {}
 	  		};
 	  		const localMessage={
-	  			Id: Id,
+	  			subscriberName: subscriberName,
 	  			data: {}
 	  		};
 		  	for(var i in data){
 	  			try{
-	  				JSON.stringify(data[i]);
-	  				message.data[i]=data[i];
-	  				localMessage.data[i]=data[i];
+	  				if (typeof data[i] !== 'function'){
+		  				JSON.stringify(data[i]);
+		  				message.data[i]=data[i];
+	  				}
+					localMessage.data[i]=data[i];
 	  			}catch(err){
 	  				localMessage.data[i]=data[i];
 	  			}
 	  		};
-	  		console.log();
-	  		console.log(`////////////////////////////// SENDING ${Id} MESSAGE START (${location}) //////////////////////////`);
-		  	getMessage(Id, function(_message){
-			  	for(var i in localMessage.data){
-			  	   _message.data[i]=localMessage.data[i];
-			  	    console.log(`overwriting ${i}`);
-			  	};
-		  	    _process.send(message);
-	  	  	},function notFound(){
-		  		thisService.messages.push(localMessage);
-		  		_process.send(message);
-		  	});
-		  	console.log('////////////////////////////// SENDING MESSAGE END //////////////////////////');
-		  	console.log();
-	  };
-	  thisService.receive=function(Id, callback){
-	  	 _process.on('message', (message) => {
-	  	 	if (message.Id==Id){
-		  	 	console.log();
-		  		console.log(`////////////////////////////// RECEIVING ${Id} MESSAGE START (${location}) //////////////////////////`);
-	  	 		getMessage(Id, function(_message){
-			  	  for(var i in message.data){
-			  	    _message.data[i]=message.data[i];
-			  	      console.log(`overwriting ${i}`);
-			  	  };
-	  	 		  callback(_message.data);
-			  	},function notFound(){
-			  		thisService.messages.push(message);
-			  		callback(message.data);
-			  	});
-		  	 	console.log('////////////////////////////// RECEIVING MESSAGE END //////////////////////////');
-		  	 	console.log();
-	  	 	}
-	  	 });
-	  };
-	  thisService.get=function	(Id, callback){
-  		  getMessage(Id, function(_message){
+			updateSubscription(localMessage.subscriberName, localMessage.data);
+	  		messaging.send(message);
+	  	};
+	  	thisService.receive=function(subscriberName, callback){
+	  	 	messaging.on('message', (message) => {
+	  	 		if (message=='heartbeat'){
+	  	 			return;
+	  	 		}else if (message.subscriberName==subscriberName){
+			  	 	updateSubscription(message.subscriberName, message.data);
+			  	 	getSubscriptions(message.subscriberName, function(subscription){
+			  	 		if (subscription.lock==true){
+							const subscriberNotification=utils.createTimer(true);
+							const subscriberNotificationTimeout=utils.createTimer(false);
+							subscriberNotificationTimeout.setTime(20000);
+							subscriberNotification.start(function(){
+								if (subscription.lock==true){
+									console.log('waiting for lock at ',location);
+								}else{
+									subscriberNotification.stop();
+					  	 			callback(subscription.data, function complete(){
+					  	 				subscription.lock=false;
+					  	 			});
+								}
+							});
+							subscriberNotificationTimeout.start(function(){
+								subscriberNotification.stop();
+							});
+			  	 		}else{
+			  	 			subscription.lock=true;
+			  	 			callback(subscription.data, function complete(){
+			  	 				subscription.lock=false;
+			  	 			});
+			  	 		}
+			  	 	});
+		  	 	}
+	  	 	});
+	  	};
+	  	thisService.get=function(subscriberName, callback){
+  		  getSubscriptions(subscriberName, function(_message){
   		  		callback(_message.data);
   		  });
-	  };
+	  	};
 };
 module.exports=MessageService;

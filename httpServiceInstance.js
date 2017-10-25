@@ -2,46 +2,57 @@ const utils=require('./utils.js');
 const http=require('http');
 const url  = require('url');
 const MessageService=require('./messageService.js')
-const messageService = new MessageService();
+const messageService = new MessageService(utils);
 
-messageService.receive('httpListen', function(data){
-    if (!data.server){
-      const hostPort= process.env.PORT || 3000;
-      const http=require('http');
-      data.server=http.createServer(function(req, res){
-          const body = [];
-          const urlParts = url.parse(req.url, true);
-          const urlPathname = urlParts.pathname;
-          res.on('error',function(err){
-              messageService.send('fail',{
-                name: "fail",
-                reason: `HttpServer: ${err}`
-              });
-          });
-          req.on('data', function (chunk) {
-            body.push(chunk);
-          });
-          req.on('end', function () {
-              const requestBodyJson=Buffer.concat(body).toString();
-              const requestBody=JSON.parse(requestBodyJson);
-              messageService.send('receiveRequest',{
-                  response:res,
-                  requestPath: urlPathname,
-                  requestData: requestBody
-              });
-          });
-      });
+messageService.receive('httpListen', function(data, complete){
+    const hostPort= process.env.PORT || 3000;
+    const http=require('http');
+    data.server=http.createServer(function(req, res){
+        const body = [];
+        const urlParts = url.parse(req.url, true);
+        const urlPathname = urlParts.pathname;
+        res.on('error',function(err){
+            messageService.send('fail',{
+              name: "fail",
+              reason: `HttpServer: ${err}`
+            });
+        });
+        req.on('data', function (chunk) {
+          body.push(chunk);
+        });
+        req.on('end', function () {
+            const requestBodyJson=Buffer.concat(body).toString();
+            const requestBody=JSON.parse(requestBodyJson);
+            messageService.send('receiveRequest',{
+                response:res,
+                requestPath: urlPathname,
+                requestData: requestBody
+            });
+        });
+    });
+    try{
       data.server.listen(hostPort,function(){
+        console.log();
+        console.log('////////////////// HTTP SERVER STARTED ////////////////////');
+        console.log();
         messageService.send('httpListen',data);
+        complete();
       });
+    }catch(err){
+       messageService.send('fail',{
+        name: "fail",
+        reason: `HttpServer: ${err}`
+       });
+        complete();
     }
 });
 
-messageService.receive('receiveRequest', function(data){
+messageService.receive('receiveRequest', function(data, complete){
     const res=data.response;
     const path=data.path;
     const requestPath=data.requestPath;
     const responseData=data.responseData;
+    complete();
     if (path==requestPath){
       if (res){
         if (responseData){
@@ -59,7 +70,7 @@ messageService.receive('receiveRequest', function(data){
     }
 });
 
-messageService.receive('makeRequest', function(message){
+messageService.receive('makeRequest', function(message, complete){
     const url=message.url;
     const requestData=message.requestData;
     console.log('HttpServer: creating new request.');
@@ -95,6 +106,7 @@ messageService.receive('makeRequest', function(message){
           reason: `HttpServer: ${err}`
         });
     });
+    complete();
     request.on('response', function (res) {
         res.setEncoding('utf8');
         res.on('data', function (body) {
@@ -108,6 +120,7 @@ messageService.receive('makeRequest', function(message){
     request.end();
 });
 
-messageService.receive('exitServer', function(){
-     process.exit();
+messageService.receive('exitServer', function(message, complete){
+  complete();
+  process.exit();
 });

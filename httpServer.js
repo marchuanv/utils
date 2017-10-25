@@ -1,6 +1,6 @@
 const common=require('./common.js');
 const MessageService=require('./messageService.js')
-const messageService = new MessageService('httpServerInstance.js');
+const messageService = new MessageService('./httpServerInstance.js');
 
 function HttpServer(){
 

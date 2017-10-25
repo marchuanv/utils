@@ -1,6 +1,6 @@
-const common=require('./common.js');
-const MessageService=require('./messageService.js')
-const messageService = new MessageService('./httpServerInstance.js');
+const common=require(`${__dirname}/common.js`);
+const MessageService=require(`${__dirname}/messageService.js`);
+const messageService = new MessageService(`${__dirname}/httpServerInstance.js`);
 
 function HttpServer(){
 

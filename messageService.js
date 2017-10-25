@@ -10,12 +10,9 @@ function MessageService(processFile){
 	  	location='parent process';
 	  }
 	  _process.addListener('close', function(){
-	    console.log('http server child process exiting');
-	     thisService=new MessageService(processFile);
 	  });
 	  _process.addListener('error', function(err){
 	      console.log(err);
-	      // new MessageService(processFile);
 	  });
 	  console.log('message bus configured for ',location);
 

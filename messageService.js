@@ -12,9 +12,8 @@ function MessageService(utils, processFile, _subscriptions){
 	  		if (!proccess.send){
 				//restart service at parent process
 				thisService=new MessageService(utils, processFile, thisService.subscriptions);
-	  		}else if (process.send) {
+	  		}else if (process.send) {process.exit();
 	  			console.log(`//////////////////////////// CHILD PROCESS TERMINATED///////////////////////////////`);
-	  			.exit();
 	  		}
 	  	};
 	  	function getSubscriptions(subscriberName, callback, callbackFail){

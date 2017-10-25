@@ -9,12 +9,12 @@ function MessageService(utils, processFile, _subscriptions){
 		}
 		
 	  	function terminate(err){
+	  		console.log(`//////////////////////////// TERMINATED AT ${location}, REASON:${err} ///////////////////////////////`);
 	  		if (childProcess && childProcess.exit){
 				childProcess.exit();
 	  		}else{
 	  			process.exit();
 	  		}
-	  		console.log(`//////////////////////////// TERMINATED AT ${location}, REASON:${err} ///////////////////////////////`);
 	  	};
 	  	function getSubscriptions(subscriberName, callback, callbackFail){
 	  		var exists=false;

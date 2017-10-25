@@ -15,7 +15,7 @@ function MessageService(utils, processFile, _subscriptions){
 				//restart service at parent process
 				thisService=new MessageService(utils, processFile, thisService.subscriptions);
 
-	  		}else if (err.indexOf('Error')>=0) {
+	  		}else if (err && err.toString().indexOf('Error')>=0) {
 	  			console.log(`//////////////////////////// TERMINATED AT ${location}, REASON:${err} ///////////////////////////////`);
 	  			process.exit();
 	  		}

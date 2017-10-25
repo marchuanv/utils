@@ -17,7 +17,7 @@ function MessageService(utils, processFile, _subscriptions){
 
 	  		}else if (err && err.toString().indexOf('Error')>=0) {
 	  			console.log(`//////////////////////////// TERMINATED AT ${location}, REASON:${err} ///////////////////////////////`);
-	  			process.exit();
+	  			messaging.exit();
 	  		}
 	  	};
 	  	function getSubscriptions(subscriberName, callback, callbackFail){

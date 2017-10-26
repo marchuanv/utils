@@ -128,11 +128,11 @@ function MessageBus(messageBusChildProcess){
   		}
   	};
 
-  	function getSubscription(channel, callback, callbackFail){
+  	function getSubscription(channel, address, callback, callbackFail){
   		var exists=false;
   		for (var i = thisService.subscriptions.length - 1; i >= 0; i--) {
   			const msg=thisService.subscriptions[i];
-  			if ((channel && msg.channel==channel) || !channel){
+  			if ((channel && address && msg.channel==channel && msg.address==address) || (!channel && !address) ){
 					callback(msg);
 					exists=true;
 					break;
@@ -143,19 +143,20 @@ function MessageBus(messageBusChildProcess){
   		}
   	};
 
-  	function updateSubscription(channel, data){
-	  	getSubscription(channel, function(localMessage){
+  	function updateSubscription(channel, data, address){
+	  	getSubscription(channel, address, function(localMessage){
 		  	for(var i in data){
 		  	   localMessage.data[i]=data[i];
 		  	};
   	  	});
   	};
 
-  	function createSubscription(channel, subscriberCallback, url){
+  	function createSubscription(channel, address, subscriberCallback){
 		const message={
 			channel: channel,
+  	 		address: address,
   	 		subscriberCallback: subscriberCallback,
-  	 		url: url,
+			subscribe: true,
   	 		data: {}
   	 	};
 	  	thisService.subscriptions.push(message);
@@ -166,8 +167,8 @@ function MessageBus(messageBusChildProcess){
  		
 		console.log();
 		console.log(`received message at ${location} for `,message.channel);
-  	 	updateSubscription(message.channel, message.data);
-  	 	getSubscription(message.channel, function(subscription){
+  	 	updateSubscription(message.channel, message.data, message.address);
+  	 	getSubscription(message.channel, message.address, function(subscription){
   	 		if (subscription.lock==true){
 				const subscriberNotification=utils.createrestartTimer(true);
 				const subscriberNotificationTimeout=utils.createrestartTimer(false);
@@ -206,16 +207,18 @@ function MessageBus(messageBusChildProcess){
   		if (isClient==true){
   			if (message.subscribe==true){
   				console.log('received subscription from remote host');
-  				delete message['subscribe'];
-				getSubscription(message.channel, function(subscription){
-					console.log('subscription from remote host already exist, updaing it.');
-					updateSubscription(message.channel, message.data);
-				},function(){
-					console.log('remote host does not have a subscription on this server adding it.');
-  					createSubscription(message.channel, function(){
-
-					});
-  				});
+  				if (message.address){
+					updateSubscription(message.channel, message.data, message.address);
+					getSubscription(message.channel, message.address, function(){
+						console.log('subscription from remote host already exist, updating it.');
+					},function(){
+						console.log('remote host does not have a subscription on this server adding it.');
+	  					createSubscription(message.channel, message.address, function callback(){
+	  					});
+	  				});
+  				}else{
+  					console.log('received subscription does not have an address');
+  				}
   			}else if (message.publish==true){
   				console.log('received publish from remote host');
  				onMessageReceived(message);
@@ -223,40 +226,48 @@ function MessageBus(messageBusChildProcess){
   				console.log('the intention of a message received from a remote host could not be determined');
   			}
   		} else {
-  			console.log(`forwarding message (${JSON.stringify(message)}) to remote message bus`);
-  			if (utils.isValidUrl(message.channel)==true){
-				utils.postOverHttp(message.channel, message);
-  			}else{
-  				throw `${message.channel} is not a valid url`;	
+			if (message.subscribe==true){
+				if (utils.isValidUrl(message.address)==true){
+					utils.postOverHttp(message.address, message);
+	  			}else{
+	  				throw `${message.address} is not a valid url`;
+	  			}
+			}else if (message.publish==true){
+	  			getSubscription(message.channel, message.address, function(subscription){
+		  			console.log(`forwarding message to remote message bus`);
+		  			if (utils.isValidUrl(subscription.address)==true){
+						utils.postOverHttp(subscription.address, message);
+		  			}else{
+		  				throw `${message.address} is not a valid url`;
+		  			}
+				},function(){
+					throw `no subscriptions found for channel: ${message.channel}, address: ${message.address}`;
+				});
+			}else{
+  				console.log('the intention of a message received from client could not be determined');
   			}
   		}
   		console.log('');
  	});
 
-  	thisService.publish=function(channel, data) {
+  	thisService.publish=function(channel, address, data) {
+
   		const changedData=utils.removeUnserialisableFields(data);
   		const message={
   			channel: channel,
   			data: changedData
   		};
-  		const localMessage={ channel: channel, data: data };
+  		const localMessage={ channel: channel, data: data};
 		updateSubscription(localMessage.channel, localMessage.data);
 		message.publish=true;
 		messageService.send(message);
 		console.log(`published message at ${location} to:`,message.channel);
   	};
 
-  	thisService.subscribe=function(channel, callback, url){
-  		const message=createSubscription(channel, callback);
-  		message.subscribe=true;
+  	thisService.subscribe=function(channel, address, callback){
+  		const message=createSubscription(channel, address, callback);
   		messageService.send(message);
   		console.log(`subscribed to the ${channel} channel at ${location}:`);
-  	};
-
-  	thisService.get=function(channel, callback){
-		getSubscription(channel, function(_message){
-			callback(_message.data);
-		});
   	};
 };
 module.exports=MessageBus;

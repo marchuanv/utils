@@ -79,6 +79,7 @@ module.exports={
                                 .replace('https://','')
                                 .split(':');
       const host = addressSplit[0].split('/')[0];
+      const path = module.exports.getUrlPath(url);
       var port=addressSplit[1].split('/')[0];
       if (!port){
         port=80;
@@ -87,11 +88,13 @@ module.exports={
           host: host,
           port: port, 
           method:'POST',
+          path: path,
           headers: {
               'Content-Type': 'application/json',
               'Content-Length': Buffer.byteLength(postData)
           }
       };
+      console.log('data',data);
       const request=http.request(options);
       request.on('error', function(err){
         const errMsg=`Http error occurred: ${err}`;

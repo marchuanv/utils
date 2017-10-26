@@ -2,6 +2,8 @@ const utils = require('./utils.js')
 const http=require('http');
 const hostPort= process.env.PORT || 9000;
 const restartTimer=utils.createTimer(true);
+restartTimer.setTime(10000);
+
 function MessageBus(processFile){
 
   	var thisService=this;
@@ -12,10 +14,11 @@ function MessageBus(processFile){
   		if (isClient){
   			console.log(err);
   			if (restartTimer.started==false){
-  				console.log(`/// RESTARTING AT ${location} ///`);
-	  			const subscriptions = thisService.subscriptions.slice();
-				thisService = utils.createMessageBus();
 	  			restartTimer.start(function(){
+  					console.log(`/// RESTARTING AT ${location} ///`);
+		  			const subscriptions = thisService.subscriptions.slice();
+					thisService=utils.createMessageBus();
+					utils.createMessageBus(true);
 	  				console.log(``);
 	  				console.log(`/// PLAYBACK START ///`);
 					for (var i = 0; i < subscriptions.length; i++) {
@@ -24,7 +27,7 @@ function MessageBus(processFile){
 						console.log(`replaying:`, sub.channel);
 						thisService.publish(sub.channel, changedData);
 					};
-					console.log(`/// PLAYBACK STOP ///`);
+					console.log(`/// PLAYBACK COMPLETED ///`);
 	  				console.log(``);
 					restartTimer.stop();
 	  			});
@@ -213,9 +216,11 @@ function MessageBus(processFile){
 	}
 };
 
-if (process.env.hasChildMessageBus==false || process.env.hasChildMessageBus==undefined){
-	process.env.hasChildMessageBus=true;
-	new MessageBus();
-}
+setTimeout(function(){
+	if (process.env.hasChildMessageBus==false || process.env.hasChildMessageBus==undefined){
+		process.env.hasChildMessageBus=true;
+		utils.createMessageBus(true);
+	}
+},1000)
 
 module.exports=MessageBus;

@@ -37,9 +37,12 @@ module.exports={
       });
       return uuid;
   },
-  createMessageBus: function(){
-    const childFile=`${__dirname}/messageBus.js`;
+  createMessageBus: function(isChildProcess){
     const MessageBus=require('./messageBus.js');
+    if (isChildProcess==true){
+      return new MessageBus();
+    }
+    const childFile=`${__dirname}/messageBus.js`;
     return new MessageBus(childFile);
   },
   consoleReset :function () {

@@ -1,4 +1,4 @@
-const utils = require('./utils.js')
+const utils = require('utils')
 const http=require('http');
 const hostPort= process.env.PORT || 3000;
 const restartTimer=utils.createTimer(true, 'Restart');

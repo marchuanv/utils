@@ -2,9 +2,9 @@ module.exports={
   getRandomNumber: function(min, max){
     return Math.floor(Math.random()*(max-min+1)+min);
   },
-  createTimer: function(isInterval){
+  createTimer: function(isInterval, name){
     const Timer = require('./timer.js');
-    return new Timer(isInterval);
+    return new Timer(isInterval, name);
   },
   getJSONString: function(data){
        if (data){
@@ -20,7 +20,7 @@ module.exports={
         return null;
       }
   },
-  getJSONObject: function(){
+  getJSONObject: function(jsonString){
      try{
         console.log('parsing object to JSON');
         return JSON.parse(jsonString);
@@ -37,13 +37,21 @@ module.exports={
       });
       return uuid;
   },
-  createMessageBus: function(isChildProcess){
+  createMessageBus: function(onlyChildProcess){
     const MessageBus=require('./messageBus.js');
-    if (isChildProcess==true){
-      return new MessageBus();
-    }
     const childFile=`${__dirname}/messageBus.js`;
-    return new MessageBus(childFile);
+    const cp = require('child_process');
+    const fs = require('fs');
+    var data = fs.readFileSync(childFile,'utf8');
+    const source= data.replace('module.exports','new MessageBus(); module.exports');
+    const childProcess=cp.fork('--eval',[source]);
+    console.log('/// MESSAGEBUS CREATED ///');
+    if (onlyChildProcess==true){
+        return childProcess;
+    }else{
+      const parentMessageBus = new MessageBus(childProcess);
+      return parentMessageBus;
+    }
   },
   consoleReset :function () {
     return process.stdout.write('\033c');
@@ -67,7 +75,7 @@ module.exports={
       console.log('creating an http request.');
       const postData=utils.getJSONString(data);
       
-      const addressSplit=channel.replace('http://','')
+      const addressSplit=url.replace('http://','')
                                 .replace('https://','')
                                 .split(':');
       const host = addressSplit[0].split('/')[0];
@@ -86,16 +94,27 @@ module.exports={
       };
       const request=http.request(options);
       request.on('error', function(err){
-        const errMsg=`Http error occurred at ${location}: ${err}`;
+        const errMsg=`Http error occurred: ${err}`;
         console.log(errMsg);
         throw errMsg;
       });
       request.on('response', function (response) {
           response.setEncoding('utf8');
           response.on('data', function (body) {
-            callback(body);
+            if (callback){
+              callback(body);
+            }
           });
       });
       request.end(postData);
+    },
+    isValidUrl:function(url){
+        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        return pattern.test(url);
     }
 };

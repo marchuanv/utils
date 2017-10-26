@@ -1,40 +1,130 @@
 const utils = require('./utils.js')
 const http=require('http');
-const hostPort= process.env.PORT || 9000;
-const restartTimer=utils.createTimer(true);
-restartTimer.setTime(10000);
+const hostPort= process.env.PORT || 3000;
+const restartTimer=utils.createTimer(true, 'Restart');
 
-function MessageBus(processFile){
+function subscribeToProcessEvents(process, callback){
+	process.on('exit', function(obj){
+		callback("exit");
+	});
+   	process.on('SIGINT',  function(obj){
+		callback("SIGINT");
+	});
+   	process.on('SIGHUP', function(obj){
+		callback("SIGHUP");
+	});
+   	process.on('SIGUSR1', function(obj){
+		callback("SIGUSR1");
+	});
+	process.on('SIGUSR2', function(obj){
+		callback("SIGUSR2");
+	});
+	process.on('close', function(obj){
+		callback("close");
+	});
 
+	process.on( 'SIGTERM', function(obj){
+		callback("SIGTERM");
+	});
+   	process.on('error', function(obj){
+		callback("error", obj);
+	});
+	process.on('uncaughtException', function(obj){
+		callback("uncaughtException", obj);
+	});
+};
+
+function MessageBus(messageBusChildProcess){
   	var thisService=this;
-  	thisService.Id=utils.newGuid();
 	thisService.subscriptions=[];
+  	var location;
+  	var messageService;
+  	var isClient=false;
 
-  	function terminate(err){
-  		if (isClient){
-  			console.log(err);
-  			if (restartTimer.started==false){
-	  			restartTimer.start(function(){
-  					console.log(`/// RESTARTING AT ${location} ///`);
-		  			const subscriptions = thisService.subscriptions.slice();
-					thisService=utils.createMessageBus();
-					utils.createMessageBus(true);
-	  				console.log(``);
-	  				console.log(`/// PLAYBACK START ///`);
-					for (var i = 0; i < subscriptions.length; i++) {
-						const sub=subscriptions[0];
-						const changedData=utils.removeUnserialisableFields(sub.data);
-						console.log(`replaying:`, sub.channel);
-						thisService.publish(sub.channel, changedData);
-					};
-					console.log(`/// PLAYBACK COMPLETED ///`);
-	  				console.log(``);
-					restartTimer.stop();
-	  			});
+  	function setupParentMessageBus(){
+  		if (!messageBusChildProcess){
+			messageBusChildProcess=utils.createMessageBus(true);
+		}
+		console.log('');
+  		console.log(`///  PARENT PROCESS SETUP ///`);
+		messageService=messageBusChildProcess;
+		console.log('sending first heartbeat to child');
+  		isClient=true;
+	  	location='parent process';
+	  	subscribeToProcessEvents(messageBusChildProcess, terminate);
+  	}
+
+	if (messageBusChildProcess) {
+		setupParentMessageBus();
+  	} else {
+  		console.log('');
+		console.log(`///  CHILD PROCESS SETUP ///`);
+  		location='child process';
+		messageService=process;
+  		const httpInstance=http.createServer(function(req, res){
+  			console.log('http request received');
+			const body = [];
+			res.on('error',function(err){
+				const errMsg=`Http error occurred at ${location}: ${err}`;
+				console.log(errMsg);
+			});
+			req.on('data', function (chunk) {
+				body.push(chunk);
+			});
+			req.on('end', function () {
+				console.log('http request data received');
+				const requestBodyJson=Buffer.concat(body).toString();
+				const requestBody=utils.getJSONObject(requestBodyJson);
+				if (requestBody) {
+					res.statusCode = 200;
+				  	res.end(`subscribers at ${req.url} was notified`);
+					messageService.send(requestBody);
+				} else {
+					const message=`no request body`;
+					res.statusCode = 500;
+				  	res.end(message);
+					throw message;
+				}
+			});
+	    });
+	    httpInstance.listen(hostPort,function(){
+	        console.log();
+	        console.log(`/// LISTENING FOR HTTP TRAFFIC AT ${location} ///`);
+	        console.log();
+	    });
+	    const healthrestartTimer=utils.createTimer(true, 'HeartBeat');
+	    healthrestartTimer.setTime(5000);
+	  	healthrestartTimer.start(function(){
+			messageService.send('heartbeat');
+	    });
+	    subscribeToProcessEvents(process, terminate);
+  	}
+
+  	function terminate(reason, err){
+  		if (isClient==true){
+  			if (messageBusChildProcess){
+  				console.log(`/// PARENT PROCESS TERMINATED: ${reason} ${err} ///`);
+	  			messageBusChildProcess.kill()
+	  			messageBusChildProcess.unref();
+	  			messageBusChildProcess=null;
+	  			if (restartTimer.started==false){
+		  			restartTimer.start(function() {
+		  				console.log('');
+  						console.log(`///  RESTARTING & REPLAYING MESSAGES ///`);
+		  				setupParentMessageBus();
+		  				getSubscription(null,function(sub){
+							const changedData=utils.removeUnserialisableFields(sub.data);
+							console.log(`replaying:`, sub.channel);
+							thisService.publish(sub.channel, changedData);
+		  				});
+						restartTimer.stop();
+					});
+	  			}
   			}
   		}else {
-  			console.log(`/// CHILD PROCESS TERMINATED ${err}///`);
+  			console.log(`/// CHILD PROCESS TERMINATED ${reason} ${err} ///`);
   			process.exit();
+  			process.kill()
   		}
   	};
 
@@ -42,7 +132,7 @@ function MessageBus(processFile){
   		var exists=false;
   		for (var i = thisService.subscriptions.length - 1; i >= 0; i--) {
   			const msg=thisService.subscriptions[i];
-  			if (msg.channel==channel){
+  			if ((channel && msg.channel==channel) || !channel){
 					callback(msg);
 					exists=true;
 					break;
@@ -71,16 +161,14 @@ function MessageBus(processFile){
   	};
 
   	function onMessageReceived(message){
- 		if (message=='heartbeat'){
- 			return;
- 		}
+ 		
 		console.log();
 		console.log(`received message at ${location} for `,message.channel);
   	 	updateSubscription(message.channel, message.data);
   	 	getSubscription(message.channel, function(subscription){
   	 		if (subscription.lock==true){
-				const subscriberNotification=utils.createTimer(true);
-				const subscriberNotificationTimeout=utils.createTimer(false);
+				const subscriberNotification=utils.createrestartTimer(true);
+				const subscriberNotificationTimeout=utils.createrestartTimer(false);
 				subscriberNotificationTimeout.setTime(20000);
 				subscriberNotification.start(function(){
 					if (subscription.lock==true){
@@ -107,49 +195,15 @@ function MessageBus(processFile){
   	 	});
   	};
 
-
-  	var childProcess;
-  	var location;
-  	var messaging;
-  	var isClient=false;
-  	console.log(`processFile: ${processFile}`);
-  	if (processFile){
-  		isClient=true;
-	  	location='parent process';
-		const cp = require('child_process');
-  		childProcess=cp.fork(processFile);
-	  	childProcess.on('exit', terminate);
-       	childProcess.on('SIGINT', terminate);
-       	childProcess.on('SIGHUP', terminate);
-       	childProcess.on('SIGUSR1', terminate);
-		childProcess.on('SIGUSR2', terminate);
-       	childProcess.on('error', terminate);
-		childProcess.on('close', terminate);
-		childProcess.on('uncaughtException', terminate);
-		childProcess.on( 'SIGTERM',terminate);
-		messaging=childProcess;
-  	}else{
-
-  		location='child process';
-	  	process.on('exit', terminate);
-      	process.on('SIGINT', terminate);
-      	process.on('SIGUSR1', terminate);
-      	process.on('SIGHUP', terminate);
-		process.on('SIGUSR2', terminate);
-      	process.on('error', terminate);
-		process.on('close', terminate);
-		process.on('uncaughtException', terminate);
-		process.on( 'SIGTERM',terminate);
-		messaging=process;
-  	}
-
- 	messaging.on('message', (message) => {
+ 	messageService.on('message', (message) => {
+ 		if (message=='heartbeat'){
+ 			return;
+ 		}
+ 		console.log('received message');
   		if (isClient==true){
  			onMessageReceived(message);
   		} else {
-  			if (!process.env.publicAddress){
-  				throw 'environment variable: publicAddress does not exist.';
-  			}
+  			console.log('forwarding message to remote message bus');
   			if (utils.isValidUrl(message.channel)==true){
 				utils.postOverHttp(message.channel, message);
   			}else{
@@ -166,7 +220,7 @@ function MessageBus(processFile){
   		};
   		const localMessage={ channel: channel, data: data };
 		updateSubscription(localMessage.channel, localMessage.data);
-		messaging.send(message);
+		messageService.send(message);
 		console.log(`published message at ${location} to:`,message.channel);
   	};
 
@@ -180,47 +234,5 @@ function MessageBus(processFile){
 			callback(_message.data);
 		});
   	};
-
-  	if (isClient==false){
-  		const httpInstance=http.createServer(function(req, res){
-  			console.log('http request received');
-			const body = [];
-			res.on('error',function(err){
-				const errMsg=`Http error occurred at ${location}: ${err}`;
-				console.log(errMsg);
-			});
-			req.on('data', function (chunk) {
-				body.push(chunk);
-			});
-			req.on('end', function () {
-				console.log('http request data received');
-				const requestBodyJson=Buffer.concat(body).toString();
-				const requestBody=utils.getJSONObject(requestBodyJson);
-				if (requestBody) {
-					onMessageReceived(requestBody);
-					res.statusCode = 200;
-				  	res.end(`subscribers at ${req.url} was notified`);
-				} else {
-					const message=`no request body`;
-					res.statusCode = 500;
-				  	res.end(message);
-					throw message;
-				}
-			});
-	    });
-	    httpInstance.listen(hostPort,function(){
-	        console.log();
-	        console.log(`/// LISTENING FOR HTTP TRAFFIC AT ${location} ///`);
-	        console.log();
-	    });
-	}
 };
-
-setTimeout(function(){
-	if (process.env.hasChildMessageBus==false || process.env.hasChildMessageBus==undefined){
-		process.env.hasChildMessageBus=true;
-		utils.createMessageBus(true);
-	}
-},1000)
-
 module.exports=MessageBus;

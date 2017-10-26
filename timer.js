@@ -1,34 +1,51 @@
-function Timer(isInterval){
+function Timer(isInterval, name){
   let milliseconds=1000;
-  let stop=false;
-  this.started=false;
-  function internalStart(callback){
-    if (stop){
-      return;
-    }
-    if (isInterval){
-         setTimeout.apply(this, [function(){
-            callback.apply(this);
-            internalStart.apply(this,[callback]);
-          }, milliseconds]);
+  let thisInstance=this;
+  thisInstance.stopped=false;
+  thisInstance.started=false;
+  thisInstance.callback=null;
+  function internalStart(){
+      if (isInterval){
+         if (thisInstance.stopped==true){
+            return;
+         }
+         setTimeout(function(){
+            try{
+              console.log(`interval for ${name}`);
+              thisInstance.callback();
+            }catch(err){
+              console.log(err);
+            }
+            internalStart(thisInstance);
+          }, milliseconds);
       } else {
-        setTimeout.apply(this, [function(){
-          callback.apply(this);
-        }, milliseconds]);
+        console.log('started non interval timer');
+        setTimeout(function(){
+            try{
+              thisInstance.callback();
+            }catch(err){
+                console.log(err);
+            }
+            thisInstance.stopped=true;
+            thisInstance.started=false;
+        }, milliseconds);
       }
   };
-  this.setTime=function(_milliseconds){
+  thisInstance.setTime=function(_milliseconds){
     milliseconds=_milliseconds;
   };
-  this.start=function(callback){
-      this.started=true;
-      console.log('timer started');
-      internalStart.apply(this, [callback]);
+  thisInstance.start=function(callback){
+      thisInstance.stopped=false;
+      thisInstance.started=true;
+      console.log(` ${name} timer started`);
+      thisInstance.callback=callback;
+      internalStart();
   };
-  this.stop=function(){
-    this.started=false;
-    console.log('timer stopped');
-    stop=true;
+  thisInstance.stop=function(){
+    thisInstance.started=false;
+    console.log(` ${name} timer stopped`);
+    thisInstance.stopped=true;
+    thisInstance.started=false;
   };
 };
 module.exports=Timer;

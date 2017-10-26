@@ -116,5 +116,9 @@ module.exports={
         '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
         '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
         return pattern.test(url);
+    },
+    getUrlPath(url){
+        var url_parts = require('url').parse(url);
+        return url_parts.pathname;
     }
 };

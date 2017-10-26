@@ -1,4 +1,4 @@
-const utils = require('utils')
+const utils = require('./utils.js')
 const http=require('http');
 const hostPort= process.env.PORT || 3000;
 const restartTimer=utils.createTimer(true, 'Restart');
@@ -151,13 +151,15 @@ function MessageBus(messageBusChildProcess){
   	  	});
   	};
 
-  	function addSubscription(channel, subscriberCallback, url){
-	  	 thisService.subscriptions.push({
-	  	 	channel: channel,
-	  	 	subscriberCallback: subscriberCallback,
-	  	 	url: url,
-	  	 	data: {}
-	  	 });
+  	function createSubscription(channel, subscriberCallback, url){
+		const message={
+			channel: channel,
+  	 		subscriberCallback: subscriberCallback,
+  	 		url: url,
+  	 		data: {}
+  	 	};
+	  	thisService.subscriptions.push(message);
+	  	return message;
   	};
 
   	function onMessageReceived(message){
@@ -199,17 +201,36 @@ function MessageBus(messageBusChildProcess){
  		if (message=='heartbeat'){
  			return;
  		}
- 		console.log('received message');
+ 		console.log('');
+ 		console.log('/// RECEIVED MESSAGE ///');
   		if (isClient==true){
- 			onMessageReceived(message);
+  			if (message.subscribe==true){
+  				console.log('received subscription from remote host');
+  				delete message['subscribe'];
+				getSubscription(message.channel, function(subscription){
+					console.log('subscription from remote host already exist, updaing it.');
+					updateSubscription(message.channel, message.data);
+				},function(){
+					console.log('remote host does not have a subscription on this server adding it.');
+  					createSubscription(message.channel, function(){
+
+					});
+  				});
+  			}else if (message.publish==true){
+  				console.log('received publish from remote host');
+ 				onMessageReceived(message);
+  			}else{
+  				console.log('the intention of a message received from a remote host could not be determined');
+  			}
   		} else {
-  			console.log('forwarding message to remote message bus');
+  			console.log(`forwarding message (${JSON.stringify(message)}) to remote message bus`);
   			if (utils.isValidUrl(message.channel)==true){
 				utils.postOverHttp(message.channel, message);
   			}else{
   				throw `${message.channel} is not a valid url`;	
   			}
   		}
+  		console.log('');
  	});
 
   	thisService.publish=function(channel, data) {
@@ -220,12 +241,15 @@ function MessageBus(messageBusChildProcess){
   		};
   		const localMessage={ channel: channel, data: data };
 		updateSubscription(localMessage.channel, localMessage.data);
+		message.publish=true;
 		messageService.send(message);
 		console.log(`published message at ${location} to:`,message.channel);
   	};
 
   	thisService.subscribe=function(channel, callback, url){
-  		addSubscription(channel, callback);
+  		const message=createSubscription(channel, callback);
+  		message.subscribe=true;
+  		messageService.send(message);
   		console.log(`subscribed to the ${channel} channel at ${location}:`);
   	};
 

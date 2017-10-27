@@ -112,7 +112,6 @@ module.exports={
       request.end(postData);
     },
     receiveHttpRequest: function(hostPort, callback, callbackError){
-
       const httpServer=http.createServer(function(req, res){
           console.log('http request received');
           const body = [];
@@ -139,15 +138,11 @@ module.exports={
             }
         });
       });
-      try{
-          httpServer.listen(hostPort,function(){
-              console.log();
-              console.log(`http server started and listening on port ${hostPort}`);
-              console.log();
-          });
-      }catch(err){
-          callbackError(err);
-      }
+      httpServer.listen(hostPort,function(){
+          console.log();
+          console.log(`http server started and listening on port ${hostPort}`);
+          console.log();
+      });
     },
     isValidUrl:function(url){
         var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol

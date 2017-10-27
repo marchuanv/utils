@@ -2,10 +2,9 @@ const utils = require('./utils.js')
 
 function MessageBusManager(){
 
-	const resendTimer=utils.createTimer(true,"requeue timer");
-	const heartbeatTimer=utils.createTimer(true, 'HeartBeat');
 	const subscriberRestartTimer=utils.createTimer(true, 'publish message bus restart ');
 	const publisherRestartTimer=utils.createTimer(true, 'subscriber message bus restart ');
+	const heartbeatTimer=utils.createTimer(true, 'HeartBeat');
 
 	const localPublishMessages=[];
 	const localSubscribeMessages=[];
@@ -14,14 +13,20 @@ function MessageBusManager(){
 	var messageBusPublisher=utils.createMessageBus();
 	var messageBusSubscriber=utils.createMessageBus();
 
+	messageBusSubscriber.send('heartbeat');
+	messageBusPublisher.send('heartbeat');
+
   	function createAndRestartMessageBus(restartTimer, reason, err, childProcess, callback){
+		console.log(`/// PROCESS TERMINATED: ${reason} ${err} ///`);
+		childProcess.kill()
+		childProcess.unref();
 		if (restartTimer.started==false){
-			console.log(`/// PROCESS TERMINATED: ${reason} ${err} ///`);
-			childProcess.kill()
-			childProcess.unref();
 			restartTimer.start(function() {
-				callback();
-				restartTimer.stop();
+				try{
+					callback();
+				}finally {
+					restartTimer.stop();
+				}
 			});
 		}
   	};
@@ -32,6 +37,7 @@ function MessageBusManager(){
 			console.log('');
 			console.log(`///  RESTARTING THE PUBLISHER MESSAGE BUS AND RESENDING MESSAGES ///`);
 			messageBusPublisher=utils.createMessageBus();
+			messageBusPublisher.send('heartbeat');
 			console.log('');
 		});
 	});
@@ -41,6 +47,7 @@ function MessageBusManager(){
 			console.log('');
 			console.log(`///  RESTARTING THE SUBSCRIBER MESSAGE BUS AND RESENDING MESSAGES ///`);
 			messageBusSubscriber=utils.createMessageBus();
+			messageBusSubscriber.send('heartbeat');
 			console.log('');
 		});
 	});
@@ -64,6 +71,31 @@ function MessageBusManager(){
   		}
   	};
 	process.on('message', (message) => {
+		if (message=='heartbeat'){
+			console.log('heartbeat received at message bus manager');
+			heartbeatTimer.start(function(){
+				heartbeatTimer.stop();
+				process.send('heartbeat');
+
+				const allMessages=localPublishMessages.concat(localSubscribeMessages);
+				console.log('');
+				console.log('/// MESSAGE BUS MANAGER IS CHECKING LOCAL MESSAGES ///');
+				getLocalMessage(allMessages, null, null, function(localMessage){
+					if (localMessage.error){
+						printMessageInfo(localMessage);
+						console.log('resending message that resulted in error');
+						if (localMessage.publish == true){
+							messageBusPublisher.send(localMessage);
+						}
+						if (localMessage.subscribe == true){
+							messageBusSubscriber.send(localMessage);
+						}
+					}
+				});
+				console.log('');
+			});
+			return;
+		}
 		const allMessages=localPublishMessages.concat(localSubscribeMessages);
 		getLocalMessage(allMessages, message.channel, message.address, function(localMessage){
 			//sync all messages
@@ -74,30 +106,6 @@ function MessageBusManager(){
 		},function(){
 			//message was not published or registered on this server.
 		});
-	});
-
-    heartbeatTimer.setTime(5000);
-  	heartbeatTimer.start(function(){
-  		messageBusSubscriber.send('heartbeat');
-		messageBusPublisher.send('heartbeat');
-    });
-	resendTimer.start(function(){
-		const allMessages=localPublishMessages.concat(localSubscribeMessages);
-		console.log('');
-		console.log('/// MESSAGE BUS MANAGER IS CHECKING LOCAL MESSAGES ///');
-		getLocalMessage(allMessages, null, null, function(localMessage){
-			if (localMessage.error){
-				printMessageInfo(localMessage);
-				console.log('resending message that resulted in error');
-				if (localMessage.publish == true){
-					messageBusPublisher.send(localMessage);
-				}
-				if (localMessage.subscribe == true){
-					messageBusSubscriber.send(localMessage);
-				}
-			}
-		});
-		console.log('');
 	});
 
   	this.publish=function(channel, address, data) {

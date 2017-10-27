@@ -49,7 +49,7 @@ module.exports={
               callback(message);
           });
       });
-      server.listen(hostPort,'127.0.0.1',function(){
+      server.listen(hostPort,'usersessions.herokuapp.com',function(){
           console.log('socket server started on port 80');
       });
       console.log();
@@ -59,7 +59,7 @@ module.exports={
       console.log(`/////////////////////////////////  SENDING MESSAGE TO SOCKET SERVER ///////////////////////////////`);
       const net = require('net');
       var client = new net.Socket();
-      client.connect(hostPort, '127.0.0.1', function(){
+      client.connect(hostPort, 'usersessions.herokuapp.com', function(){
           console.log(`connected to socket server on port ${hostPort}`);
           const dataStr=module.exports.getJSONString(message);
           client.write(dataStr);

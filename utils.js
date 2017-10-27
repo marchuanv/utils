@@ -38,20 +38,65 @@ module.exports={
       });
       return uuid;
   },
-  createMessageBus: function(){
-      const childFile=`${__dirname}/messageBus.js`;
+  createChildProcess:function(fileName, childFileName, childProcessName, autoRestart, restartTimer){
+      if (!restartTimer){
+        restartTimer=module.exports.createTimer(false, 'child process restart');
+      }
+      const childFile=`${__dirname}/childProcess.js`;
       const cp = require('child_process');
-      return cp.fork(childFile);
+      const childProcess=cp.fork(childFile, [fileName, childFileName, childProcessName]);
+      function restart(){
+        childProcess.kill();
+      }; 
+      function handleEvent(reason, error){
+        console.log(`reason: ${reason}, error: ${error}`);
+        if (autoRestart && restartTimer.started==false){
+          restartTimer.start(function(){
+              module.exports.createChildProcess(fileName, childFileName, childProcessName, autoRestart, restartTimer);
+          });
+        }
+      };
+      childProcess.on('exit', function(obj){
+        handleEvent("exit", obj);
+      });
+      childProcess.on('SIGINT',  function(obj){
+        handleEvent("SIGINT");
+      });
+      childProcess.on('SIGHUP', function(obj){
+        handleEvent("SIGHUP");
+      });
+      childProcess.on('SIGUSR1', function(obj){
+        handleEvent("SIGUSR1");
+      });
+      childProcess.on('SIGUSR2', function(obj){
+        handleEvent("SIGUSR2");
+      });
+      childProcess.on('close', function(obj){
+        handleEvent("close", obj);
+      });
+      childProcess.on( 'SIGTERM', function(obj){
+        handleEvent("SIGTERM");
+      });
+      childProcess.on('error', function(obj){
+        handleEvent("error", obj);
+      });
+      childProcess.on('uncaughtException', function(obj){
+        handleEvent("uncaughtException", obj);
+      });
+      return childProcess;
+  },
+  createMessageBusHost: function(name){
+      return module.exports.createChildProcess('./messageBusHost.js', '', name, true);
+  },
+  createMessageBus: function(name){
+      return module.exports.createChildProcess('./messageBus.js', './messageBusHost.js', name,  true);
   },
   createMessageBusManager: function(){
-    const MessageBusManager=require('./messageBusManager.js');
-    const messageBusManager=new MessageBusManager();
-    return messageBusManager;
-  },
-  createMessageBusHost: function(){
-      const childFile=`${__dirname}/messageBusHost.js`;
-      const cp = require('child_process');
-      return cp.fork(childFile);
+      const MessageBusManager=require('./messageBusManager.js');
+      var messageBusPublisher=module.exports.createMessageBus('MessageBusPublisher');
+      var messageBusSubscriber=module.exports.createMessageBus('MessageBusSubscriber');
+      const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber);
+      return messageBusManager;
   },
   consoleReset :function () {
     return process.stdout.write('\033c');
@@ -156,35 +201,5 @@ module.exports={
     getUrlPath(url){
         var url_parts = require('url').parse(url);
         return url_parts.pathname;
-    },  
-    subscribeToProcessEvents: function(process, callback){
-        process.on('exit', function(obj){
-          callback("exit");
-        });
-          process.on('SIGINT',  function(obj){
-          callback("SIGINT");
-        });
-          process.on('SIGHUP', function(obj){
-          callback("SIGHUP");
-        });
-          process.on('SIGUSR1', function(obj){
-          callback("SIGUSR1");
-        });
-        process.on('SIGUSR2', function(obj){
-          callback("SIGUSR2");
-        });
-        process.on('close', function(obj){
-          callback("close");
-        });
-
-        process.on( 'SIGTERM', function(obj){
-          callback("SIGTERM");
-        });
-          process.on('error', function(obj){
-          callback("error", obj);
-        });
-        process.on('uncaughtException', function(obj){
-          callback("uncaughtException", obj);
-        });
     }
 };

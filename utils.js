@@ -49,7 +49,7 @@ module.exports={
               callback(message);
           });
       });
-      server.listen(hostPort,'usersessions.herokuapp.com',function(){
+      server.listen(hostPort,function(){
           console.log('socket server started on port 80');
       });
       console.log();
@@ -59,7 +59,7 @@ module.exports={
       console.log(`/////////////////////////////////  SENDING MESSAGE TO SOCKET SERVER ///////////////////////////////`);
       const net = require('net');
       var client = new net.Socket();
-      client.connect(hostPort, 'usersessions.herokuapp.com', function(){
+      client.connect(hostPort, function(){
           console.log(`connected to socket server on port ${hostPort}`);
           const dataStr=module.exports.getJSONString(message);
           client.write(dataStr);
@@ -119,9 +119,11 @@ module.exports={
   createMessageBusManager: function(){
       const MessageBusManager=require('./messageBusManager.js');
       const httpPort= process.env.PORT;
-      var messageBusPublisher=module.exports.createChildProcess('MessageBusPublisher', './messageBus.js', httpPort, 80, -1, 'TCP', true);
-      var messageBusSubscriber=module.exports.createChildProcess('MessageBusSubscriber', './messageBus.js',httpPort, -1, 81, 'TCP', true);
-      var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', httpPort, 80, 81, 'HTTP', true);
+      const port1=process.env.SOCKETPORT1;
+      const port2=process.env.SOCKETPORT2;
+      var messageBusPublisher=module.exports.createChildProcess('MessageBusPublisher', './messageBus.js', httpPort, port1, -1, 'TCP', true);
+      var messageBusSubscriber=module.exports.createChildProcess('MessageBusSubscriber', './messageBus.js',httpPort, -1, port2, 'TCP', true);
+      var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', httpPort, port1, port2, 'HTTP', true);
       const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber, httpMessageBus);
       return messageBusManager;
   },

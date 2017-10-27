@@ -15,8 +15,8 @@ function MessageBusManager(){
 	var messageBusSubscriber=utils.createMessageBus();
 
   	function createAndRestartMessageBus(restartTimer, reason, err, childProcess, callback){
-		console.log(`/// PROCESS TERMINATED: ${reason} ${err} ///`);
 		if (restartTimer.started==false){
+			console.log(`/// PROCESS TERMINATED: ${reason} ${err} ///`);
 			childProcess.kill()
 			childProcess.unref();
 			restartTimer.start(function() {
@@ -26,7 +26,7 @@ function MessageBusManager(){
 		}
   	};
 
-	utils.subscribeToProcessEvents(messageBusPublisher,function(reason, error){
+	utils.subscribeToProcessEvents(messageBusPublisher, function(reason, error){
 		console.log(`messageBusPublisher failed ${reason} ${error}`);
 		createAndRestartMessageBus(publisherRestartTimer, reason, error, messageBusSubscriber, function restart(){
 			console.log('');
@@ -35,7 +35,7 @@ function MessageBusManager(){
 			console.log('');
 		});
 	});
-	utils.subscribeToProcessEvents(messageBusSubscriber,function(reason, error){
+	utils.subscribeToProcessEvents(messageBusSubscriber, function(reason, error){
 		console.log(`messageBusSubscriber failed ${reason} ${error}`);
 		createAndRestartMessageBus(subscriberRestartTimer, reason, error, messageBusSubscriber, function restart(){
 			console.log('');
@@ -63,7 +63,6 @@ function MessageBusManager(){
   			callbackFail();
   		}
   	};
-	
 	process.on('message', (message) => {
 		const allMessages=localPublishMessages.concat(localSubscribeMessages);
 		getLocalMessage(allMessages, message.channel, message.address, function(localMessage){

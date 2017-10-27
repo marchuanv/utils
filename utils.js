@@ -1,3 +1,4 @@
+const http=require('http');
 module.exports={
   getRandomNumber: function(min, max){
     return Math.floor(Math.random()*(max-min+1)+min);
@@ -47,6 +48,11 @@ module.exports={
     const messageBusManager=new MessageBusManager();
     return messageBusManager;
   },
+  createMessageBusHost: function(){
+      const childFile=`${__dirname}/messageBusHost.js`;
+      const cp = require('child_process');
+      return cp.fork(childFile);
+  },
   consoleReset :function () {
     return process.stdout.write('\033c');
   },
@@ -65,9 +71,9 @@ module.exports={
     const Cache = require('/cache.js');
     return new Cache(cacheJson);
   },
-  postOverHttp: function postOverHttp(url, data, callback){
+  sendHttpRequest: function(url, data, callback){
       console.log('creating an http request.');
-      const postData=utils.getJSONString(data);
+      const postData=module.exports.getJSONString(data);
       
       const addressSplit=url.replace('http://','')
                                 .replace('https://','')
@@ -104,35 +110,45 @@ module.exports={
           });
       });
       request.end(postData);
-    },setupHttpServer: function(){
-      const httpInstance=http.createServer(function(req, res){
-        console.log('http request received');
-        const body = [];
-        res.on('error',function(err){
-          const errMsg=`Http error occurred at ${location}: ${err}`;
-          console.log(errMsg);
-        });
-        req.on('data', function (chunk) {
-          body.push(chunk);
-        });
-        req.on('end', function () {
-          console.log('http request data received');
-          const requestBodyJson=Buffer.concat(body).toString();
-          const requestBody=utils.getJSONObject(requestBodyJson);
-          if (requestBody) {
-            res.statusCode = 200;
-              res.end(`subscribers at ${req.url} was notified`);
-            process.send(requestBody);
-          } else {
-            const message=`no request body`;
-            res.statusCode = 500;
-              res.end(message);
-            throw message;
-          }
+    },
+    receiveHttpRequest: function(hostPort, callback, callbackError){
+
+      const httpServer=http.createServer(function(req, res){
+          console.log('http request received');
+          const body = [];
+          res.on('error',function(err){
+              const errMsg=`Http error occurred at ${location}: ${err}`;
+              console.log(errMsg);
+              callbackError(errMsg);
+          });
+          req.on('data', function (chunk) {
+              body.push(chunk);
+          });
+          req.on('end', function () {
+            console.log('http request data received');
+            const requestBodyJson=Buffer.concat(body).toString();
+            const requestBody=module.exports.getJSONObject(requestBodyJson);
+            if (requestBody) {
+                res.statusCode = 200;
+                res.end(`subscribers at ${req.url} was notified`);
+                callback(requestBody);
+            } else {
+                res.statusCode = 500;
+                res.end(message);
+                callbackError(`no request body`);
+            }
         });
       });
-    };
-    ,
+      try{
+          httpServer.listen(hostPort,function(){
+              console.log();
+              console.log(`http server started and listening on port ${hostPort}`);
+              console.log();
+          });
+      }catch(err){
+          callbackError(err);
+      }
+    },
     isValidUrl:function(url){
         var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name

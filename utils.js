@@ -37,21 +37,15 @@ module.exports={
       });
       return uuid;
   },
-  createMessageBus: function(onlyChildProcess){
-    const MessageBus=require('./messageBus.js');
-    const childFile=`${__dirname}/messageBus.js`;
-    const cp = require('child_process');
-    const fs = require('fs');
-    var data = fs.readFileSync(childFile,'utf8');
-    const source= data.replace('module.exports','new MessageBus(); module.exports');
-    const childProcess=cp.fork('--eval',[source]);
-    console.log('/// MESSAGEBUS CREATED ///');
-    if (onlyChildProcess==true){
-        return childProcess;
-    }else{
-      const parentMessageBus = new MessageBus(childProcess);
-      return parentMessageBus;
-    }
+  createMessageBus: function(){
+      const childFile=`${__dirname}/messageBus.js`;
+      const cp = require('child_process');
+      return cp.fork(childFile);
+  },
+  createMessageBusManager: function(){
+    const MessageBusManager=require('./messageBusManager.js');
+    const messageBusManager=new MessageBusManager();
+    return messageBusManager;
   },
   consoleReset :function () {
     return process.stdout.write('\033c');
@@ -94,7 +88,7 @@ module.exports={
               'Content-Length': Buffer.byteLength(postData)
           }
       };
-      console.log('data',data);
+      console.log('options',options);
       const request=http.request(options);
       request.on('error', function(err){
         const errMsg=`Http error occurred: ${err}`;
@@ -110,7 +104,35 @@ module.exports={
           });
       });
       request.end(postData);
-    },
+    },setupHttpServer: function(){
+      const httpInstance=http.createServer(function(req, res){
+        console.log('http request received');
+        const body = [];
+        res.on('error',function(err){
+          const errMsg=`Http error occurred at ${location}: ${err}`;
+          console.log(errMsg);
+        });
+        req.on('data', function (chunk) {
+          body.push(chunk);
+        });
+        req.on('end', function () {
+          console.log('http request data received');
+          const requestBodyJson=Buffer.concat(body).toString();
+          const requestBody=utils.getJSONObject(requestBodyJson);
+          if (requestBody) {
+            res.statusCode = 200;
+              res.end(`subscribers at ${req.url} was notified`);
+            process.send(requestBody);
+          } else {
+            const message=`no request body`;
+            res.statusCode = 500;
+              res.end(message);
+            throw message;
+          }
+        });
+      });
+    };
+    ,
     isValidUrl:function(url){
         var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
@@ -123,5 +145,35 @@ module.exports={
     getUrlPath(url){
         var url_parts = require('url').parse(url);
         return url_parts.pathname;
+    },  
+    subscribeToProcessEvents: function(process, callback){
+        process.on('exit', function(obj){
+          callback("exit");
+        });
+          process.on('SIGINT',  function(obj){
+          callback("SIGINT");
+        });
+          process.on('SIGHUP', function(obj){
+          callback("SIGHUP");
+        });
+          process.on('SIGUSR1', function(obj){
+          callback("SIGUSR1");
+        });
+        process.on('SIGUSR2', function(obj){
+          callback("SIGUSR2");
+        });
+        process.on('close', function(obj){
+          callback("close");
+        });
+
+        process.on( 'SIGTERM', function(obj){
+          callback("SIGTERM");
+        });
+          process.on('error', function(obj){
+          callback("error", obj);
+        });
+        process.on('uncaughtException', function(obj){
+          callback("uncaughtException", obj);
+        });
     }
 };

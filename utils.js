@@ -38,25 +38,55 @@ module.exports={
       });
       return uuid;
   },
-  createChildProcess:function(fileName, childFileName, childProcessName, autoRestart, restartTimer){
+  receiveMessagesOnSocket: function(hostPort, callback){
+      console.log();
+      console.log(`/////////////////////////////////  STARTING SOCKET SERVER ///////////////////////////////`);
+      const net = require('net');
+      var server = net.createServer(function(socket) {
+          socket.setEncoding("utf8");
+          socket.write('Echo server\r\n');
+          socket.on('data', function(message) {
+              callback(message);
+          });
+      });
+      server.listen(hostPort,'127.0.0.1',function(){
+          console.log('socket server started on port 80');
+      });
+      console.log();
+  },
+  sendMessagesOnSocket: function(hostPort, message){
+      console.log();
+      console.log(`/////////////////////////////////  SENDING MESSAGE TO SOCKET SERVER ///////////////////////////////`);
+      const net = require('net');
+      var client = new net.Socket();
+      client.connect(hostPort, '127.0.0.1', function(){
+          console.log(`connected to socket server on port ${hostPort}`);
+          const dataStr=module.exports.getJSONString(message);
+          client.write(dataStr);
+      });
+      console.log();
+  },
+  createChildProcess:function(name, fileName, httpPort,  socketPort1, socketPort2, protocol, autoRestart, restartTimer){
+      console.log();
+      console.log(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
       if (!restartTimer){
         restartTimer=module.exports.createTimer(false, 'child process restart');
+        restartTimer.setTime(10000);
       }
       const childFile=`${__dirname}/childProcess.js`;
       const cp = require('child_process');
-      const childProcess=cp.fork(childFile, [fileName, childFileName, childProcessName]);
-      function restart(){
-        childProcess.kill();
-      }; 
+      const childProcess=cp.fork(childFile, [name, fileName, httpPort,  socketPort1, socketPort2, protocol]);
       function handleEvent(reason, error){
-        console.log(`reason: ${reason}, error: ${error}`);
-        if (autoRestart && restartTimer.started==false){
-          restartTimer.start(function(){
-              module.exports.createChildProcess(fileName, childFileName, childProcessName, autoRestart, restartTimer);
-          });
-        }
+          childProcess.kill();
+          console.log(`reason: ${reason}, error: ${error}`);
+          if (autoRestart && restartTimer.started==false){
+              restartTimer.start(function(){
+                  module.exports.createChildProcess(name, fileName, httpPort,  socketPort1, socketPort2, protocol, autoRestart, restartTimer);
+                  restartTimer.stop();
+              });
+          }
       };
-      childProcess.on('exit', function(obj){
+       childProcess.on('exit', function(obj){
         handleEvent("exit", obj);
       });
       childProcess.on('SIGINT',  function(obj){
@@ -83,19 +113,16 @@ module.exports={
       childProcess.on('uncaughtException', function(obj){
         handleEvent("uncaughtException", obj);
       });
+      console.log();
       return childProcess;
-  },
-  createMessageBusHost: function(name){
-      return module.exports.createChildProcess('./messageBusHost.js', '', name, true);
-  },
-  createMessageBus: function(name){
-      return module.exports.createChildProcess('./messageBus.js', './messageBusHost.js', name,  true);
   },
   createMessageBusManager: function(){
       const MessageBusManager=require('./messageBusManager.js');
-      var messageBusPublisher=module.exports.createMessageBus('MessageBusPublisher');
-      var messageBusSubscriber=module.exports.createMessageBus('MessageBusSubscriber');
-      const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber);
+      const httpPort= process.env.PORT;
+      var messageBusPublisher=module.exports.createChildProcess('MessageBusPublisher', './messageBus.js', httpPort, 80, -1, 'TCP', true);
+      var messageBusSubscriber=module.exports.createChildProcess('MessageBusSubscriber', './messageBus.js',httpPort, -1, 81, 'TCP', true);
+      var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', httpPort, 80, 81, 'HTTP', true);
+      const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber, httpMessageBus);
       return messageBusManager;
   },
   consoleReset :function () {
@@ -191,11 +218,11 @@ module.exports={
     },
     isValidUrl:function(url){
         var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+          '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
         return pattern.test(url);
     },
     getUrlPath(url){

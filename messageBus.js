@@ -3,13 +3,13 @@ const utils = require('./utils.js');
 function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClient){
 
 	const subscriptions=[];
-	function getSubscriptions(channel, to, callback, callbackFail){
+	function getSubscriptions(channel, from, callback, callbackFail){
   		var exists=false;
   		for (var i = subscriptions.length - 1; i >= 0; i--) {
   			const msg=subscriptions[i];
-  			if ( (channel && to && msg.channel==channel && msg.to==to)
-  					|| (!channel && to && msg.to==to)
-  					|| (channel && !to && msg.channel==channel))
+  			if ( (channel && from && msg.channel==channel && msg.from==from)
+  					|| (!channel && from && msg.from==from)
+  					|| (channel && !from && msg.channel==channel))
   			{
 				callback(msg);
 				exists=true;
@@ -26,16 +26,18 @@ function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClie
 		console.log(`/// ${name} RECEIVED A MESSAGE ///`);
 		if (message.publish==true) {
 			console.log(`publishing messages to the ${message.channel} channel.`);
-			getSubscriptions(message.channel, null, function(subscription){
-				if (isClient==true){
+			if (message.from == thisServerAddress){
+				getSubscriptions(message.channel, message.from, function(subscription){
 					subscription.callback(message.data);
-				}else{
+				});
+			}else{
+				getSubscriptions(message.channel, message.from, function(subscription){
 					sendMessage(message);
-				}
-			});
+				});
+			}
 		} else if (message.publish==false){
 			console.log(`handling subscription to channel: ${message.channel}, recipient: ${message.to}`);
-			getSubscriptions(message.channel, message.to, function(subscription){
+			getSubscriptions(message.channel, message.from, function(subscription){
 				console.log(`already subscribed to ${subscription.channel} channel at ${subscription.to}.`);
 			},function(){
 				console.log(`subscription to ${message.channel} channel at ${message.to} succesful.`);
@@ -78,7 +80,7 @@ function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClie
 			error: ""
   		};
   		//get all local subscriptions and add them if they don't exist.
-		getSubscriptions(message.channel, recipientAddress, function(subscription){
+		getSubscriptions(message.channel, thisServerAddress, function(subscription){
 			subscription.callback=callback;
 		},function notFound(){
 			subscriptions.push(message);

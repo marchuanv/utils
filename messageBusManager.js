@@ -1,6 +1,6 @@
 const utils = require('./utils.js')
 
-function MessageBusManager(messageBusPublisher, messageBusSubscriber){
+function MessageBusManager(messageBus){
 
 	const localPublishMessages=[];
 	const localSubscribeMessages=[];
@@ -32,12 +32,7 @@ function MessageBusManager(messageBusPublisher, messageBusSubscriber){
 				if (localMessage.error){
 					printMessageInfo(localMessage);
 					console.log('resending message that resulted in error');
-					if (localMessage.publish == true){
-						messageBusPublisher.send(localMessage);
-					}
-					if (localMessage.subscribe == true){
-						messageBusSubscriber.send(localMessage);
-					}
+					messageBus.send(localMessage);
 				}
 			});
 			return;
@@ -69,7 +64,7 @@ function MessageBusManager(messageBusPublisher, messageBusSubscriber){
 	  	 	});
 		});
   		const changedData=utils.removeUnserialisableFields(data);
-		messageBusPublisher.send({
+		messageBus.send({
 			channel: channel,
   	 		address: address,
 			subscribe: false,
@@ -92,7 +87,7 @@ function MessageBusManager(messageBusPublisher, messageBusSubscriber){
 	  	 		error: ""
 			});
 		});
-  		messageBusSubscriber.send({
+  		messageBus.send({
 			channel: channel,
   	 		address: address,
 			subscribe: true,

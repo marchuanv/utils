@@ -66,7 +66,7 @@ module.exports={
       });
       console.log();
   },
-  createChildProcess:function(name, fileName, httpPort,  socketPort1, socketPort2, protocol, autoRestart, restartTimer){
+  createChildProcess:function(name, fileName, port, protocol, autoRestart, restartTimer){
       console.log();
       console.log(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
       if (!restartTimer){
@@ -75,13 +75,13 @@ module.exports={
       }
       const childFile=`${__dirname}/childProcess.js`;
       const cp = require('child_process');
-      const childProcess=cp.fork(childFile, [name, fileName, httpPort,  socketPort1, socketPort2, protocol]);
+      const childProcess=cp.fork(childFile, [name, fileName, port, protocol]);
       function handleEvent(reason, error){
           childProcess.kill();
           console.log(`reason: ${reason}, error: ${error}`);
           if (autoRestart && restartTimer.started==false){
               restartTimer.start(function(){
-                  module.exports.createChildProcess(name, fileName, httpPort,  socketPort1, socketPort2, protocol, autoRestart, restartTimer);
+                  module.exports.createChildProcess(name, fileName, port, protocol, autoRestart, restartTimer);
                   restartTimer.stop();
               });
           }
@@ -118,19 +118,15 @@ module.exports={
   },
   createMessageBusManager: function(){
       const MessageBusManager=require('./messageBusManager.js');
-      const httpPort= process.env.PORT;
-      const port1=process.env.SOCKETPORT1;
-      const port2=process.env.SOCKETPORT2;
-      if (port1 && port2){
-          var messageBusPublisher=module.exports.createChildProcess('MessageBusPublisher', './messageBus.js', httpPort, port1, -1, 'TCP', true);
-          var messageBusSubscriber=module.exports.createChildProcess('MessageBusSubscriber', './messageBus.js',httpPort, -1, port2, 'TCP', true);
-          var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', httpPort, port1, port2, 'HTTP', true);
-          const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber, httpMessageBus);
+      const port= process.env.PORT;
+      const protocol= process.env.protocol;
+      if (protocol=='HTTP'){
+          var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', port, 'HTTP', true);
+          const messageBusManager=new MessageBusManager(httpMessageBus);
           return messageBusManager;
-      }else{
-          var messageBusSubscriber=module.exports.createChildProcess('MessageBusSubscriber', './messageBus.js',httpPort, httpPort, -1, 'TCP', true);
-          var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', httpPort, httpPort, -1, 'HTTP', true);
-          const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber, httpMessageBus);
+      }else if (protocol=='TCP'){
+          var tcpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', port, 'TCP', true);
+          const messageBusManager=new MessageBusManager(tcpMessageBus);
           return messageBusManager;
       }
   },

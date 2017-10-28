@@ -1,9 +1,7 @@
 const name=process.argv[2];
 const libName=process.argv[3];
-process.env.PORT=parseInt(process.argv[4]);
-process.env.SOCKETPORT1=parseInt(process.argv[5]);
-process.env.SOCKETPORT2=parseInt(process.argv[6]);
-const protocol=process.argv[7];
+const port=parseInt(process.argv[4]);
+const protocol=process.argv[5];
 
 console.log('PARAMS: ',process.argv);
 
@@ -26,28 +24,18 @@ process.on('message', (message) => {
 	receiveMessage(message);
 });
 
-var socketPort=process.env.SOCKETPORT1;
-if (socketPort==-1){
-	socketPort=process.env.SOCKETPORT2;
-}
-
 if (protocol=='TCP'){
-	utils.receiveMessagesOnSocket(socketPort, function(message){
+	utils.receiveMessagesOnSocket(port, function(message){
 		message.remote=true;
 		receiveMessage(message);
 	});
 }
 if (protocol=='HTTP'){
-	utils.receiveHttpRequest(process.env.PORT, function requestReceived(requestData){
-		if (process.env.SOCKETPORT1>0){
-			utils.sendMessagesOnSocket(process.env.SOCKETPORT1, requestData);
-		}
-		if (process.env.SOCKETPORT2>0){
-			utils.sendMessagesOnSocket(process.env.SOCKETPORT2, requestData);
-		}
+	utils.receiveHttpRequest(port, function requestReceived(message){
+		message.remote=true;
+		receiveMessage(message);
 	});
 }
-
 function receiveMessage(message){
 	if (message=='heartbeat'){
 		console.log(`child process hosting the ${name} library received a heartbeat message.`);
@@ -58,7 +46,6 @@ function receiveMessage(message){
 		console.log(`child process ${name} does not have a receive endpoint`);
 	}
 };
-
 function sendMessage(message){
 	if (message.remote==true && utils.isValidUrl(message.address)==true) {
 		utils.sendHttpRequest(message.address, message);

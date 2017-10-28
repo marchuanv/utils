@@ -26,21 +26,19 @@ function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClie
 		console.log(`/// ${name} RECEIVED A MESSAGE ///`);
 		if (message.publish==true) {
 			console.log(`publishing messages to the ${message.channel} channel.`);
-			if (message.from == thisServerAddress){
-				getSubscriptions(message.channel, message.from, function(subscription){
-					subscription.callback(message.data);
-				});
-			}else{
-				getSubscriptions(message.channel, message.from, function(subscription){
-					sendMessage(message);
-				});
-			}
+			getSubscriptions(message.channel, null, function(subscription){
+				if (isClient){
+						subscription.callback(message.data);
+				} else {
+						sendMessage(message);
+				}
+			});
 		} else if (message.publish==false){
 			console.log(`handling subscription to channel: ${message.channel}, recipient: ${message.to}`);
 			getSubscriptions(message.channel, message.from, function(subscription){
-				console.log(`already subscribed to ${subscription.channel} channel at ${subscription.to}.`);
+				console.log(`already subscribed to ${subscription.channel} channel from ${subscription.from}.`);
 			},function(){
-				console.log(`subscription to ${message.channel} channel at ${message.to} succesful.`);
+				console.log(`subscription to ${message.channel} channel from ${message.from} succesful.`);
 				subscriptions.push(message);
 			});
 		} else {

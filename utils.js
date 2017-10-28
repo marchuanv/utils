@@ -121,11 +121,18 @@ module.exports={
       const httpPort= process.env.PORT;
       const port1=process.env.SOCKETPORT1;
       const port2=process.env.SOCKETPORT2;
-      var messageBusPublisher=module.exports.createChildProcess('MessageBusPublisher', './messageBus.js', httpPort, port1, -1, 'TCP', true);
-      var messageBusSubscriber=module.exports.createChildProcess('MessageBusSubscriber', './messageBus.js',httpPort, -1, port2, 'TCP', true);
-      var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', httpPort, port1, port2, 'HTTP', true);
-      const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber, httpMessageBus);
-      return messageBusManager;
+      if (port1 && port2){
+          var messageBusPublisher=module.exports.createChildProcess('MessageBusPublisher', './messageBus.js', httpPort, port1, -1, 'TCP', true);
+          var messageBusSubscriber=module.exports.createChildProcess('MessageBusSubscriber', './messageBus.js',httpPort, -1, port2, 'TCP', true);
+          var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', httpPort, port1, port2, 'HTTP', true);
+          const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber, httpMessageBus);
+          return messageBusManager;
+      }else{
+          var messageBusSubscriber=module.exports.createChildProcess('MessageBusSubscriber', './messageBus.js',httpPort, httpPort, -1, 'TCP', true);
+          var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', httpPort, httpPort, -1, 'HTTP', true);
+          const messageBusManager=new MessageBusManager(messageBusPublisher, messageBusSubscriber, httpMessageBus);
+          return messageBusManager;
+      }
   },
   consoleReset :function () {
     return process.stdout.write('\033c');

@@ -39,8 +39,12 @@ if (protocol=='TCP'){
 }
 if (protocol=='HTTP'){
 	utils.receiveHttpRequest(process.env.PORT, function requestReceived(requestData){
-		utils.sendMessagesOnSocket(process.env.SOCKETPORT1, requestData);
-		utils.sendMessagesOnSocket(process.env.SOCKETPORT2, requestData);
+		if (process.env.SOCKETPORT1>0){
+			utils.sendMessagesOnSocket(process.env.SOCKETPORT1, requestData);
+		}
+		if (process.env.SOCKETPORT2>0){
+			utils.sendMessagesOnSocket(process.env.SOCKETPORT2, requestData);
+		}
 	});
 }
 

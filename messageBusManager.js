@@ -2,17 +2,16 @@ const utils = require('./utils.js')
 
 function MessageBusManager(messageBus){
 
-	const localPublishMessages=[];
-	const localSubscribeMessages=[];
+	const localMessages=[];
 	
 	function printMessageInfo(message){
 		console.log(`MessageInfo: channel: ${message.channel}, address: ${message.address}, error: ${message.error}`);
 	};
 
-	function getLocalMessage(allMessages, channel, address, callback, callbackFail){
+	function getLocalMessage(channel, address, callback, callbackFail){
   		var exists=false;
-  		for (var i = allMessages.length - 1; i >= 0; i--) {
-  			const msg=allMessages[i];
+  		for (var i = localMessages.length - 1; i >= 0; i--) {
+  			const msg=localMessages[i];
   			if ((channel && address && msg.channel==channel && msg.address==address) || (!channel && !address) ){
 					callback(msg);
 					exists=true;
@@ -24,11 +23,10 @@ function MessageBusManager(messageBus){
   		}
   	};
 	process.on('message', (message) => {
-		const allMessages=localPublishMessages.concat(localSubscribeMessages);
 		if (message=='heartbeat'){
 			console.log('');
 			console.log('/// MESSAGE BUS MANAGER IS CHECKING LOCAL MESSAGES ///');
-			getLocalMessage(allMessages, null, null, function(localMessage){
+			getLocalMessage(null, null, function(localMessage){
 				if (localMessage.error){
 					printMessageInfo(localMessage);
 					console.log('resending message that resulted in error');
@@ -37,7 +35,7 @@ function MessageBusManager(messageBus){
 			});
 			return;
 		}
-		getLocalMessage(allMessages, message.channel, message.address, function(localMessage){
+		getLocalMessage(message.channel, message.address, function(localMessage){
 			//sync all messages
   			for(var i in message.data){
 		  	   localMessage.error=message.error;
@@ -49,12 +47,12 @@ function MessageBusManager(messageBus){
 	});
 
   	this.publish=function(channel, address, data) {
-  		getLocalMessage(localPublishMessages, channel, address, function(localMessage){
+  		getLocalMessage(channel, address, function(localMessage){
   			for(var i in data){
 		  	   localMessage.data[i]=data[i];
 		  	};
 		},function notFound(){
-			localPublishMessages.push({
+			localMessages.push({
 	  	 		channel: channel,
 	  	 		address: address,
 				subscribe: false,
@@ -75,10 +73,10 @@ function MessageBusManager(messageBus){
   	};
 
   	this.subscribe=function(channel, address, callback){
-  		getLocalMessage(localSubscribeMessages, channel, address, function(localMessage){
+  		getLocalMessage(channel, address, function(localMessage){
   			localMessage.callback=callback;
 		},function notFound(){
-			localSubscribeMessages.push({
+			localMessages.push({
 				channel: channel,
 	  	 		address: address,
 	  	 		subscriberCallback: callback,

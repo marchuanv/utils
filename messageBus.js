@@ -1,6 +1,6 @@
 const utils = require('./utils.js');
 
-function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClient){
+function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubscribeMessage, sendMessage, isClient){
 
 	const subscriptions=[];
 	function getSubscriptions(channel, from, callback, callbackFail){
@@ -21,30 +21,31 @@ function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClie
   		}
   	};
 
-	receiveMessage(function(message){
+	receivePublishMessage(function(message){
 		console.log('');
-		console.log(`/// ${name} RECEIVED A MESSAGE ///`);
-		if (message.publish==true) {
-			console.log(`publishing messages to the ${message.channel} channel.`);
-			getSubscriptions(message.channel, null, function(subscription){
-				subscription.data=message.data;
-				if (isClient){
-						subscription.callback(subscription.data);
-				} else {
-						sendMessage(subscription);
-				}
-			});
-		} else if (message.publish==false){
-			console.log(`handling subscription to channel: ${message.channel}, recipient: ${message.to}`);
-			getSubscriptions(message.channel, message.from, function(subscription){
-				console.log(`already subscribed to ${subscription.channel} channel from ${subscription.from}.`);
-			},function(){
-				console.log(`subscription to ${message.channel} channel from ${message.from} succesful.`);
-				subscriptions.push(message);
-			});
-		} else {
-			console.log(`message was not a subscription or publish`);
-		}
+		console.log(`/// ${name} RECEIVED A PUBLISH MESSAGE ///`);
+		console.log(`publishing messages to the ${message.channel} channel.`);
+		getSubscriptions(message.channel, null, function(subscription){
+			subscription.data=message.data;
+			if (isClient){
+				subscription.callback(subscription.data);
+			} else {
+				sendMessage(subscription);
+			}
+		});
+		console.log('');
+	});
+
+	receiveSubscribeMessage(function(message){
+		console.log('');
+		console.log(`/// ${name} RECEIVED A SUBSCRIBE MESSAGE ///`);
+		console.log(`handling subscription to channel: ${message.channel}, recipient: ${message.to}`);
+		getSubscriptions(message.channel, message.from, function(subscription){
+			console.log(`already subscribed to ${subscription.channel} channel from ${subscription.from}.`);
+		},function(){
+			console.log(`subscription to ${message.channel} channel from ${message.from} succesful.`);
+			subscriptions.push(message);
+		});
 		console.log('');
 	});
 
@@ -81,6 +82,7 @@ function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClie
 		getSubscriptions(message.channel, thisServerAddress, function(subscription){
 			subscription.callback=callback;
 		},function notFound(){
+			console.log('adding client side subscriptions');
 			subscriptions.push(message);
 		});
   		sendMessage(message);

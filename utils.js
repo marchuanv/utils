@@ -123,7 +123,12 @@ module.exports={
         throw 'child process was provided with an invalid sender address';
       }
       var messageBusProcess=module.exports.createMessageBusProcess('ChildMessageBus', './messageBus.js', thisServerAddress, true);
-      const messageBusClient = new MessageBus('ParentMessageBus', thisServerAddress, function _setReceiveMessage(callback){
+      const messageBusClient = new MessageBus('ParentMessageBus', thisServerAddress, 
+                          function _receivePublishMessage(callback){
+                                messageBusProcess.on('message', (message) => {
+                                    callback(message);
+                                });
+                          },function _receiveSubscribeMessage(callback){
                                 messageBusProcess.on('message', (message) => {
                                     callback(message);
                                 });

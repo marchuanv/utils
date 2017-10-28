@@ -190,6 +190,7 @@ module.exports={
               'Content-Length': Buffer.byteLength(postData)
           }
       };
+      console.log('http options: ',options);
       const request=http.request(options);
       request.on('error', function(err){
         const errMsg=`Http error occurred: ${err}`;
@@ -198,6 +199,7 @@ module.exports={
       });
       request.on('response', function (response) {
           response.setEncoding('utf8');
+          console.log('http response received from request, status code: ',response.statusCode);
           response.on('data', function (body) {
             if (callback){
               callback(body);

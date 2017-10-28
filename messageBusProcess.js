@@ -25,15 +25,17 @@ heartbeatTimer.start(function(){
 });
 
 function validateIncomingMessage(message, cbValid){
-	if (message.from && utils.isValidUrl(message.from)==true){
-		if (message.to && utils.isValidUrl(message.to)==true){
-			console.log('received message is valid');
-			cbValid();
+	if (message.subscribe==true){
+		if (message.from && utils.isValidUrl(message.from)==true){
+			if (message.to && utils.isValidUrl(message.to)==true){
+				console.log('received message is valid');
+				cbValid();
+			}else{
+				console.log(`${name} child process received a message that has an unknown or invalid recipient address: ${message.to} `);
+			}
 		}else{
-			console.log(`${name} child process received a message that has an unknown or invalid recipient address: ${message.to} `);
+			console.log(`${name} child process received a message from an unknown or invalid address: ${message.from} `);
 		}
-	}else{
-		console.log(`${name} child process received a message from an unknown or invalid address: ${message.from} `);
 	}
 };
 

@@ -27,10 +27,11 @@ function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClie
 		if (message.publish==true) {
 			console.log(`publishing messages to the ${message.channel} channel.`);
 			getSubscriptions(message.channel, null, function(subscription){
+				subscription.data=message.data;
 				if (isClient){
-						subscription.callback(message.data);
+						subscription.callback(subscription.data);
 				} else {
-						sendMessage(message);
+						sendMessage(subscription);
 				}
 			});
 		} else if (message.publish==false){
@@ -47,7 +48,7 @@ function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClie
 		console.log('');
 	});
 
-	this.publish=function(channel, recipientAddress, data) {
+	this.publish=function(channel, data) {
 		if (isClient==false){
   			throw 'only clients can publish, message bus is configured for processing only';
   		}
@@ -58,7 +59,6 @@ function MessageBus(name, thisServerAddress, receiveMessage, sendMessage, isClie
 			channel: channel,
 			publish: true,
   	 		data: changedData,
-  	 		to: recipientAddress,
   	 		error: ""
   	 	});
   	 	console.log();

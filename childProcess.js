@@ -50,6 +50,6 @@ function sendMessage(message){
 	if (message.remote==true && utils.isValidUrl(message.address)==true) {
 		utils.sendHttpRequest(message.address, message);
 	}else if (message.remote==false){
-		process.send();	
+		process.send(message);	
 	}
 };

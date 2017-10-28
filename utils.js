@@ -199,6 +199,7 @@ module.exports={
       request.end(postData);
     },
     receiveHttpRequest: function(hostPort, callback, callbackError){
+      const port = process.env.PORT || hostPort;
       const httpServer=http.createServer(function(req, res){
           console.log('http request received');
           const body = [];
@@ -225,9 +226,9 @@ module.exports={
             }
         });
       });
-      httpServer.listen(hostPort,function(){
+      httpServer.listen(port,function(){
           console.log();
-          console.log(`http server started and listening on port ${hostPort}`);
+          console.log(`http server started and listening on port ${port}`);
           console.log();
       });
     },

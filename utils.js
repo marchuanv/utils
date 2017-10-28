@@ -66,22 +66,22 @@ module.exports={
       });
       console.log();
   },
-  createChildProcess:function(name, fileName, port, protocol, autoRestart, restartTimer){
+  createMessageBusProcess:function(name, fileName, thisServerAddress, autoRestart, restartTimer){
       console.log();
       console.log(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
       if (!restartTimer){
         restartTimer=module.exports.createTimer(false, 'child process restart');
         restartTimer.setTime(10000);
       }
-      const childFile=`${__dirname}/childProcess.js`;
+      const childFile=`${__dirname}/messageBusProcess.js`;
       const cp = require('child_process');
-      const childProcess=cp.fork(childFile, [name, fileName, port, protocol]);
+      const childProcess=cp.fork(childFile, [name, fileName, thisServerAddress]);
       function handleEvent(reason, error){
           childProcess.kill();
           console.log(`reason: ${reason}, error: ${error}`);
           if (autoRestart && restartTimer.started==false){
               restartTimer.start(function(){
-                  module.exports.createChildProcess(name, fileName, port, protocol, autoRestart, restartTimer);
+                  module.exports.createMessageBusProcess(name, fileName, thisServerAddress, autoRestart, restartTimer);
                   restartTimer.stop();
               });
           }
@@ -116,19 +116,21 @@ module.exports={
       console.log();
       return childProcess;
   },
-  createMessageBusManager: function(){
-      const MessageBusManager=require('./messageBusManager.js');
-      const port= process.env.PORT;
-      const protocol= process.env.protocol;
-      if (protocol=='HTTP'){
-          var httpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', port, 'HTTP', true);
-          const messageBusManager=new MessageBusManager(httpMessageBus);
-          return messageBusManager;
-      }else if (protocol=='TCP'){
-          var tcpMessageBus=module.exports.createChildProcess('HttpMessageBus', './messageBus.js', port, 'TCP', true);
-          const messageBusManager=new MessageBusManager(tcpMessageBus);
-          return messageBusManager;
+  createMessageBusClient: function(){
+      const MessageBus=require('./messageBus.js');
+      const thisServerAddress=process.env.thisserveraddress;
+      if (module.exports.isValidUrl(thisServerAddress)==false){
+        throw 'child process was provided with an invalid sender address';
       }
+      var messageBusProcess=module.exports.createMessageBusProcess('ChildMessageBus', './messageBus.js', thisServerAddress, true);
+      const messageBusClient = new MessageBus('ParentMessageBus', thisServerAddress, function _setReceiveMessage(callback){
+                                messageBusProcess.on('message', (message) => {
+                                    callback(message);
+                                });
+                          },function _sendMessage(message){
+                                messageBusProcess.send(message);
+                          },isClient=true);
+      return messageBusClient;
   },
   consoleReset :function () {
     return process.stdout.write('\033c');
@@ -148,16 +150,24 @@ module.exports={
     const Cache = require('/cache.js');
     return new Cache(cacheJson);
   },
+  getHostAndPortFromUrl: function(url){
+      var addressSplit=url.replace('http://','')
+                                .replace('https://','')
+                                .split(':');
+      const host=addressSplit[0].split('/')[0];
+      const port=addressSplit[1].split('/')[0];
+      console.log('port',port);
+      return {
+          host: host,
+          port: port
+      };
+  },
   sendHttpRequest: function(url, data, callback){
       console.log('creating an http request.');
       const postData=module.exports.getJSONString(data);
-      
-      const addressSplit=url.replace('http://','')
-                                .replace('https://','')
-                                .split(':');
-      const host = addressSplit[0].split('/')[0];
-      const path = module.exports.getUrlPath(url);
-      var port=addressSplit[1].split('/')[0];
+      const info = module.exports.getHostAndPortFromUrl(url);
+      const host=info.host;
+      var port=info.port;
       if (!port){
         port=80;
       }
@@ -206,7 +216,7 @@ module.exports={
             const requestBody=module.exports.getJSONObject(requestBodyJson);
             if (requestBody) {
                 res.statusCode = 200;
-                res.end(`subscribers at ${req.url} was notified`);
+                res.end();
                 callback(requestBody);
             } else {
                 res.statusCode = 500;

@@ -12,12 +12,14 @@ const CLASS=require(libName);
 var receivePublishMessage;
 var receiveSubscribeMessage;
 
-const instance = new CLASS(name, thisServerAddress, function _receivePublishMessage(callback){
+const instance = new CLASS(name, thisServerAddress, function(callback){
 	receivePublishMessage=callback;
-}, function _receiveSubscribeMessage(callback){
+}, function(callback){
 	receiveSubscribeMessage=callback;
-}, function _sendMessage(message){
-	sendMessage(message);
+}, function (message){
+	sendInternalMessage(message);
+}, function(message){
+	sendExternalMessage(message);
 });
 	
 console.log(`child process hosting the ${name} library sent a heartbeat message.`);
@@ -29,15 +31,11 @@ heartbeatTimer.start(function(){
 });
 
 function validateSubscribeMessage(message, cbValid){
-	if (message.from && utils.isValidUrl(message.from)==true){
-		if (message.to && utils.isValidUrl(message.to)==true){
-			console.log('received subscribe	message is valid');
-			cbValid();
-		}else{
-			console.log(`${name} child process received a message that has an unknown or invalid recipient address: ${message.to} `);
-		}
+	if (message.to && utils.isValidUrl(message.to)==true){
+		console.log('received subscribe	message is valid');
+		cbValid();
 	}else{
-		console.log(`${name} child process received a message from an unknown or invalid address: ${message.from} `);
+		console.log(`${name} child process received a message with an unknown or invalid to address: ${message.to} `);
 	}
 };
 function validatePublishMessage(message, cbValid){
@@ -52,19 +50,28 @@ function validatePublishMessage(message, cbValid){
 //if message is received from parent process.
 process.on('message', (message) => {
 	message.from=thisServerAddress;
-	receiveMessageCheck(message);
+	message.source='internal';
+	console.log('incoming internal message');
+	if (message && message !='heartbeat'){
+		receiveMessageCheck(message);
+	}else{
+		console.log('INTERNAL MESSAGE RECEIVED IS NULL');
+	}
 });
 
 const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
 utils.receiveHttpRequest(port, function requestReceived(message){
-	receiveMessageCheck(message);
+	console.log('incoming external message');
+	message.source='external';
+	if (message && message !='heartbeat'){
+		receiveMessageCheck(message);
+	}else{
+		console.log('EXTERNAL MESSAGE RECEIVED IS NULL');
+	}
 });
 
 function receiveMessageCheck(message){
-	if (message=='heartbeat'){
-		console.log(`child process hosting the ${name} library received a heartbeat message.`);
-		return;
-	} else if (message.publish==true){
+	if (message.publish==true){
 		validatePublishMessage(message, function(){
 			receivePublishMessage(message);
 		});
@@ -77,19 +84,19 @@ function receiveMessageCheck(message){
 	}
 };
 
-function sendMessage(message){
-	if (message.from && utils.isValidUrl(message.from)==true) {
-		if (message.from==thisServerAddress){ // if the message was from the same server then send to parent process
-			console.log(`notifying local subscription at ${thisServerAddress}`);
-			const result=process.send(message);	
-			if (result==false){
-				console.log(`failed to notifying local subscription at ${thisServerAddress}`);
-			}
-		}else{
-			console.log(`notifying remote subscriptions at ${subscription.senderAddress}`);
-			utils.sendHttpRequest(message.from, message);
-		}
+function sendInternalMessage(message){
+	console.log(`notifying parent messagebus at ${thisServerAddress}`);
+	const result=process.send(message);	
+	if (result==false){
+		console.log(`failed to notify parent message bus at ${thisServerAddress}`);
+	}
+};
+
+function sendExternalMessage(message){
+	if (message.to && utils.isValidUrl(message.to)==true) {
+		console.log(`notifying remote subscriptions at ${message.to}`);
+		utils.sendHttpRequest(message.to, message, null);
 	}else{
-		console.log(`can't send a message that does not have a from address.`);
+		console.log(`can't send a message that does not have a to address.`);
 	}
 };

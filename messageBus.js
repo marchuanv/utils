@@ -1,16 +1,13 @@
 const utils = require('./utils.js');
 
-function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubscribeMessage, sendMessage, isClient){
+function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubscribeMessage, sendInternalMessage, sendExternalMessage, isClient){
 
 	const subscriptions=[];
-	function getSubscriptions(channel, from, callback, callbackFail){
+	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;
   		for (var i = subscriptions.length - 1; i >= 0; i--) {
   			const msg=subscriptions[i];
-  			if ( (channel && from && msg.channel==channel && msg.from==from)
-  					|| (!channel && from && msg.from==from)
-  					|| (channel && !from && msg.channel==channel))
-  			{
+  			if ( (channel && msg.channel==channel) || (!channel)) {
 				callback(msg);
 				exists=true;
 				break;
@@ -23,69 +20,76 @@ function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubsc
 
 	receivePublishMessage(function(message){
 		console.log('');
-		console.log(`/// ${name} RECEIVED A PUBLISH MESSAGE ///`);
-		console.log(`publishing messages to the ${message.channel} channel.`);
-		getSubscriptions(message.channel, null, function(subscription){
+		console.log(`/// ${name} RECEIVED A PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
+		getSubscriptions(message.channel, function(subscription){
 			subscription.data=message.data;
-			if (isClient){
+			if (isClient==true){
+				console.log(`publishing message data to ${message.channel} channel subscribers.`);
 				subscription.callback(subscription.data);
-			} else {
-				sendMessage(subscription);
+			}else{
+				console.log(`sending message internally to ${message.channel} channel.`);
+				sendInternalMessage(subscription);
 			}
 		});
+		if (isClient==false && message.from==thisServerAddress && message.source=='internal'){ //if publish message and was not published from a remote location then it is an outgoing message
+			sendExternalMessage(message);
+		}
 		console.log('');
 	});
 
 	receiveSubscribeMessage(function(message){
 		console.log('');
 		console.log(`/// ${name} RECEIVED A SUBSCRIBE MESSAGE ///`);
-		console.log(`handling subscription to channel: ${message.channel}, recipient: ${message.to}`);
-		getSubscriptions(message.channel, message.from, function(subscription){
-			console.log(`already subscribed to ${subscription.channel} channel from ${subscription.from}.`);
+		console.log(`handling subscription to channel: ${message.channel}.`);
+		getSubscriptions(message.channel, function(subscription){
+			console.log(`already subscribed to ${subscription.channel} channel.`);
 		},function(){
-			console.log(`subscription to ${message.channel} channel from ${message.from} succesful.`);
+			console.log(`subscribing to ${message.channel} channel.`);
 			subscriptions.push(message);
 		});
 		console.log('');
 	});
 
-	this.publish=function(channel, data) {
+	this.publish=function(channel, recipientAddress, data) {
 		if (isClient==false){
   			throw 'only clients can publish, message bus is configured for processing only';
   		}
   		console.log();
   		console.log(`/// ${name} IS PUBLISHING TO ${channel} ///`);
   		const changedData=utils.removeUnserialisableFields(data);
-		sendMessage({
+		sendInternalMessage({
+			Id: utils.newGuid(),
 			channel: channel,
 			publish: true,
+  	 		to: recipientAddress,
   	 		data: changedData,
   	 		error: ""
   	 	});
   	 	console.log();
   	};
 
-  	this.subscribe=function(channel, recipientAddress, callback){
+  	this.subscribe=function(channel, callback){
   		if (isClient==false){
   			throw 'only clients can subscribe, message bus is configured for processing only';
   		}
   		console.log();
   		console.log(`/// ${name} IS SUBSCRIBING TO ${channel} ///`);
   		const message = {
+  			Id: utils.newGuid(),
 			channel: channel,
 			callback: callback,
 			publish: false,
-			to: recipientAddress,
+			to: thisServerAddress,
 			error: ""
   		};
   		//get all local subscriptions and add them if they don't exist.
-		getSubscriptions(message.channel, thisServerAddress, function(subscription){
+		getSubscriptions(message.channel, function(subscription){
 			subscription.callback=callback;
 		},function notFound(){
 			console.log('adding client side subscriptions');
 			subscriptions.push(message);
 		});
-  		sendMessage(message);
+  		sendInternalMessage(message);
   		console.log();
   	};
 };

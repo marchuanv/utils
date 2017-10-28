@@ -126,15 +126,19 @@ module.exports={
       const messageBusClient = new MessageBus('ParentMessageBus', thisServerAddress, 
                           function _receivePublishMessage(callback){
                                 messageBusProcess.on('message', (message) => {
+                                  if (message && message !='heartbeat'){
                                     callback(message);
+                                  }
                                 });
                           },function _receiveSubscribeMessage(callback){
                                 messageBusProcess.on('message', (message) => {
+                                  if (message && message !='heartbeat'){
                                     callback(message);
+                                  }
                                 });
                           },function _sendMessage(message){
                                 messageBusProcess.send(message);
-                          },isClient=true);
+                          },function _sendHttpMessage(){},isClient=true);
       return messageBusClient;
   },
   consoleReset :function () {
@@ -167,7 +171,7 @@ module.exports={
           port: port
       };
   },
-  sendHttpRequest: function(url, data, callback){
+  sendHttpRequest: function(url, data, path, callback){
       console.log('creating an http request.');
       const postData=module.exports.getJSONString(data);
       const info = module.exports.getHostAndPortFromUrl(url);
@@ -186,7 +190,6 @@ module.exports={
               'Content-Length': Buffer.byteLength(postData)
           }
       };
-      console.log('options',options);
       const request=http.request(options);
       request.on('error', function(err){
         const errMsg=`Http error occurred: ${err}`;

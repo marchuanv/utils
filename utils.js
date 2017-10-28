@@ -210,7 +210,7 @@ module.exports={
                 callback(requestBody);
             } else {
                 res.statusCode = 500;
-                res.end(message);
+                res.end();
                 callbackError(`no request body`);
             }
         });

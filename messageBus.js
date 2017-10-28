@@ -31,10 +31,10 @@ function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubsc
 				sendInternalMessage(subscription);
 			}
 		});
-		if (isClient==false && message.from==thisServerAddress && message.source=='internal'){ //if publish message and was not published from a remote location then it is an outgoing message
+		if (!isClient && message.from==thisServerAddress && message.source=='internal'){ //if publish message and was not published from a remote location then it is an outgoing message
 			sendExternalMessage(message);
 		}else{
-			console.log('message: ', message);
+			console.log('publish did NOTHING: ', message);
 		}
 		console.log('');
 	});

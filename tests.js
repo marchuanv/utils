@@ -1,5 +1,6 @@
 const utils=require('./utils.js');
  process.env.PORT=3000;
+ process.env.protocol='HTTP';
 const messageBusManager=new utils.createMessageBusManager();
 try{
 	messageBusManager.subscribe('endpoint1', 'localhost:3000', function success(requestData) {

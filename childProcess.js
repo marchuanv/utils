@@ -46,9 +46,16 @@ function receiveMessage(message){
 		console.log(`child process ${name} does not have a receive endpoint`);
 	}
 };
-function sendMessage(message){
-	if (message.remote==true && utils.isValidUrl(message.address)==true) {
-		utils.sendHttpRequest(message.address, message);
+function sendToRecipient(message){
+	if (message.remote==true && utils.isValidUrl(message.recipientAddress)==true) {
+		utils.sendHttpRequest(message.recipientAddress, message);
+	}else if (message.remote==false){
+		process.send(message);	
+	}
+};
+function replyToSender(message){
+	if (message.remote==true && utils.isValidUrl(message.senderAddress)==true) {
+		utils.sendHttpRequest(message.senderAddress, message);
 	}else if (message.remote==false){
 		process.send(message);	
 	}

@@ -1,18 +1,21 @@
 const utils = require('./utils.js')
+if (!process.env.senderaddress){
+	throw 'no senderaddress environment variable found.';
+}
 
 function MessageBusManager(messageBus){
 
 	const localMessages=[];
 	
 	function printMessageInfo(message){
-		console.log(`MessageInfo: channel: ${message.channel}, address: ${message.address}, error: ${message.error}`);
+		console.log(`MessageInfo: channel: ${message.channel}, recipient address: ${message.recipientAddress}, error: ${message.error}`);
 	};
 
-	function getLocalMessage(channel, address, callback, callbackFail){
+	function getLocalMessage(channel, recipientAddress, callback, callbackFail){
   		var exists=false;
   		for (var i = localMessages.length - 1; i >= 0; i--) {
   			const msg=localMessages[i];
-  			if ((channel && address && msg.channel==channel && msg.address==address) || (!channel && !address) ){
+  			if ((channel && recipientAddress && msg.channel==channel && msg.recipientAddress==recipientAddress) || (!channel && !recipientAddress) ){
 					callback(msg);
 					exists=true;
 					break;
@@ -35,7 +38,7 @@ function MessageBusManager(messageBus){
 			});
 			return;
 		}
-		getLocalMessage(message.channel, message.address, function(localMessage){
+		getLocalMessage(message.channel, message.recipientAddress, function(localMessage){
 			//sync all messages
   			for(var i in message.data){
 		  	   localMessage.error=message.error;
@@ -46,51 +49,55 @@ function MessageBusManager(messageBus){
 		});
 	});
 
-  	this.publish=function(channel, address, data) {
-  		getLocalMessage(channel, address, function(localMessage){
+  	this.publish=function(channel, recipientAddress, data) {
+  		getLocalMessage(channel, recipientAddress, function(localMessage){
   			for(var i in data){
 		  	   localMessage.data[i]=data[i];
 		  	};
 		},function notFound(){
 			localMessages.push({
 	  	 		channel: channel,
-	  	 		address: address,
 				subscribe: false,
 				publish: true,
 	  	 		data: data,
-	  	 		error: ""
+	  	 		error: "",
+	  	 		recipientAddress: recipientAddress,
+	  	 		senderAddress: process.env.senderaddress
 	  	 	});
 		});
   		const changedData=utils.removeUnserialisableFields(data);
 		messageBus.send({
 			channel: channel,
-  	 		address: address,
 			subscribe: false,
 			publish: true,
   	 		data: changedData,
-  	 		error: ""
+  	 		error: "",
+  	 		recipientAddress: recipientAddress,
+	  	 	senderAddress: process.env.senderaddress
   	 	});
   	};
 
-  	this.subscribe=function(channel, address, callback){
-  		getLocalMessage(channel, address, function(localMessage){
+  	this.subscribe=function(channel, recipientAddress, callback){
+  		getLocalMessage(channel, recipientAddress, function(localMessage){
   			localMessage.callback=callback;
 		},function notFound(){
 			localMessages.push({
 				channel: channel,
-	  	 		address: address,
 	  	 		subscriberCallback: callback,
 				subscribe: true,
 				publish: false,
-	  	 		error: ""
+	  	 		error: "",
+	  	 		recipientAddress: recipientAddress,
+	  	 		senderAddress: process.env.senderaddress
 			});
 		});
   		messageBus.send({
 			channel: channel,
-  	 		address: address,
 			subscribe: true,
 			publish: false,
-  	 		error: ""
+  	 		error: "",
+	  	 	recipientAddress: recipientAddress,
+	  	 	senderAddress: process.env.senderaddress
   	 	});
   	};
 };

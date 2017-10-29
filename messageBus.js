@@ -21,20 +21,22 @@ function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubsc
 	receivePublishMessage(function(message){
 		console.log('');
 		console.log(`/// ${name} RECEIVED A PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
-		getSubscriptions(message.channel, function(subscription){
-			subscription.data=message.data;
-			if (isClient==true){
-				console.log(`publishing message data to ${message.channel} channel subscribers.`);
+		if (isClient==true) {
+			getSubscriptions(message.channel, function(subscription){
+				subscription.data=message.data;
+				console.log(`calling  ${message.channel} channel subscribers callbacks.`);
 				subscription.callback(subscription.data);
-			}else{
-				console.log(`sending message internally to ${message.channel} channel.`);
-				sendInternalMessage(subscription);
-			}
-		});
-		if (!isClient && message.from==thisServerAddress && message.source=='internal'){ //if publish message and was not published from a remote location then it is an outgoing message
-			sendExternalMessage(message);
+			});
 		}else{
-			console.log('publish did NOTHING: ', message);
+			getSubscriptions(message.channel, function(subscription){
+				subscription.data=message.data;
+				sendInternalMessage(subscription);
+			});
+			if (message.from==thisServerAddress && message.source=='internal'){ //if publish message and was not published from a remote location then it is an outgoing message
+				sendExternalMessage(message);
+			}else{
+				console.log('did not publish anything');
+			}
 		}
 		console.log('');
 	});

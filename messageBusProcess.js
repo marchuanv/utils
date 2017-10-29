@@ -85,6 +85,7 @@ function receiveMessageCheck(message){
 };
 
 function sendInternalMessage(message){
+	console.log(`sending internal message to ${message.channel} channel.`);
 	console.log(`notifying parent messagebus at ${thisServerAddress}`);
 	const result=process.send(message);	
 	if (result==false){

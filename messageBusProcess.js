@@ -103,6 +103,7 @@ function sendExternalMessage(message){
 			logging.write('sending external message was successful.');
 		},function fail(){
 			serviceUnavailableRetry.start(function(){
+				logging.write('external message retry...');
 				utils.sendHttpRequest(message.to, message, '', function success(){
 					serviceUnavailableRetry.stop();
 					serviceUnavailableRetry.setTime(1000);

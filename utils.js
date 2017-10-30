@@ -261,5 +261,8 @@ module.exports={
     createCache:function(cacheString){
         const Cache=require('./cache.js');
         return new Cache(cacheString);
+    },
+    createLogging: function(){
+      return require('./logging.js');
     }
 };

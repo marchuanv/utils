@@ -255,7 +255,7 @@ module.exports={
         var url_parts = require('url').parse(url);
         return url_parts.pathname;
     },
-    createCache=function(cacheString){
+    createCache:function(cacheString){
         return new Cache(cacheString);
     }
 };

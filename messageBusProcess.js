@@ -105,6 +105,9 @@ function sendExternalMessage(message){
 			serviceUnavailableRetry.start(function(){
 				utils.sendHttpRequest(message.to, message, '', function success(){
 					serviceUnavailableRetry.stop();
+					serviceUnavailableRetry.setTime(1000);
+				},function(){
+					serviceUnavailableRetry.setTime(5000);
 				});
 			});
 		});

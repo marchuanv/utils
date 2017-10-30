@@ -172,7 +172,7 @@ module.exports={
           port: port
       };
   },
-  sendHttpRequest: function(url, data, path, callback){
+  sendHttpRequest: function(url, data, path, callback, callbackFail){
       logging.write('creating an http request.');
       const postData=module.exports.getJSONString(data);
       const info = module.exports.getHostAndPortFromUrl(url);
@@ -196,7 +196,9 @@ module.exports={
       request.on('error', function(err){
         const errMsg=`Http error occurred: ${err}`;
         logging.write(errMsg);
-        throw errMsg;
+        if (callbackFail){
+          callbackFail(errMsg);
+        }
       });
       request.on('response', function (response) {
           response.setEncoding('utf8');

@@ -99,11 +99,11 @@ function sendInternalMessage(message){
 function sendExternalMessage(message){
 	if (message.to && utils.isValidUrl(message.to)==true) {
 		logging.write(`notifying remote subscriptions at ${message.to}`);
-		utils.sendHttpRequest(message.to, message, function sucess(){
+		utils.sendHttpRequest(message.to, message, '', function sucess(){
 			logging.write('sending external message was successful.');
 		},function fail(){
 			serviceUnavailableRetry.start(function(){
-				utils.sendHttpRequest(message.to, message,function success(){
+				utils.sendHttpRequest(message.to, message, '', function success(){
 					serviceUnavailableRetry.stop();
 				});
 			});

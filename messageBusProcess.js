@@ -69,6 +69,8 @@ utils.receiveHttpRequest(port, function requestReceived(message){
 	}else{
 		logging.write('EXTERNAL MESSAGE RECEIVED IS NULL');
 	}
+},function requestFailed(err){
+	logging.write(`request failed with err ${err}`);
 });
 
 function receiveMessageCheck(message){

@@ -36,13 +36,13 @@ function Timer(isInterval, name){
   thisInstance.start=function(callback){
       thisInstance.stopped=false;
       thisInstance.started=true;
-      logging.write(` ${name} timer started`);
+      logging.write(`${name} timer started`);
       thisInstance.callback=callback;
       internalStart();
   };
   thisInstance.stop=function(){
     thisInstance.started=false;
-    logging.write(` ${name} timer stopped`);
+    logging.write(`${name} timer stopped`);
     thisInstance.stopped=true;
     thisInstance.started=false;
   };

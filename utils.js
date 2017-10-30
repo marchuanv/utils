@@ -1,4 +1,5 @@
 const http=require('http');
+const logging=require('./logging.js');
 module.exports={
   getRandomNumber: function(min, max){
     return Math.floor(Math.random()*(max-min+1)+min);
@@ -23,7 +24,7 @@ module.exports={
   },
   getJSONObject: function(jsonString){
      try{
-        console.log('parsing object to JSON');
+        logging.write('parsing object to JSON');
         return JSON.parse(jsonString);
       }catch(err){
         return null;
@@ -39,8 +40,8 @@ module.exports={
       return uuid;
   },
   receiveMessagesOnSocket: function(hostPort, callback){
-      console.log();
-      console.log(`/////////////////////////////////  STARTING SOCKET SERVER ///////////////////////////////`);
+      logging.write();
+      logging.write(`/////////////////////////////////  STARTING SOCKET SERVER ///////////////////////////////`);
       const net = require('net');
       var server = net.createServer(function(socket) {
           socket.setEncoding("utf8");
@@ -50,25 +51,25 @@ module.exports={
           });
       });
       server.listen(hostPort,function(){
-          console.log('socket server started on port 80');
+          logging.write('socket server started on port 80');
       });
-      console.log();
+      logging.write();
   },
   sendMessagesOnSocket: function(hostPort, message){
-      console.log();
-      console.log(`/////////////////////////////////  SENDING MESSAGE TO SOCKET SERVER ///////////////////////////////`);
+      logging.write();
+      logging.write(`/////////////////////////////////  SENDING MESSAGE TO SOCKET SERVER ///////////////////////////////`);
       const net = require('net');
       var client = new net.Socket();
       client.connect(hostPort, function(){
-          console.log(`connected to socket server on port ${hostPort}`);
+          logging.write(`connected to socket server on port ${hostPort}`);
           const dataStr=module.exports.getJSONString(message);
           client.write(dataStr);
       });
-      console.log();
+      logging.write();
   },
   createMessageBusProcess:function(name, fileName, thisServerAddress, autoRestart, restartTimer){
-      console.log();
-      console.log(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
+      logging.write();
+      logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
       if (!restartTimer){
         restartTimer=module.exports.createTimer(false, 'child process restart');
         restartTimer.setTime(10000);
@@ -78,7 +79,7 @@ module.exports={
       const childProcess=cp.fork(childFile, [name, fileName, thisServerAddress]);
       function handleEvent(reason, error){
           childProcess.kill();
-          console.log(`reason: ${reason}, error: ${error}`);
+          logging.write(`reason: ${reason}, error: ${error}`);
           if (autoRestart && restartTimer.started==false){
               restartTimer.start(function(){
                   module.exports.createMessageBusProcess(name, fileName, thisServerAddress, autoRestart, restartTimer);
@@ -113,7 +114,7 @@ module.exports={
       childProcess.on('uncaughtException', function(obj){
         handleEvent("uncaughtException", obj);
       });
-      console.log();
+      logging.write();
       return childProcess;
   },
   createMessageBusClient: function(){
@@ -165,14 +166,14 @@ module.exports={
                                 .split(':');
       const host=addressSplit[0].split('/')[0];
       const port=addressSplit[1].split('/')[0];
-      console.log('port',port);
+      logging.write('port',port);
       return {
           host: host,
           port: port
       };
   },
   sendHttpRequest: function(url, data, path, callback){
-      console.log('creating an http request.');
+      logging.write('creating an http request.');
       const postData=module.exports.getJSONString(data);
       const info = module.exports.getHostAndPortFromUrl(url);
       const host=info.host;
@@ -190,16 +191,16 @@ module.exports={
               'Content-Length': Buffer.byteLength(postData)
           }
       };
-      console.log('http options: ',options);
+      logging.write('http options: ',options);
       const request=http.request(options);
       request.on('error', function(err){
         const errMsg=`Http error occurred: ${err}`;
-        console.log(errMsg);
+        logging.write(errMsg);
         throw errMsg;
       });
       request.on('response', function (response) {
           response.setEncoding('utf8');
-          console.log('http response received from request, status code: ',response.statusCode);
+          logging.write('http response received from request, status code: ',response.statusCode);
           response.on('data', function (body) {
             if (callback){
               callback(body);
@@ -211,18 +212,18 @@ module.exports={
     receiveHttpRequest: function(hostPort, callback, callbackError){
       const port = process.env.PORT || hostPort;
       const httpServer=http.createServer(function(req, res){
-          console.log('http request received');
+          logging.write('http request received');
           const body = [];
           res.on('error',function(err){
               const errMsg=`Http error occurred at ${location}: ${err}`;
-              console.log(errMsg);
+              logging.write(errMsg);
               callbackError(errMsg);
           });
           req.on('data', function (chunk) {
               body.push(chunk);
           });
           req.on('end', function () {
-            console.log('http request data received');
+            logging.write('http request data received');
             const requestBodyJson=Buffer.concat(body).toString();
             const requestBody=module.exports.getJSONObject(requestBodyJson);
             if (requestBody) {
@@ -237,9 +238,9 @@ module.exports={
         });
       });
       httpServer.listen(port,function(){
-          console.log();
-          console.log(`http server started and listening on port ${port}`);
-          console.log();
+          logging.write();
+          logging.write(`http server started and listening on port ${port}`);
+          logging.write();
       });
     },
     isValidUrl:function(url){

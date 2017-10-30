@@ -1,3 +1,4 @@
+const logging = require('./logging.js');
 function Timer(isInterval, name){
   let milliseconds=1000;
   let thisInstance=this;
@@ -11,20 +12,18 @@ function Timer(isInterval, name){
          }
          setTimeout(function(){
             try{
-              console.log(`interval for ${name}`);
               thisInstance.callback();
             }catch(err){
-              console.log(err);
+              logging.write(err);
             }
             internalStart(thisInstance);
           }, milliseconds);
       } else {
-        console.log('started non interval timer');
         setTimeout(function(){
             try{
               thisInstance.callback();
             }catch(err){
-                console.log(err);
+                logging.write(err);
             }
             thisInstance.stopped=true;
             thisInstance.started=false;
@@ -37,13 +36,13 @@ function Timer(isInterval, name){
   thisInstance.start=function(callback){
       thisInstance.stopped=false;
       thisInstance.started=true;
-      console.log(` ${name} timer started`);
+      logging.write(` ${name} timer started`);
       thisInstance.callback=callback;
       internalStart();
   };
   thisInstance.stop=function(){
     thisInstance.started=false;
-    console.log(` ${name} timer stopped`);
+    logging.write(` ${name} timer stopped`);
     thisInstance.stopped=true;
     thisInstance.started=false;
   };

@@ -1,8 +1,9 @@
 const name=process.argv[2];
 const libName=process.argv[3];
 const thisServerAddress=process.argv[4];
+const logging = require('./logging.js');
 
-console.log('PARAMS: ',process.argv);
+logging.write('PARAMS: ',process.argv);
 
 const utils=require('./utils.js');
 const heartbeatTimer=utils.createTimer(true, `${name} child process heartbeat`);
@@ -22,7 +23,7 @@ const instance = new CLASS(name, thisServerAddress, function(callback){
 	sendExternalMessage(message);
 });
 	
-console.log(`child process hosting the ${name} library sent a heartbeat message.`);
+logging.write(`child process hosting the ${name} library sent a heartbeat message.`);
 heartbeatTimer.start(function(){
 	var result=process.send('heartbeat');
 	if (result==false){
@@ -32,18 +33,18 @@ heartbeatTimer.start(function(){
 
 function validateSubscribeMessage(message, cbValid){
 	if (message.to && utils.isValidUrl(message.to)==true){
-		console.log('received subscribe	message is valid');
+		logging.write('received subscribe	message is valid');
 		cbValid();
 	}else{
-		console.log(`${name} child process received a message with an unknown or invalid to address: ${message.to} `);
+		logging.write(`${name} child process received a message with an unknown or invalid to address: ${message.to} `);
 	}
 };
 function validatePublishMessage(message, cbValid){
 	if (message.channel){
-		console.log('received publish message is valid');
+		logging.write('received publish message is valid');
 			cbValid();
 	}else{
-	    console.log(`${name} child process received a publish message that has no channel`);	
+	    logging.write(`${name} child process received a publish message that has no channel`);	
 	}
 };
 
@@ -51,22 +52,22 @@ function validatePublishMessage(message, cbValid){
 process.on('message', (message) => {
 	message.from=thisServerAddress;
 	message.source='internal';
-	console.log('incoming internal message');
+	logging.write('incoming internal message');
 	if (message && message !='heartbeat'){
 		receiveMessageCheck(message);
 	}else{
-		console.log('INTERNAL MESSAGE RECEIVED IS NULL');
+		logging.write('INTERNAL MESSAGE RECEIVED IS NULL');
 	}
 });
 
 const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
 utils.receiveHttpRequest(port, function requestReceived(message){
-	console.log('incoming external message');
+	logging.write('incoming external message');
 	message.source='external';
 	if (message && message !='heartbeat'){
 		receiveMessageCheck(message);
 	}else{
-		console.log('EXTERNAL MESSAGE RECEIVED IS NULL');
+		logging.write('EXTERNAL MESSAGE RECEIVED IS NULL');
 	}
 });
 
@@ -80,24 +81,24 @@ function receiveMessageCheck(message){
 			receiveSubscribeMessage(message);
 		});
 	} else{
-		console.log('received messages must indicate publish or subscribe.');
+		logging.write('received messages must indicate publish or subscribe.');
 	}
 };
 
 function sendInternalMessage(message){
-	console.log(`sending internal message to ${message.channel} channel.`);
-	console.log(`notifying parent messagebus at ${thisServerAddress}`);
+	logging.write(`sending internal message to ${message.channel} channel.`);
+	logging.write(`notifying parent messagebus at ${thisServerAddress}`);
 	const result=process.send(message);	
 	if (result==false){
-		console.log(`failed to notify parent message bus at ${thisServerAddress}`);
+		logging.write(`failed to notify parent message bus at ${thisServerAddress}`);
 	}
 };
 
 function sendExternalMessage(message){
 	if (message.to && utils.isValidUrl(message.to)==true) {
-		console.log(`notifying remote subscriptions at ${message.to}`);
+		logging.write(`notifying remote subscriptions at ${message.to}`);
 		utils.sendHttpRequest(message.to, message, null);
 	}else{
-		console.log(`can't send a message that does not have a to address.`);
+		logging.write(`can't send a message that does not have a to address.`);
 	}
 };

@@ -1,5 +1,5 @@
 const utils = require('./utils.js');
-
+const logging = require('./logging.js');
 function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubscribeMessage, sendInternalMessage, sendExternalMessage, isClient){
 
 	const subscriptions=[];
@@ -19,12 +19,12 @@ function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubsc
   	};
 
 	receivePublishMessage(function(message){
-		console.log('');
-		console.log(`/// ${name} RECEIVED A PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
+		logging.write('');
+		logging.write(`/// ${name} RECEIVED A PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
 		if (isClient==true) {
 			getSubscriptions(message.channel, function(subscription){
 				subscription.data=message.data;
-				console.log(`calling  ${message.channel} channel subscribers callbacks.`);
+				logging.write(`calling  ${message.channel} channel subscribers callbacks.`);
 				subscription.callback(subscription.data);
 			});
 		}else{
@@ -35,31 +35,31 @@ function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubsc
 			if (message.from==thisServerAddress && message.source=='internal'){ //if publish message and was not published from a remote location then it is an outgoing message
 				sendExternalMessage(message);
 			}else{
-				console.log('did not publish anything');
+				logging.write('did not publish anything');
 			}
 		}
-		console.log('');
+		logging.write('');
 	});
 
 	receiveSubscribeMessage(function(message){
-		console.log('');
-		console.log(`/// ${name} RECEIVED A SUBSCRIBE MESSAGE ///`);
-		console.log(`handling subscription to channel: ${message.channel}.`);
+		logging.write('');
+		logging.write(`/// ${name} RECEIVED A SUBSCRIBE MESSAGE ///`);
+		logging.write(`handling subscription to channel: ${message.channel}.`);
 		getSubscriptions(message.channel, function(subscription){
-			console.log(`already subscribed to ${subscription.channel} channel.`);
+			logging.write(`already subscribed to ${subscription.channel} channel.`);
 		},function(){
-			console.log(`subscribing to ${message.channel} channel.`);
+			logging.write(`subscribing to ${message.channel} channel.`);
 			subscriptions.push(message);
 		});
-		console.log('');
+		logging.write('');
 	});
 
 	this.publish=function(channel, recipientAddress, data) {
 		if (isClient==false){
   			throw 'only clients can publish, message bus is configured for processing only';
   		}
-  		console.log();
-  		console.log(`/// ${name} IS PUBLISHING TO ${channel} ///`);
+  		logging.write();
+  		logging.write(`/// ${name} IS PUBLISHING TO ${channel} ///`);
   		const changedData=utils.removeUnserialisableFields(data);
 		sendInternalMessage({
 			Id: utils.newGuid(),
@@ -69,15 +69,15 @@ function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubsc
   	 		data: changedData,
   	 		error: ""
   	 	});
-  	 	console.log();
+  	 	logging.write();
   	};
 
   	this.subscribe=function(channel, callback){
   		if (isClient==false){
   			throw 'only clients can subscribe, message bus is configured for processing only';
   		}
-  		console.log();
-  		console.log(`/// ${name} IS SUBSCRIBING TO ${channel} ///`);
+  		logging.write();
+  		logging.write(`/// ${name} IS SUBSCRIBING TO ${channel} ///`);
   		const message = {
   			Id: utils.newGuid(),
 			channel: channel,
@@ -90,11 +90,11 @@ function MessageBus(name, thisServerAddress, receivePublishMessage, receiveSubsc
 		getSubscriptions(message.channel, function(subscription){
 			subscription.callback=callback;
 		},function notFound(){
-			console.log('adding client side subscriptions');
+			logging.write('adding client side subscriptions');
 			subscriptions.push(message);
 		});
   		sendInternalMessage(message);
-  		console.log();
+  		logging.write();
   	};
 };
 module.exports=MessageBus;

@@ -1,6 +1,10 @@
 function Logging(){
-	this.log=function(){
-
+	this.write=function(message, args){
+		if (args){
+			console.log(message, args);
+		}else{
+			console.log(message);
+		}
 	};
 };
-module.exports=Logging;
+module.exports=new Logging();

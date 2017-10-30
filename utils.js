@@ -254,5 +254,8 @@ module.exports={
     getUrlPath(url){
         var url_parts = require('url').parse(url);
         return url_parts.pathname;
+    },
+    createCache=function(cacheString){
+        return new Cache(cacheString);
     }
 };

@@ -257,6 +257,7 @@ module.exports={
         return url_parts.pathname;
     },
     createCache:function(cacheString){
+        const Cache=require('./Cache.js');
         return new Cache(cacheString);
     }
 };

@@ -6,8 +6,8 @@ function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetr
 	const publishMessageQueue=[];
 	const subscribeMessageQueue=[];
 	
-	const publishQueueManager=utils.createTimer(`publish message queue manager `);
-	const subscribeQueueManager=utils.createTimer(`subscribe message queue manager `);
+	const publishQueueManager=utils.createTimer(true, `publish message queue manager `);
+	const subscribeQueueManager=utils.createTimer(true, `subscribe message queue manager `);
 
 	const messageBus = new MessageBus(thisServerAddress, this);
 
@@ -23,38 +23,39 @@ function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetr
 		}
 	};
 
-	utils.receiveHttpRequest(port, function requestReceived(message){
-		message.external=false;
-		queueMessage(message);
-	});
-	
-	messageBusProcess.on('message', (message) => {
-		message.from=thisServerAddress;
-		message.external=true;
-		queueMessage(message);
-	});
+	this.start=function(isHttpServer){
+		if (isHttpServer==true){
+			utils.receiveHttpRequest(port, function requestReceived(message){
+				message.external=false;
+				queueMessage(message);
+			});
+		}
+		messageBusProcess.on('message', (message) => {
+			message.from=thisServerAddress;
+			message.external=true;
+			queueMessage(message);
+		});
+		publishQueueManager.start(function(){
+			while(publishMessageQueue.length > 0){
+				const message=publishMessageQueue.splice(0, 1);
+				if (message.external==false){
+					messageBus.receiveInternalPublishMessage(message);
+				}
+				if (message.external==true){
+					messageBus.receiveExternalPublishMessage(message);
+				}
+			};
+		});
 
-	publishQueueManager.start(function(){
-		while(publishMessageQueue.length > 0){
-			const message=publishMessageQueue.splice(0, 1);
-			if (message.external==false){
-				messageBus.receiveInternalPublishMessage(message);
-			}
-			if (message.external==true){
-				messageBus.receiveExternalPublishMessage(message);
-			}
-		};
-	});
-
-	subscribeQueueManager.start(function(){
-		while(subscribeMessageQueue.length > 0){
-			const message=subscribeMessageQueue.splice(0, 1);
-			if (message.external==false){
-				messageBus.receiveInternalSubscribeMessage(message);
-			}
-		};
-	});
-
+		subscribeQueueManager.start(function(){
+			while(subscribeMessageQueue.length > 0){
+				const message=subscribeMessageQueue.splice(0, 1);
+				if (message.external==false){
+					messageBus.receiveInternalSubscribeMessage(message);
+				}
+			};
+		});
+	};
 	this.sendInternalMessage=function(message, callback, callbackFail){
 		logging.write(`sending internal message to ${message.channel} channel.`);
 		const result=messageBusProcess.send(message);	
@@ -75,7 +76,7 @@ function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetr
 				callback();
 			},function fail(){
 				var retryCounter=0;
-				const serviceUnavailableRetry = utils.createTimer(`${message.channel} retrying`);
+				const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
 				serviceUnavailableRetry.setTime(5000);
 				serviceUnavailableRetry.start(function(){
 					logging.write('external message retry...');

@@ -67,7 +67,7 @@ module.exports={
       });
       logging.write('');
   },
-  createMessageBusProcess:function(name, fileName, thisServerAddress, autoRestart, restartTimer){
+  createMessageBusProcess:function(name, fileName, thisServerAddress, messageSendRetryMax, autoRestart, restartTimer){
       logging.write('');
       logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
       if (!restartTimer){
@@ -76,14 +76,14 @@ module.exports={
       }
       const childFile=`${__dirname}/messageBusProcess.js`;
       const cp = require('child_process');
-      const childProcess=cp.fork(childFile, [name, fileName, thisServerAddress], { silent: true });
+      const childProcess=cp.fork(childFile, [name, fileName, thisServerAddress, messageSendRetryMax], { silent: true });
       function handleEvent(reason, error){
           childProcess.kill();
           
           logging.write(`reason: ${reason}, error: ${error}`);
           if (autoRestart && restartTimer.started==false){
               restartTimer.start(function(){
-                  module.exports.createMessageBusProcess(name, fileName, thisServerAddress, autoRestart, restartTimer);
+                  module.exports.createMessageBusProcess(name, fileName, thisServerAddress, messageSendRetryMax, autoRestart, restartTimer);
                   restartTimer.stop();
               });
           }
@@ -120,28 +120,20 @@ module.exports={
   },
   createMessageBusClient: function(){
       const MessageBus=require('./messageBus.js');
+      const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
       if (module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
       }
-      var messageBusProcess=module.exports.createMessageBusProcess('ChildMessageBus', './messageBus.js', thisServerAddress, true);
-      const messageBusClient = new MessageBus('ParentMessageBus', thisServerAddress, 
-                          function _receivePublishMessage(callback){
-                                messageBusProcess.on('message', (message) => {
-                                  if (message && message !='heartbeat'){
-                                    callback(message);
-                                  }
-                                });
-                          },function _receiveSubscribeMessage(callback){
-                                messageBusProcess.on('message', (message) => {
-                                  if (message && message !='heartbeat'){
-                                    callback(message);
-                                  }
-                                });
-                          },function _sendMessage(message){
-                                messageBusProcess.send(message);
-                          },function _sendHttpMessage(){},isClient=true);
-      return messageBusClient;
+      var messageSendRetryMax=100;
+      var messageBusProcess=module.exports.createMessageBusProcess('ChildMessageBus', 
+          './messageBus.js', 
+          thisServerAddress, 
+          messageSendRetryMax, 
+          true
+      );
+      const messageBusService = new MessageBusService(thisServerAddress, messageBusProcess, messageSendRetryMax);
+      return new MessageBus(thisServerAddress, messageBusService);
   },
   consoleReset :function () {
     return process.stdout.write('\033c');
@@ -196,7 +188,7 @@ module.exports={
       const request=http.request(options);
       request.on('error', function(err){
         if (callbackFail){
-          callbackFail(errMsg);
+          callbackFail(err);
         }else{
           const errMsg=`Http error occurred: ${err}`;
           logging.write(errMsg);

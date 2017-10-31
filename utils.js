@@ -194,20 +194,28 @@ module.exports={
       logging.write('http options: ',options);
       const request=http.request(options);
       request.on('error', function(err){
-        const errMsg=`Http error occurred: ${err}`;
-        logging.write(errMsg);
         if (callbackFail){
           callbackFail(errMsg);
+        }else{
+          const errMsg=`Http error occurred: ${err}`;
+          logging.write(errMsg);
         }
       });
       request.on('response', function (response) {
           response.setEncoding('utf8');
-          logging.write('http response received from request, status code: ',response.statusCode);
-          response.on('data', function (body) {
-            if (callback){
-              callback(body);
-            }
-          });
+          if (response.statusCode != 200){
+              if (callbackFail){
+                callbackFail(errMsg);
+              }else{
+                logging.write('http response received from request, status code: ',response.statusCode);
+              }
+          }else{
+            response.on('data', function (body) {
+              if (callback){
+                callback(body);
+              }
+            });
+          }
       });
       request.end(postData);
     },

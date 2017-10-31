@@ -15,11 +15,8 @@ function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetr
 		utils.receiveHttpRequest(port, function requestReceived(receiveMessage){
 			if (receiveMessage.data && receiveMessage.publish==true && receiveMessage.channel){
 				logging.write('pushing internal message onto message queue');
-				messageQueue.push({
-					external: true,
-					publish: true,
-					data: data				
-				});
+				receiveMessage.external=true;
+				messageQueue.push(receiveMessage);
 			}else{
 				logging.write('received http message structure is wrong.');
 			}

@@ -206,7 +206,7 @@ module.exports={
           response.setEncoding('utf8');
           if (response.statusCode != 200){
               if (callbackFail){
-                callbackFail(errMsg);
+                callbackFail(`http request responded with http status code: ${response.statusCode}`);
               }else{
                 logging.write('http response received from request, status code: ', response.statusCode);
               }

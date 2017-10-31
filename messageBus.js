@@ -1,6 +1,6 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
-function MessageBus(thisServerAddress, messageBusService, isHost){
+function MessageBus(thisServerAddress, messageBusService){
 	const subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;
@@ -19,7 +19,6 @@ function MessageBus(thisServerAddress, messageBusService, isHost){
 
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
-		logging.write(`MessageBus is host ${isHost}`);
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
 		logging.write(`subscription count ${subscriptions.length}`);
 		getSubscriptions.apply(this, [message.channel, function(subscription){
@@ -34,15 +33,11 @@ function MessageBus(thisServerAddress, messageBusService, isHost){
 
 	this.receiveExternalPublishMessage=function(message){
 		logging.write('');
-		logging.write(`MessageBus is host ${isHost}`);
 		logging.write(`/// RECEIVED AN EXTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
 		messageBusService.sendInternalMessage(message,function(){
 			console.log('external message was sent internally');
 		});
 		logging.write('');
-		if (isHost==undefined){
-			throw new Error();
-		}
 	};
 
 	this.receiveInternalSubscribeMessage=function(message){

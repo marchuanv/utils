@@ -6,8 +6,7 @@ function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetr
 	const messageQueueManager=utils.createTimer(true, `publish message queue manager `);
 	this.messageBus = new MessageBus(
 		thisServerAddress, 
-		this, 
-		isHost
+		this
 	);
 	const thisService=this;
 

@@ -12,12 +12,13 @@ function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetr
 
 	if (isHost==true){
 		const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
-		utils.receiveHttpRequest(port, function requestReceived(message){
-			message.external=true;
-			if (message.publish==true){
-				logging.write('pushing internal message onto message queue');
-				messageQueue.push(message);
-			}
+		utils.receiveHttpRequest(port, function requestReceived(data){
+			logging.write('pushing internal message onto message queue');
+			messageQueue.push({
+				external: true,
+				publish: true,
+				data: data				
+			});
 		});
 	}
 	messageBusProcess.on('message', (message) => {

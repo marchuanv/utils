@@ -8,7 +8,7 @@ function handleSubscribe(data){
 	messageBus.unsubscribe('loop',function(){
 		// messageBus.publish('loop',  process.env.thisserveraddress,  msg);
 		//messageBus.subscribe('loop', handleSubscribe);
-		console.log('TEST PASSED');
+		console.log('TEST PASSED', data);
 	},function fail(){
 		console.log('failed to unsubscribe');
 	});

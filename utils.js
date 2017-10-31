@@ -76,7 +76,7 @@ module.exports={
       }
       const childFile=`${__dirname}/messageBusProcess.js`;
       const cp = require('child_process');
-      const childProcess=cp.fork(childFile, [name, fileName, thisServerAddress]);
+      const childProcess=cp.fork(childFile, [name, fileName, thisServerAddress], { silent: true });
       function handleEvent(reason, error){
           childProcess.kill();
           logging.write(`reason: ${reason}, error: ${error}`);

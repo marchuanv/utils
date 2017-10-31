@@ -14,11 +14,15 @@ function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetr
 		const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
 		utils.receiveHttpRequest(port, function requestReceived(data){
 			logging.write('pushing internal message onto message queue');
-			messageQueue.push({
-				external: true,
-				publish: true,
-				data: data				
-			});
+			if (message.publish==true){
+				messageQueue.push({
+					external: true,
+					publish: true,
+					data: data				
+				});
+			}else{
+				logging.write('received http structure does not indicate publish');
+			}
 		});
 	}
 	messageBusProcess.on('message', (message) => {

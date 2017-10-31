@@ -36,7 +36,7 @@ function MessageBus(thisServerAddress, messageBusService){
 	this.receiveExternalPublishMessage=function(message){
 		logging.write('');
 		logging.write(`/// RECEIVED AN EXTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
-		messageBusService.sendInternalMessage(message,function(){
+		messageBusService.sendInternalMessage(message, function(){
 			console.log('external message was sent internally');
 		});
 		logging.write('');

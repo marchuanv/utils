@@ -12,16 +12,16 @@ function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetr
 
 	if (isHost==true){
 		const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
-		utils.receiveHttpRequest(port, function requestReceived(data){
-			logging.write('pushing internal message onto message queue');
-			if (message.publish==true){
+		utils.receiveHttpRequest(port, function requestReceived(receiveMessage){
+			if (receiveMessage.data && receiveMessage.publish==true && receiveMessage.channel){
+				logging.write('pushing internal message onto message queue');
 				messageQueue.push({
 					external: true,
 					publish: true,
 					data: data				
 				});
 			}else{
-				logging.write('received http structure does not indicate publish');
+				logging.write('received http message structure is wrong.');
 			}
 		});
 	}

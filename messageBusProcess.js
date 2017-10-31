@@ -5,11 +5,11 @@ const thisServerAddress=process.argv[4];
 const messageSendRetryMax=process.argv[5];
 const logging = require('./logging.js');
 logging.write('PARAMS: ',process.argv);
-
 const MessageBusService = require('./messageBusService.js');
-const messageBusService=new MessageBusService(
+new MessageBusService(
 	thisServerAddress, 
 	process, 
-	messageSendRetryMax
+	messageSendRetryMax,
+	true
 );
-messageBusService.start(isHttpServer=true);
+console.log('message bus service started on child process');

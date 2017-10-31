@@ -1,65 +1,52 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
-function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetryMax){
+function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetryMax, isHost){
+	const messageQueue=[];
+	const messageQueueManager=utils.createTimer(true, `publish message queue manager `);
+	this.messageBus = new MessageBus(
+		thisServerAddress, 
+		this, 
+		isHost
+	);
+	const thisService=this;
 
-	const publishMessageQueue=[];
-	const subscribeMessageQueue=[];
-	
-	const publishQueueManager=utils.createTimer(true, `publish message queue manager `);
-	const subscribeQueueManager=utils.createTimer(true, `subscribe message queue manager `);
-
-	const messageBus = new MessageBus(thisServerAddress, this);
-
-	const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
-	const httpServerStarted=true;
-	const thisInstance=this;
-
-	function queueMessage(message){
-		if (message.publish==true){
-			publishMessageQueue.push(message);
-		}else if (message.publish==false){
-			subscribeMessageQueue.push(message);
-		}
-	};
-
-	this.start=function(isHttpServer){
-		if (isHttpServer==true){
-			utils.receiveHttpRequest(port, function requestReceived(message){
-				message.external=false;
-				queueMessage(message);
-			});
-		}
-		messageBusProcess.on('message', (message) => {
-			message.from=thisServerAddress;
+	if (isHost==true){
+		const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
+		utils.receiveHttpRequest(port, function requestReceived(message){
 			message.external=true;
-			queueMessage(message);
+			if (message.publish==true){
+				logging.write('pushing internal message onto message queue');
+				messageQueue.push(message);
+			}
 		});
-		publishQueueManager.start(function(){
-			while(publishMessageQueue.length > 0){
-				const message=publishMessageQueue.splice(0, 1);
-				if (message.external==false){
-					messageBus.receiveInternalPublishMessage(message);
-				}
-				if (message.external==true){
-					messageBus.receiveExternalPublishMessage(message);
-				}
-			};
-		});
+	}
+	messageBusProcess.on('message', (message) => {
+		message.from=thisServerAddress;
+		message.external=false;
+		if (message.publish==true){
+			logging.write('pushing external message onto message queue');
+			messageQueue.push(message);
+		}
+	});
+	messageQueueManager.start(function(){
+		while(messageQueue.length > 0){
+			const message=messageQueue.splice(0, 1)[0];
+			if (message.external==false){
+				console.log('dequeuing internal message');
+				thisService.messageBus.receiveInternalPublishMessage(message);
+			}
+			if (message.external==true){
+				console.log('dequeuing external message');
+				thisService.messageBus.receiveExternalPublishMessage(message);
+			}
+		};
+	});
 
-		subscribeQueueManager.start(function(){
-			while(subscribeMessageQueue.length > 0){
-				const message=subscribeMessageQueue.splice(0, 1);
-				if (message.external==false){
-					messageBus.receiveInternalSubscribeMessage(message);
-				}
-			};
-		});
-	};
 	this.sendInternalMessage=function(message, callback, callbackFail){
 		logging.write(`sending internal message to ${message.channel} channel.`);
 		const result=messageBusProcess.send(message);	
-		if (result==false){
+		if (result==true){
 			callback();
 		}else{
 			if (callbackFail){

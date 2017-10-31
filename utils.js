@@ -76,7 +76,10 @@ module.exports={
       }
       const childFile=`${__dirname}/messageBusProcess.js`;
       const cp = require('child_process');
-      const childProcess=cp.fork(childFile, [name, fileName, thisServerAddress, messageSendRetryMax], { silent: true });
+      const childProcess=cp.fork(childFile, 
+          [name, fileName, thisServerAddress, messageSendRetryMax]
+          // { silent: true }
+      );
       function handleEvent(reason, error){
           childProcess.kill();
           
@@ -125,15 +128,21 @@ module.exports={
       if (module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
       }
-      var messageSendRetryMax=100;
-      var messageBusProcess=module.exports.createMessageBusProcess('ChildMessageBus', 
+      var messageSendRetryMax=5;
+      var messageBusProcess=module.exports.createMessageBusProcess(
+          'ChildMessageBus', 
           './messageBus.js', 
           thisServerAddress, 
           messageSendRetryMax, 
           true
       );
-      const messageBusService = new MessageBusService(thisServerAddress, messageBusProcess, messageSendRetryMax);
-      return new MessageBus(thisServerAddress, messageBusService);
+      const messageBusService = new MessageBusService(
+          thisServerAddress,
+          messageBusProcess,
+          messageSendRetryMax,
+          false
+      );
+      return messageBusService.messageBus;
   },
   consoleReset :function () {
     return process.stdout.write('\033c');
@@ -159,7 +168,7 @@ module.exports={
                                 .split(':');
       const host=addressSplit[0].split('/')[0];
       const port=addressSplit[1].split('/')[0];
-      logging.write('port',port);
+      logging.write('port', port);
       return {
           host: host,
           port: port
@@ -187,12 +196,11 @@ module.exports={
       logging.write('http options: ',options);
       const request=http.request(options);
       request.on('error', function(err){
-        if (callbackFail){
-          callbackFail(err);
-        }else{
-          const errMsg=`Http error occurred: ${err}`;
-          logging.write(errMsg);
-        }
+          if (callbackFail){
+              callbackFail(err);
+          }else{
+              logging.write(`Http error occurred: ${err}`);
+          }
       });
       request.on('response', function (response) {
           response.setEncoding('utf8');
@@ -200,13 +208,13 @@ module.exports={
               if (callbackFail){
                 callbackFail(errMsg);
               }else{
-                logging.write('http response received from request, status code: ',response.statusCode);
+                logging.write('http response received from request, status code: ', response.statusCode);
               }
           }else{
             response.on('data', function (body) {
-              if (callback){
-                callback(body);
-              }
+                if (callback){
+                  callback(body);
+                }
             });
           }
       });
@@ -240,13 +248,13 @@ module.exports={
             }
         });
       });
-      httpServer.listen(port,function(){
-          logging.write();
+      httpServer.listen(port, function(){
+          logging.write('');
           logging.write(`http server started and listening on port ${port}`);
-          logging.write();
+          logging.write('');
       });
     },
-    isValidUrl:function(url){
+    isValidUrl: function(url){
         var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
           '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
           '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
@@ -259,7 +267,7 @@ module.exports={
         var url_parts = require('url').parse(url);
         return url_parts.pathname;
     },
-    createCache:function(cacheString){
+    createCache: function(cacheString){
         const Cache=require('./cache.js');
         return new Cache(cacheString);
     },

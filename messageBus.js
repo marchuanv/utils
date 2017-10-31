@@ -26,6 +26,8 @@ function MessageBus(thisServerAddress, messageBusService){
 				subscription.data=message.data;
 				subscription.callback(subscription.data);
 				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
+			}else{
+				logging.write(`subscription for ${subscription.channel} does not have a callback.`);
 			}
 		}]);
 		logging.write('');

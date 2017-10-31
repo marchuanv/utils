@@ -56,7 +56,7 @@ module.exports={
       logging.write();
   },
   sendMessagesOnSocket: function(hostPort, message){
-      logging.write();
+      logging.write('');
       logging.write(`/////////////////////////////////  SENDING MESSAGE TO SOCKET SERVER ///////////////////////////////`);
       const net = require('net');
       var client = new net.Socket();
@@ -65,10 +65,10 @@ module.exports={
           const dataStr=module.exports.getJSONString(message);
           client.write(dataStr);
       });
-      logging.write();
+      logging.write('');
   },
   createMessageBusProcess:function(name, fileName, thisServerAddress, autoRestart, restartTimer){
-      logging.write();
+      logging.write('');
       logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
       if (!restartTimer){
         restartTimer=module.exports.createTimer(false, 'child process restart');
@@ -79,6 +79,7 @@ module.exports={
       const childProcess=cp.fork(childFile, [name, fileName, thisServerAddress], { silent: true });
       function handleEvent(reason, error){
           childProcess.kill();
+          
           logging.write(`reason: ${reason}, error: ${error}`);
           if (autoRestart && restartTimer.started==false){
               restartTimer.start(function(){
@@ -114,7 +115,7 @@ module.exports={
       childProcess.on('uncaughtException', function(obj){
         handleEvent("uncaughtException", obj);
       });
-      logging.write();
+      logging.write('');
       return childProcess;
   },
   createMessageBusClient: function(){

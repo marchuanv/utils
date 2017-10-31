@@ -3,15 +3,14 @@ const logging=require('./logging.js');
 process.env.thisserveraddress='localhost:3000';
 const messageBus=new utils.createMessageBusClient();
 
-try{
-	messageBus.subscribe('endpoint1', function success(requestData) {
-		logging.write('subscriber1 notified: ',requestData);
+const msg={ message: "LOOP TEST" };
+function handleSubscribe(data){
+	messageBus.unsubscribe('loop',function(){
+		messageBus.publish('loop',  process.env.thisserveraddress,  msg);
+		messageBus.subscribe('loop', handleSubscribe);
+	},function fail(){
+		console.log('failed to unsubscribe');
 	});
-	messageBus.subscribe('endpoint2', function success(requestData) {
-		logging.write('subscriber2 notified: ',requestData);
-	});
-	messageBus.publish('endpoint1',  'localhost:3000',  {message:"blaaaaaaaaaaaaaaaaaaaa"});
-	messageBus.publish('endpoint2',   'localhost:3000', {message:"naaaaahhhhhhh"});
-}catch(err){
-	logging.write(err);
-}
+};
+messageBus.subscribe('loop', handleSubscribe);
+messageBus.publish('loop',  process.env.thisserveraddress,  msg);

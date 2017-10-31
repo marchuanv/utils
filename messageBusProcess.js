@@ -1,13 +1,11 @@
+const utils=require('./utils.js');
+
 const name=process.argv[2];
 const libName=process.argv[3];
 const thisServerAddress=process.argv[4];
 const logging = require('./logging.js');
 
 logging.write('PARAMS: ',process.argv);
-
-const utils=require('./utils.js');
-const heartbeatTimer=utils.createTimer(true, `${name} child process heartbeat`);
-heartbeatTimer.setTime(5000);
 
 const CLASS=require(libName);
 var receivePublishMessage;
@@ -21,14 +19,6 @@ const instance = new CLASS(name, thisServerAddress, function(callback){
 	sendInternalMessage(message);
 }, function(message){
 	sendExternalMessage(message);
-});
-	
-logging.write(`child process hosting the ${name} library sent a heartbeat message.`);
-heartbeatTimer.start(function(){
-	var result=process.send('heartbeat');
-	if (result==false){
-		throw `${name} child process was unable to send heartbeat to parent process`;
-	}
 });
 
 function validateSubscribeMessage(message, cbValid){

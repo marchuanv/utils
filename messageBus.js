@@ -30,6 +30,12 @@ function MessageBus(thisServerAddress, messageRoutingAddress, messageBusService)
 				logging.write(`subscription for ${subscription.channel} does not have a callback.`);
 			}
 		}]);
+		getSubscriptions.apply(this, ['routing', function(routingSubscription){
+			if (routingSubscription.callback){
+				routingSubscription.callback(message);
+				logging.write(`handing message to routing mechanism`);
+			}
+		}]);
 		logging.write('');
 	};
 

@@ -1,9 +1,9 @@
 const utils=require('./utils.js');
 const logging=require('./logging.js');
 process.env.thisserveraddress='localhost:3000';
-process.env.messageroutingaddress='localhost:3000';
+process.env.remoteserveraddress='localhost:3000';
 
-const messageBus=new utils.createMessageBusClient(false);
+const messageBus=new utils.createMessageBusClient(true);
 const msg={ 
 	message: "LOOP TEST"
 };

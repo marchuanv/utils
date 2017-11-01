@@ -1,7 +1,6 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
-const thisServerAddress=process.env.thisserveraddress;
-const messageRoutingAddress=process.env.messageroutingaddress;
+
 function MessageBus(messageBusService){
 	const subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){
@@ -62,8 +61,8 @@ function MessageBus(messageBusService){
 		messageBusService.sendExternalPublishMessage({
 			Id: utils.newGuid(),
 			channel: channel,
-  	 		to: messageRoutingAddress,
-  	 		from: thisServerAddress,
+  	 		to: process.env.remoteserveraddress,
+  	 		from: process.env.thisserveraddress,
   	 		data: changedData
   	 	});
   	 	logging.write('');

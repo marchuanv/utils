@@ -1,7 +1,7 @@
 const http=require('http');
 const logging=require('./logging.js');
 
-function createMessageBusProcess(name, fileName, thisServerAddress, messageRoutingAddress, routingMode, messageSendRetryMax, autoRestart, restartTimer){
+function createMessageBusProcess(name, fileName, thisServerAddress, remoteServerAddress, routingMode, messageSendRetryMax, autoRestart, restartTimer){
     logging.write('');
     logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
     if (!restartTimer){
@@ -11,7 +11,7 @@ function createMessageBusProcess(name, fileName, thisServerAddress, messageRouti
     const childFile=`${__dirname}/messageBusProcess.js`;
     const cp = require('child_process');
     const childProcess=cp.fork(childFile, 
-        [name, fileName, thisServerAddress, messageRoutingAddress, messageSendRetryMax, routingMode]
+        [name, fileName, thisServerAddress, remoteServerAddress, messageSendRetryMax, routingMode]
         // { silent: true }
     );
     function handleEvent(reason, error){
@@ -20,7 +20,7 @@ function createMessageBusProcess(name, fileName, thisServerAddress, messageRouti
         logging.write(`reason: ${reason}, error: ${error}`);
         if (autoRestart && restartTimer.started==false){
             restartTimer.start(function(){
-                createMessageBusProcess(name, fileName, thisServerAddress, messageRoutingAddress, routingMode, messageSendRetryMax, autoRestart, restartTimer);
+                createMessageBusProcess(name, fileName, thisServerAddress, remoteServerAddress, routingMode, messageSendRetryMax, autoRestart, restartTimer);
                 restartTimer.stop();
             });
         }
@@ -128,22 +128,22 @@ module.exports={
       const MessageBus=require('./messageBus.js');
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
-      const messageRoutingAddress=process.env.messageroutingaddress;
+      const remoteServerAddress=process.env.remoteserveraddress;
       if (routingMode == undefined || routingMode == null || routingMode == ''){
          routingMode=false;
       }
       if (!thisServerAddress || module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
       }
-      if (!messageRoutingAddress|| module.exports.isValidUrl(messageRoutingAddress)==false){
-        throw 'child process was provided with an invalid message routing address';
+      if (!remoteServerAddress|| module.exports.isValidUrl(remoteServerAddress)==false){
+        throw 'child process was provided with an invalid remote server address';
       }
       var messageSendRetryMax=5;
       var messageBusProcess=createMessageBusProcess(
           'ChildMessageBus', 
           './messageBus.js', 
           thisServerAddress,
-          messageRoutingAddress,
+          remoteServerAddress,
           routingMode,
           messageSendRetryMax, 
           true

@@ -1,14 +1,14 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
-const thisServerAddress=process.env.thisserveraddress;
+
 function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost){
 	
 	this.messageBus = new MessageBus(this);
 	const thisService=this;
 
 	if (isHost==true){
-		const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
+		const port= utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
 		utils.receiveHttpRequest(port, function requestReceived(receiveMessage){
 			if (receiveMessage.data && receiveMessage.channel){
 				thisService.messageBus.receiveExternalPublishMessage(receiveMessage);

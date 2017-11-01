@@ -1,13 +1,10 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
-function MessageBusService(thisServerAddress, messageRoutingAddress, routingMode, messageBusProcess, messageSendRetryMax, isHost){
+const thisServerAddress=process.env.thisserveraddress;
+function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost){
 	
-	this.messageBus = new MessageBus(
-		thisServerAddress,
-		messageRoutingAddress,
-		this
-	);
+	this.messageBus = new MessageBus(this);
 	const thisService=this;
 
 	if (isHost==true){

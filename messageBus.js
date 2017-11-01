@@ -1,6 +1,8 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
-function MessageBus(thisServerAddress, messageRoutingAddress, messageBusService){
+const thisServerAddress=process.env.thisserveraddress;
+const messageRoutingAddress=process.env.messageroutingaddress;
+function MessageBus(messageBusService){
 	const subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;

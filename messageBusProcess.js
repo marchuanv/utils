@@ -8,9 +8,11 @@ const routingMode=Boolean(process.argv[7]);
 const logging = require('./logging.js');
 logging.write('PARAMS: ',process.argv);
 const MessageBusService = require('./messageBusService.js');
+
+process.env.thisserveraddress=thisServerAddress;
+process.env.messageroutingaddress=messageRoutingAddress;
+
 new MessageBusService(
-	thisServerAddress,
-	messageRoutingAddress,
 	routingMode,
 	process,
 	messageSendRetryMax,

@@ -149,8 +149,6 @@ module.exports={
           true
       );
       const messageBusService = new MessageBusService(
-          thisServerAddress,
-          messageRoutingAddress,
           routingMode,
           messageBusProcess,
           messageSendRetryMax,

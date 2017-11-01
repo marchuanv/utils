@@ -94,7 +94,7 @@ function MessageBus(thisServerAddress, messageBusService){
   	this.unsubscribe=function(channel, callback, callbackFail){
   		getSubscriptions(channel, function(subscription, index){
   			if (subscription.to==thisServerAddress){
-				subscriptions.splice(index, 0);
+				subscriptions.splice(index, 1);
 				callback();
   			}
 		}, callbackFail);

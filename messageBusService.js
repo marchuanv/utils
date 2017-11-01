@@ -2,8 +2,7 @@ const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 function MessageBusService(thisServerAddress, messageRoutingAddress, messageBusProcess, messageSendRetryMax, isHost){
-	const messageQueue=[];
-	const messageQueueManager=utils.createTimer(true, `publish message queue manager `);
+	
 	this.messageBus = new MessageBus(
 		thisServerAddress,
 		messageRoutingAddress,
@@ -14,38 +13,20 @@ function MessageBusService(thisServerAddress, messageRoutingAddress, messageBusP
 	if (isHost==true){
 		const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
 		utils.receiveHttpRequest(port, function requestReceived(receiveMessage){
-			if (receiveMessage.data && receiveMessage.publish==true && receiveMessage.channel){
-				logging.write('pushing internal message onto message queue');
-				receiveMessage.external=true;
-				messageQueue.push(receiveMessage);
+			if (receiveMessage.data && receiveMessage.channel){
+				logging.write('pushing internal publish message onto message queue');
+				thisService.messageBus.receiveExternalPublishMessage(receiveMessage);
 			}else{
 				logging.write('received http message structure is wrong.');
 			}
 		});
 	}
-	messageBusProcess.on('message', (message) => {
-		message.from=thisServerAddress;
-		message.external=false;
-		if (message.publish==true){
-			logging.write('pushing external message onto message queue');
-			messageQueue.push(message);
-		}
-	});
-	messageQueueManager.start(function(){
-		while(messageQueue.length > 0){
-			const message=messageQueue.splice(0, 1)[0];
-			if (message.external==false){
-				console.log('dequeuing internal message');
-				thisService.messageBus.receiveInternalPublishMessage(message);
-			}
-			if (message.external==true){
-				console.log('dequeuing external message');
-				thisService.messageBus.receiveExternalPublishMessage(message);
-			}
-		};
+	messageBusProcess.on('message', (receiveMessage) => {
+		logging.write('pushing external publish message onto message queue');
+		thisService.messageBus.receiveInternalPublishMessage(receiveMessage);
 	});
 
-	this.sendInternalMessage=function(message, callback, callbackFail){
+	this.sendInternalPublishMessage=function(message, callback, callbackFail){
 		logging.write(`sending internal message to ${message.channel} channel.`);
 		const result=messageBusProcess.send(message);	
 		if (result==true){
@@ -58,7 +39,7 @@ function MessageBusService(thisServerAddress, messageRoutingAddress, messageBusP
 			}
 		}
 	};
-	this.sendExternalMessage=function(message, callback, callbackFail){
+	this.sendExternalPublishMessage=function(message, callback, callbackFail){
 		if (message.to && utils.isValidUrl(message.to)==true) {
 			logging.write(`notifying remote subscriptions at ${message.to}`);
 			utils.sendHttpRequest(message.to, message, '', function sucess(){

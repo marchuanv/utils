@@ -125,11 +125,11 @@ module.exports={
       const MessageBus=require('./messageBus.js');
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
-      const messageRoutingAddress=process.env.thisserveraddress;
-      if (module.exports.isValidUrl(thisServerAddress)==false){
+      const messageRoutingAddress=process.env.messageroutingaddress;
+      if (!thisServerAddress || module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
       }
-      if (module.exports.isValidUrl(messageRoutingAddress)==false){
+      if (!messageRoutingAddress|| module.exports.isValidUrl(messageRoutingAddress)==false){
         throw 'child process was provided with an invalid message routing address';
       }
       var messageSendRetryMax=5;

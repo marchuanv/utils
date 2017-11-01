@@ -49,7 +49,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
 				const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
 				serviceUnavailableRetry.setTime(5000);
 				serviceUnavailableRetry.start(function(){
-					logging.write('external message retry...');
+					logging.write(`retry: sending message to ${message.to}`);
 					utils.sendHttpRequest(message.to, message, '', function success(){
 						callback();
 						serviceUnavailableRetry.stop();

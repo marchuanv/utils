@@ -205,7 +205,6 @@ module.exports={
               'Content-Length': Buffer.byteLength(postData)
           }
       };
-      logging.write('http options: ',options);
       const request=http.request(options);
       request.on('error', function(err){
           if (callbackFail){

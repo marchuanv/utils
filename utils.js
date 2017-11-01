@@ -67,7 +67,7 @@ module.exports={
       });
       logging.write('');
   },
-  createMessageBusProcess:function(name, fileName, thisServerAddress, messageSendRetryMax, autoRestart, restartTimer){
+  createMessageBusProcess:function(name, fileName, thisServerAddress, messageRoutingAddress, messageSendRetryMax, autoRestart, restartTimer){
       logging.write('');
       logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
       if (!restartTimer){
@@ -77,7 +77,7 @@ module.exports={
       const childFile=`${__dirname}/messageBusProcess.js`;
       const cp = require('child_process');
       const childProcess=cp.fork(childFile, 
-          [name, fileName, thisServerAddress, messageSendRetryMax]
+          [name, fileName, thisServerAddress, messageRoutingAddress, messageSendRetryMax]
           // { silent: true }
       );
       function handleEvent(reason, error){
@@ -86,7 +86,7 @@ module.exports={
           logging.write(`reason: ${reason}, error: ${error}`);
           if (autoRestart && restartTimer.started==false){
               restartTimer.start(function(){
-                  module.exports.createMessageBusProcess(name, fileName, thisServerAddress, messageSendRetryMax, autoRestart, restartTimer);
+                  module.exports.createMessageBusProcess(name, fileName, thisServerAddress, messageRoutingAddress, messageSendRetryMax, autoRestart, restartTimer);
                   restartTimer.stop();
               });
           }
@@ -125,6 +125,7 @@ module.exports={
       const MessageBus=require('./messageBus.js');
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
+      const messageRoutingAddress=process.env.thisserveraddress;
       if (module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
       }
@@ -132,12 +133,14 @@ module.exports={
       var messageBusProcess=module.exports.createMessageBusProcess(
           'ChildMessageBus', 
           './messageBus.js', 
-          thisServerAddress, 
+          thisServerAddress,
+          messageRoutingAddress,
           messageSendRetryMax, 
           true
       );
       const messageBusService = new MessageBusService(
           thisServerAddress,
+          messageRoutingAddress,
           messageBusProcess,
           messageSendRetryMax,
           false

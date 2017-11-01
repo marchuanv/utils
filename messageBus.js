@@ -1,6 +1,6 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
-function MessageBus(thisServerAddress, messageBusService){
+function MessageBus(thisServerAddress, messageRoutingAddress, messageBusService){
 	const subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;
@@ -55,7 +55,7 @@ function MessageBus(thisServerAddress, messageBusService){
 		logging.write('');
 	};
 
-	this.publish=function(channel, recipientAddress, data) {
+	this.publish=function(channel, data) {
   		logging.write('');
   		logging.write(`/// PUBLISHING TO ${channel} ///`);
   		const changedData=utils.removeUnserialisableFields(data);
@@ -63,7 +63,7 @@ function MessageBus(thisServerAddress, messageBusService){
 			Id: utils.newGuid(),
 			channel: channel,
 			publish: true,
-  	 		to: recipientAddress,
+  	 		to: messageRoutingAddress,
   	 		data: changedData,
   	 		error: ""
   	 	});

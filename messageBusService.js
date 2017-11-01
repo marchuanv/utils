@@ -1,11 +1,12 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
-function MessageBusService(thisServerAddress, messageBusProcess, messageSendRetryMax, isHost){
+function MessageBusService(thisServerAddress, messageRoutingAddress, messageBusProcess, messageSendRetryMax, isHost){
 	const messageQueue=[];
 	const messageQueueManager=utils.createTimer(true, `publish message queue manager `);
 	this.messageBus = new MessageBus(
-		thisServerAddress, 
+		thisServerAddress,
+		messageRoutingAddress,
 		this
 	);
 	const thisService=this;

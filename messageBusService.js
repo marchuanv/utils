@@ -1,7 +1,7 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
-function MessageBusService(thisServerAddress, messageRoutingAddress, messageBusProcess, messageSendRetryMax, isHost){
+function MessageBusService(thisServerAddress, messageRoutingAddress, routingMode, messageBusProcess, messageSendRetryMax, isHost){
 	
 	this.messageBus = new MessageBus(
 		thisServerAddress,
@@ -14,7 +14,6 @@ function MessageBusService(thisServerAddress, messageRoutingAddress, messageBusP
 		const port= utils.getHostAndPortFromUrl(thisServerAddress).port;
 		utils.receiveHttpRequest(port, function requestReceived(receiveMessage){
 			if (receiveMessage.data && receiveMessage.channel){
-				logging.write('pushing internal publish message onto message queue');
 				thisService.messageBus.receiveExternalPublishMessage(receiveMessage);
 			}else{
 				logging.write('received http message structure is wrong.');
@@ -22,8 +21,12 @@ function MessageBusService(thisServerAddress, messageRoutingAddress, messageBusP
 		});
 	}
 	messageBusProcess.on('message', (receiveMessage) => {
-		logging.write('pushing external publish message onto message queue');
-		thisService.messageBus.receiveInternalPublishMessage(receiveMessage);
+		if (routingMode==true){
+			console.log('internal message will be sent to routing subscription');
+			thisService.messageBus.receiveRoutingMessage(receiveMessage);
+		}else{
+			thisService.messageBus.receiveInternalPublishMessage(receiveMessage);
+		}
 	});
 
 	this.sendInternalPublishMessage=function(message, callback, callbackFail){

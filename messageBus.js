@@ -17,6 +17,17 @@ function MessageBus(thisServerAddress, messageRoutingAddress, messageBusService)
   		}
   	};
 
+  	this.receiveRoutingMessage=function(message){
+		getSubscriptions.apply(this, ['routing', function(routingSubscription){
+			if (routingSubscription.callback){
+				routingSubscription.callback(message);
+				logging.write(`handing message to routing mechanism`);
+			}else{
+				throw 'message bus is in routing mode but no routing subscription found.'
+			}
+		}]);
+  	};
+
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
@@ -28,12 +39,6 @@ function MessageBus(thisServerAddress, messageRoutingAddress, messageBusService)
 				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
 			}else{
 				logging.write(`subscription for ${subscription.channel} does not have a callback.`);
-			}
-		}]);
-		getSubscriptions.apply(this, ['routing', function(routingSubscription){
-			if (routingSubscription.callback){
-				routingSubscription.callback(message);
-				logging.write(`handing message to routing mechanism`);
 			}
 		}]);
 		logging.write('');

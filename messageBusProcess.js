@@ -4,13 +4,15 @@ const libName=process.argv[3];
 const thisServerAddress=process.argv[4];
 const messageRoutingAddress=process.argv[5];
 const messageSendRetryMax=process.argv[6];
+const routingMode=Boolean(process.argv[7]);
 const logging = require('./logging.js');
 logging.write('PARAMS: ',process.argv);
 const MessageBusService = require('./messageBusService.js');
 new MessageBusService(
 	thisServerAddress,
 	messageRoutingAddress,
-	process, 
+	routingMode,
+	process,
 	messageSendRetryMax,
 	true
 );

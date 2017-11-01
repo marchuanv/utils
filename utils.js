@@ -1,5 +1,61 @@
 const http=require('http');
 const logging=require('./logging.js');
+
+function createMessageBusProcess(name, fileName, thisServerAddress, messageRoutingAddress, routingMode, messageSendRetryMax, autoRestart, restartTimer){
+    logging.write('');
+    logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
+    if (!restartTimer){
+      restartTimer=module.exports.createTimer(false, 'child process restart');
+      restartTimer.setTime(10000);
+    }
+    const childFile=`${__dirname}/messageBusProcess.js`;
+    const cp = require('child_process');
+    const childProcess=cp.fork(childFile, 
+        [name, fileName, thisServerAddress, messageRoutingAddress, messageSendRetryMax, routingMode]
+        // { silent: true }
+    );
+    function handleEvent(reason, error){
+        childProcess.kill();
+        
+        logging.write(`reason: ${reason}, error: ${error}`);
+        if (autoRestart && restartTimer.started==false){
+            restartTimer.start(function(){
+                createMessageBusProcess(name, fileName, thisServerAddress, messageRoutingAddress, routingMode, messageSendRetryMax, autoRestart, restartTimer);
+                restartTimer.stop();
+            });
+        }
+    };
+     childProcess.on('exit', function(obj){
+      handleEvent("exit", obj);
+    });
+    childProcess.on('SIGINT',  function(obj){
+      handleEvent("SIGINT");
+    });
+    childProcess.on('SIGHUP', function(obj){
+      handleEvent("SIGHUP");
+    });
+    childProcess.on('SIGUSR1', function(obj){
+      handleEvent("SIGUSR1");
+    });
+    childProcess.on('SIGUSR2', function(obj){
+      handleEvent("SIGUSR2");
+    });
+    childProcess.on('close', function(obj){
+      handleEvent("close", obj);
+    });
+    childProcess.on( 'SIGTERM', function(obj){
+      handleEvent("SIGTERM");
+    });
+    childProcess.on('error', function(obj){
+      handleEvent("error", obj);
+    });
+    childProcess.on('uncaughtException', function(obj){
+      handleEvent("uncaughtException", obj);
+    });
+    logging.write('');
+    return childProcess;
+};
+
 module.exports={
   getRandomNumber: function(min, max){
     return Math.floor(Math.random()*(max-min+1)+min);
@@ -67,65 +123,15 @@ module.exports={
       });
       logging.write('');
   },
-  createMessageBusProcess:function(name, fileName, thisServerAddress, messageRoutingAddress, messageSendRetryMax, autoRestart, restartTimer){
-      logging.write('');
-      logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
-      if (!restartTimer){
-        restartTimer=module.exports.createTimer(false, 'child process restart');
-        restartTimer.setTime(10000);
-      }
-      const childFile=`${__dirname}/messageBusProcess.js`;
-      const cp = require('child_process');
-      const childProcess=cp.fork(childFile, 
-          [name, fileName, thisServerAddress, messageRoutingAddress, messageSendRetryMax]
-          // { silent: true }
-      );
-      function handleEvent(reason, error){
-          childProcess.kill();
-          
-          logging.write(`reason: ${reason}, error: ${error}`);
-          if (autoRestart && restartTimer.started==false){
-              restartTimer.start(function(){
-                  module.exports.createMessageBusProcess(name, fileName, thisServerAddress, messageRoutingAddress, messageSendRetryMax, autoRestart, restartTimer);
-                  restartTimer.stop();
-              });
-          }
-      };
-       childProcess.on('exit', function(obj){
-        handleEvent("exit", obj);
-      });
-      childProcess.on('SIGINT',  function(obj){
-        handleEvent("SIGINT");
-      });
-      childProcess.on('SIGHUP', function(obj){
-        handleEvent("SIGHUP");
-      });
-      childProcess.on('SIGUSR1', function(obj){
-        handleEvent("SIGUSR1");
-      });
-      childProcess.on('SIGUSR2', function(obj){
-        handleEvent("SIGUSR2");
-      });
-      childProcess.on('close', function(obj){
-        handleEvent("close", obj);
-      });
-      childProcess.on( 'SIGTERM', function(obj){
-        handleEvent("SIGTERM");
-      });
-      childProcess.on('error', function(obj){
-        handleEvent("error", obj);
-      });
-      childProcess.on('uncaughtException', function(obj){
-        handleEvent("uncaughtException", obj);
-      });
-      logging.write('');
-      return childProcess;
-  },
-  createMessageBusClient: function(){
+  
+  createMessageBusClient: function(routingMode){
       const MessageBus=require('./messageBus.js');
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
       const messageRoutingAddress=process.env.messageroutingaddress;
+      if (routingMode == undefined || routingMode == null || routingMode == ''){
+         routingMode=false;
+      }
       if (!thisServerAddress || module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
       }
@@ -133,17 +139,19 @@ module.exports={
         throw 'child process was provided with an invalid message routing address';
       }
       var messageSendRetryMax=5;
-      var messageBusProcess=module.exports.createMessageBusProcess(
+      var messageBusProcess=createMessageBusProcess(
           'ChildMessageBus', 
           './messageBus.js', 
           thisServerAddress,
           messageRoutingAddress,
+          routingMode,
           messageSendRetryMax, 
           true
       );
       const messageBusService = new MessageBusService(
           thisServerAddress,
           messageRoutingAddress,
+          routingMode,
           messageBusProcess,
           messageSendRetryMax,
           false

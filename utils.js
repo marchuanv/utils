@@ -245,9 +245,9 @@ module.exports={
               body.push(chunk);
           });
           req.on('end', function () {
-            logging.write('http request data received');
             const requestBodyJson=Buffer.concat(body).toString();
             const requestBody=module.exports.getJSONObject(requestBodyJson);
+            logging.write('http request data received: ',requestBody);
             if (requestBody) {
                 res.statusCode = 200;
                 res.end();

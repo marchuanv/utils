@@ -187,9 +187,9 @@ module.exports={
       };
   },
   sendHttpRequest: function(url, data, path, callback, callbackFail){
-      logging.write('creating an http request.');
       const postData=module.exports.getJSONString(data);
       const info = module.exports.getHostAndPortFromUrl(url);
+      logging.write('creating an http request.', postData);
       const host=info.host;
       var port=info.port;
       if (!port){

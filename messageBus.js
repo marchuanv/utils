@@ -31,7 +31,7 @@ function MessageBus(messageBusService){
 
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
-		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
+		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
 		logging.write(`subscription count ${subscriptions.length}`);
 		getSubscriptions.apply(this, [message.channel, function(subscription){
 			if (subscription.callback){
@@ -47,7 +47,7 @@ function MessageBus(messageBusService){
 
 	this.receiveExternalPublishMessage=function(message){
 		logging.write('');
-		logging.write(`/// RECEIVED AN EXTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
+		logging.write(`/// RECEIVED AN EXTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
 		messageBusService.sendInternalPublishMessage(message, function(){
 			console.log('external message was sent internally');
 		});

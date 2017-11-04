@@ -187,10 +187,9 @@ module.exports={
       };
   },
   sendHttpRequest: function(url, data, path, callback, callbackFail){
-      logging.write('creating an http request.', data);
+      logging.write('creating an http request.');
       const postData=module.exports.getJSONString(data);
       const info = module.exports.getHostAndPortFromUrl(url);
-      logging.write('creating an http request.', postData);
       const host=info.host;
       var port=info.port;
       if (!port){
@@ -248,7 +247,7 @@ module.exports={
           req.on('end', function () {
             const requestBodyJson=Buffer.concat(body).toString();
             const requestBody=module.exports.getJSONObject(requestBodyJson);
-            logging.write('http request data received: ',requestBody);
+            logging.write('http request data received.');
             if (requestBody) {
                 res.statusCode = 200;
                 res.end();

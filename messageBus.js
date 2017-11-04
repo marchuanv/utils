@@ -57,13 +57,12 @@ function MessageBus(messageBusService){
 	this.publish=function(channel, data) {
   		logging.write('');
   		logging.write(`/// PUBLISHING TO ${channel} ///`);
-  		const changedData=utils.removeUnserialisableFields(data);
 		messageBusService.sendExternalPublishMessage({
 			Id: utils.newGuid(),
 			channel: channel,
   	 		to: process.env.remoteserveraddress,
   	 		from: process.env.thisserveraddress,
-  	 		data: changedData
+  	 		data: data
   	 	});
   	 	logging.write('');
   	};

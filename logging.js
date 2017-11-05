@@ -12,6 +12,9 @@ function Logging() {
         for (var i = 0; i < conditions.lenght; i++) {
             const cond = conditions[i];
             if (cond(message) == false) {
+                console.log();
+                console.log('CONDITION PASSED');
+                console.log();
                 passed = false;
             }
         };

@@ -24,18 +24,19 @@ function GoogleDrive(key){
     });
     
     function getFileId(name, callback){
-      drive.files.list(function(files){
-          console.log('Files:');
-          for (var i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file.name==name){
-              callback(file.id);
-                return;
-            }
-          };
-          callback(null);
-      });
-      
+        setTimeout(function(){
+          drive.files.list(function(files){
+              console.log('Files:');
+              for (var i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.name==name){
+                    callback(file.id);
+                    return;
+                }
+              };
+              callback(null);
+          });
+        },5000);
     };
     
     this.replace=function(name, data, callback){

@@ -1,6 +1,8 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
+logging.condition(function(){
 
+});
 function MessageBus(messageBusService){
 	const subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){

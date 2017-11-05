@@ -11,7 +11,7 @@ function Logging() {
         console.log();
         console.log('CONDITION CHECK START: ',conditions);
         var passed = true;
-        for (var i = 0; i < conditions.lenght; i++) {
+        for (var i = 0; i < conditions.length; i++) {
             const cond = conditions[i];
             if (cond(message) == false) {
                 console.log('condition not met');

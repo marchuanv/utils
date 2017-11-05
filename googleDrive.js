@@ -24,16 +24,18 @@ function GoogleDrive(key){
     });
     
     function getFileId(name, callback){
-      var files = drive.files;
-      console.log('Files:');
-      for (var i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file.name==name){
-          callback(file.id);
-            return;
-        }
-      };
-      callback(null);
+      drive.files.list(function(files){
+          console.log('Files:');
+          for (var i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.name==name){
+              callback(file.id);
+                return;
+            }
+          };
+          callback(null);
+      });
+      
     };
     
     this.replace=function(name, data, callback){

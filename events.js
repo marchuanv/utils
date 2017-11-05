@@ -22,3 +22,17 @@ jwtClient.authorize(function (err, tokens) {
     // handle err and response
   });
 });
+module.exports={
+  create: function(name, data, callback){
+    drive.files.create({
+      resource: {
+        name: name,
+        mimeType: 'application/json'
+      },
+      media: {
+        mimeType: 'application/json',
+        body: data
+      }
+    }, callback);
+  }
+};

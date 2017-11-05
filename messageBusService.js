@@ -2,6 +2,13 @@ const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 
+logging.condition(function(message){
+   if(message.indexOf('heartbeat')>=0){
+     return false;
+   }
+   return true;
+});
+
 function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost){
 	
 	this.messageBus = new MessageBus(this);

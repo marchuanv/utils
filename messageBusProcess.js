@@ -12,6 +12,13 @@ const MessageBusService = require('./messageBusService.js');
 process.env.thisserveraddress=thisServerAddress;
 process.env.remoteserveraddress=remoteServerAddress;
 
+logging.condition(function(message){
+   if(message.indexOf('heartbeat')>=0){
+     return false;
+   }
+   return true;
+});
+
 new MessageBusService(
 	routingMode,
 	process,

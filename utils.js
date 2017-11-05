@@ -284,5 +284,17 @@ module.exports={
     },
     createLogging: function(){
       return require('./logging.js');
+    },
+    storeData: function(key, fileName, data){
+        const GoogleDrive=require('./googledrive.js');
+        const drive=new GoogleDrive(key);
+        drive.create(fileName, data, function(){
+            console.log(`${fileName} was created`);
+        });
+    },
+    getData: function(key, fileName, callback){
+        const GoogleDrive=require('./googledrive.js');
+        const drive=new GoogleDrive(key);
+        drive.load(fileName,callback); 
     }
 };

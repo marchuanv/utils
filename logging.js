@@ -9,16 +9,18 @@ function Logging() {
             throw err;
         }
         console.log();
-        console.log('CONDITION: ',conditions);
-        console.log();
+        console.log('CONDITION CHECK START: ',conditions);
         var passed = true;
         for (var i = 0; i < conditions.lenght; i++) {
             const cond = conditions[i];
             if (cond(message) == false) {
-                
+                console.log('condition not met');
                 passed = false;
             }
         };
+        console.log('CONDITION CHECK STOP');
+        console.log();
+      
         if (passed == false) {
             return;
         }

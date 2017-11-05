@@ -1,6 +1,6 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
-logging.condition(function(){
+logging.condition(function(message){
 
 });
 function MessageBus(messageBusService){

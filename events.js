@@ -1,6 +1,6 @@
 var google = require('googleapis');
 var key = require('./privatekey.json');
-var drive = google.drive('v2');
+var drive = null;
 
 var authScopes =  ['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/drive.file'];
 
@@ -17,11 +17,14 @@ jwtClient.authorize(function (err, tokens) {
     console.log(err);
     return;
   }
+  drive = google.drive({
+    version: 'v2',
+    auth: oauth2Client
+  });
 });
 module.exports={
   create: function(name, data, callback){
     drive.files.create({
-      auth: jwtClient,
       resource: {
         name: name,
         mimeType: 'application/json'

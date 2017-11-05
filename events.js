@@ -1,5 +1,7 @@
 var google = require('googleapis');
 var key = require('./privatekey.json');
+var drive = google.drive('v2');
+
 var authScopes =  ['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/drive.file'];
 
 var jwtClient = new google.auth.JWT(
@@ -15,16 +17,11 @@ jwtClient.authorize(function (err, tokens) {
     console.log(err);
     return;
   }
-  // Make an authorized request to list Drive files.
-  drive.files.list({
-    auth: jwtClient
-  }, function (err, resp) {
-    // handle err and response
-  });
 });
 module.exports={
   create: function(name, data, callback){
     drive.files.create({
+      auth: jwtClient,
       resource: {
         name: name,
         mimeType: 'application/json'
@@ -34,5 +31,7 @@ module.exports={
         body: data
       }
     }, callback);
+  },
+  load: function(name, callback){
   }
 };

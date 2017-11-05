@@ -22,29 +22,43 @@ function GoogleDrive(key){
         auth: jwtClient
       });
     });
-    this.create=function(name, data, callback){
-      drive.files.create({
-        resource: {
-          name: name,
-          mimeType: 'application/json'
-        },
-        media: {
-          mimeType: 'application/json',
-          body: data
+    
+    function getFileId(name, callback){
+      var files = drive.files;
+      console.log('Files:');
+      for (var i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.name==name){
+          callback(file.id);
+            return;
         }
-      }, callback);
+      };
+      callback(null);
     };
+    
+    this.replace=function(name, data, callback){
+      getFileId(name, function(_fileId){
+          if (_fileId){
+                drive.files.delete({fileId: _fileId});
+          }
+          drive.files.create({
+            resource: {
+              name: name,
+              mimeType: 'application/json'
+            },
+            media: {
+              mimeType: 'application/json',
+              body: data
+            }
+          }, callback);
+      });
+    };
+    
     this.load=function(name, callback){
-        var files = drive.files;
-        if (files.length == 0) {
-          console.log('No files found.');
-        } else {
-          console.log('Files:');
-          for (var i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file.name==name){
+        getFileId(name, function(_fileId){
+          if (_fileId){
               drive.files.get({
-                  fileId: file.id,
+                  fileId: _fileId,
                   alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
               }, function(err, result) {
                   if(err){
@@ -53,10 +67,10 @@ function GoogleDrive(key){
                   }
                   callback(result);
               });
-              return;
-            }
+          }else{
+            console.log(`${name} does not exist`);
           }
-        }
+        });
     }
 }
 module.exports=GoogleDrive;

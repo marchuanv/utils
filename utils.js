@@ -288,7 +288,7 @@ module.exports={
     storeData: function(key, fileName, data){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.create(fileName, data, function(){
+        drive.replace(fileName, data, function(){
             console.log(`${fileName} was created`);
         });
     },

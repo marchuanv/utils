@@ -18,8 +18,8 @@ jwtClient.authorize(function (err, tokens) {
     return;
   }
   drive = google.drive({
-    version: 'v2',
-    auth: oauth2Client
+    version: 'v3',
+    auth: jwtClient
   });
 });
 module.exports={

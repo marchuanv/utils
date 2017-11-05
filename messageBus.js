@@ -2,6 +2,8 @@ const utils = require('./utils.js');
 const logging = require('./logging.js');
 logging.condition(function(message){
    if(message.indexOf('heartbeat')>=0){
+	console.log('Blàaaaaaaaaaaaaaàaaa');
+	   
      return false;
    }
    return true;

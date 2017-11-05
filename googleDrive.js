@@ -25,8 +25,11 @@ function GoogleDrive(key){
     
     function getFileId(name, callback){
         setTimeout(function(){
-          drive.files.list(function(res){
-              console.log('Files:', drive.files);
+          drive.files.list(function(err, res){
+              if (err) {
+                console.log(err);
+                return;
+              }
               for (var i = 0; i < res.files.length; i++) {
                 const file = res.files[i];
                 if (file.name==name){

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    'googleapis': "^22.2.0"
   }
 }

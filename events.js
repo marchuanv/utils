@@ -21,6 +21,7 @@ jwtClient.authorize(function (err, tokens) {
     version: 'v3',
     auth: jwtClient
   });
+  
 });
 module.exports={
   create: function(name, data, callback){
@@ -36,15 +37,27 @@ module.exports={
     }, callback);
   },
   load: function(name, callback){
-    drive.files.get({
-        fileId: name,
-        alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
-    }, function(err, result) {
-        if(err){
-          console.log(err);
+    var files = drive.files;
+    if (files.length == 0) {
+      console.log('No files found.');
+    } else {
+      console.log('Files:');
+      for (var i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.name==name){
+          drive.files.get({
+              fileId: file.id,
+              alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
+          }, function(err, result) {
+              if(err){
+                console.log(err);
+                return;
+              }
+              callback(result);
+          });
           return;
         }
-        callback(result);
-    });
+      };
+    }
   }
 };

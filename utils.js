@@ -218,7 +218,7 @@ module.exports={
                     res.statusCode = 200;
                     res.end();
                     callback(requestBody);
-                } else if(data){
+                } else if(req.method.toLowerCase()=="get"){
                     res.statusCode = 200;
                     res.end(resData);
                 }else{

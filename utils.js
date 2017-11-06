@@ -209,7 +209,8 @@ module.exports={
             const requestBody=module.exports.getJSONObject(requestBodyJson);
             logging.write('http request data received.');
             const fs=require('fs');
-            fs.readFile('data.json', "utf8", function(err, data) {
+            const dataFilePath=`${__dirname}/data.json`;
+            fs.readFile(dataFilePath, "utf8", function(err, data) {
                 var resData=data;
                 if (err){
                     resData={message:"success"};

@@ -69,6 +69,7 @@ function MessageBus(messageBusService){
 			channel: channel,
   	 		to: process.env.remoteserveraddress,
   	 		from: process.env.thisserveraddress,
+			date:(new Date()).toString(),
   	 		data: data
   	 	});
   	 	logging.write('');

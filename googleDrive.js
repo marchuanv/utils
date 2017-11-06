@@ -24,7 +24,7 @@ function GoogleDrive(key){
     });
     
     function getFileId(name, callback){
-        setTimeout(function(){
+        
           drive.files.list(function(err, res){
               if (err) {
                 console.log(err);
@@ -40,7 +40,6 @@ function GoogleDrive(key){
               };
               callback(null);
           });
-        },5000);
     };
     
     this.replace=function(name, data, callback){

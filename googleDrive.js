@@ -33,7 +33,7 @@ function GoogleDrive(key){
               for (var i = 0; i < res.files.length; i++) {
                 const file = res.files[i];
                 if (file.name==name){
-                    console.log('file was found: ',file);
+                    console.log('file was found: ',file.id);
                     callback(file.id);
                     return;
                 }

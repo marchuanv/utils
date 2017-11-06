@@ -76,6 +76,7 @@ function GoogleDrive(key){
               });
           }else{
             console.log(`${name} does not exist`);
+            callback(null);
           }
         });
     }

@@ -61,15 +61,15 @@ function MessageBus(messageBusService){
 		logging.write('');
 	};
 
-	this.publish=function(channel, data) {
+	this.publish=function(channel, userId, data) {
   		logging.write('');
   		logging.write(`/// PUBLISHING TO ${channel} ///`);
 		messageBusService.sendExternalPublishMessage({
-			Id: utils.newGuid(),
 			channel: channel,
   	 		to: process.env.remoteserveraddress,
   	 		from: process.env.thisserveraddress,
 			date:(new Date()).toString(),
+			userId: userId,
   	 		data: data
   	 	});
   	 	logging.write('');
@@ -79,9 +79,8 @@ function MessageBus(messageBusService){
   		logging.write('');
   		logging.write(`/// SUBSCRIBING TO ${channel} ///`);
   		const message={
-  			Id: 		utils.newGuid(),
-			channel: 	channel,
-			callback: 	callback
+			channel: channel,
+			callback: callback
   		};
   		//get all local subscriptions and add them if they don't exist.
 		getSubscriptions(message.channel, function(subscription){

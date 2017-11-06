@@ -216,9 +216,12 @@ module.exports={
                 }
                 if (requestBody) {
                     res.statusCode = 200;
-                    res.end(resData);
+                    res.end();
                     callback(requestBody);
-                } else {
+                } else if(data){
+                    res.statusCode = 200;
+                    res.end(resData);
+                }else{
                     res.statusCode = 500;
                     res.end();
                     callbackError(`no request body`);

@@ -8,6 +8,9 @@ function Logging() {
             var err = new Error('message was empty');
             throw err;
         }
+        if(typeof message!=='string'){
+ console.error(' MESSAGE WAS NOT A STRING',message);
+}
         var passed = true;
         for (var i = 0; i < conditions.length; i++) {
             const cond = conditions[i];

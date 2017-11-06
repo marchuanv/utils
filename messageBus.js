@@ -41,13 +41,10 @@ function MessageBus(messageBusService){
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
 		logging.write(`subscription count ${subscriptions.length}`);
 		getSubscriptions.apply(this, [message.channel, function(subscription){
-			if (subscription.callback){
-				subscription.data=message.data;
-				subscription.callback(subscription.data);
-				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
-			}else{
-				logging.write(`subscription for ${subscription.channel} does not have a callback.`);
-			}
+			
+		subscription.callback(message.data, message.userId);
+		logging.write(`calling ${message.channel} channel subscribers callbacks.`);
+			
 		}]);
 		logging.write('');
 	};

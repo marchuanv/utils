@@ -95,35 +95,6 @@ module.exports={
       });
       return uuid;
   },
-  receiveMessagesOnSocket: function(hostPort, callback){
-      logging.write();
-      logging.write(`/////////////////////////////////  STARTING SOCKET SERVER ///////////////////////////////`);
-      const net = require('net');
-      var server = net.createServer(function(socket) {
-          socket.setEncoding("utf8");
-          socket.write('Echo server\r\n');
-          socket.on('data', function(message) {
-              callback(message);
-          });
-      });
-      server.listen(hostPort,function(){
-          logging.write('socket server started on port 80');
-      });
-      logging.write();
-  },
-  sendMessagesOnSocket: function(hostPort, message){
-      logging.write('');
-      logging.write(`/////////////////////////////////  SENDING MESSAGE TO SOCKET SERVER ///////////////////////////////`);
-      const net = require('net');
-      var client = new net.Socket();
-      client.connect(hostPort, function(){
-          logging.write(`connected to socket server on port ${hostPort}`);
-          const dataStr=module.exports.getJSONString(message);
-          client.write(dataStr);
-      });
-      logging.write('');
-  },
-  
   createMessageBusClient: function(routingMode){
       const MessageBus=require('./messageBus.js');
       const MessageBusService=require('./messageBusService.js');
@@ -158,17 +129,6 @@ module.exports={
   },
   consoleReset :function () {
     return process.stdout.write('\033c');
-  },
-  removeUnserialisableFields: function(data){
-    const newObj={};
-    for(var i in data){
-      try{
-        JSON.stringify(data[i]);
-        newObj[i]=data[i];
-      }catch(err){
-      }
-    };
-    return newObj;
   },
   createCache: function(cacheJson){
     const Cache = require('/cache.js');

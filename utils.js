@@ -208,15 +208,22 @@ module.exports={
             const requestBodyJson=Buffer.concat(body).toString();
             const requestBody=module.exports.getJSONObject(requestBodyJson);
             logging.write('http request data received.');
-            if (requestBody) {
-                res.statusCode = 200;
-                res.end();
-                callback(requestBody);
-            } else {
-                res.statusCode = 500;
-                res.end();
-                callbackError(`no request body`);
-            }
+            const fs=require('fs');
+            fs.readFile('data.json', "utf8", function(err, data) {
+                var resData=data;
+                if (err){
+                    resData={message:"success"};
+                }
+                if (requestBody) {
+                    res.statusCode = 200;
+                    res.end(resData);
+                    callback(requestBody);
+                } else {
+                    res.statusCode = 500;
+                    res.end();
+                    callbackError(`no request body`);
+                }
+            });
         });
       });
       httpServer.listen(port, function(){

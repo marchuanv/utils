@@ -214,6 +214,7 @@ module.exports={
                 var resData=data;
                 if (err){
                     resData={message:"success"};
+                    console.log('error: ',err);
                 }
                 if (requestBody) {
                     res.statusCode = 200;

@@ -219,8 +219,9 @@ module.exports={
                     res.end();
                     callback(requestBody);
                 } else if(req.method.toLowerCase()=="get"){
+                    const resDataJson=module.exports.getJSONString(resData);
                     res.statusCode = 200;
-                    res.end(resData);
+                    res.end(resDataJson);
                 }else{
                     res.statusCode = 500;
                     res.end();

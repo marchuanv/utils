@@ -211,15 +211,16 @@ module.exports={
             const fs=require('fs');
             var dataFilePath=`${__dirname}/data.json`;
             dataFilePath=dataFilePath.replace('node_modules/utils/','');
-            console.log();
-              console.log(`////////////////////// ${dataFilePath} ////////////////////`);
-              console.log();
             fs.readFile(dataFilePath, "utf8", function(err, data) {
                 var resData=data;
                 if (err){
                     resData={message:"success"};
                     console.log('error: ',err);
                 }
+                console.log();
+              console.log(`////////////////////// ${resData} ////////////////////`);
+              console.log();
+
                 if (requestBody) {
                     res.statusCode = 200;
                     res.end();

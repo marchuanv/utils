@@ -27,12 +27,8 @@ function MessageBus(messageBusService){
 
   	this.receiveRoutingMessage=function(message){
 		getSubscriptions.apply(this, ['routing', function(routingSubscription){
-			if (routingSubscription.callback){
-				routingSubscription.callback(message);
-				logging.write(`handing message to routing mechanism`);
-			}else{
-				throw 'message bus is in routing mode but no routing subscription found.'
-			}
+			routingSubscription.callback(message);
+			logging.write(`handing message to routing mechanism`);
 		}]);
   	};
 

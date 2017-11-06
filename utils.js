@@ -209,7 +209,8 @@ module.exports={
             const requestBody=module.exports.getJSONObject(requestBodyJson);
             logging.write('http request data received.');
             const fs=require('fs');
-            const dataFilePath=`${__dirname}/data.json`;
+            var dataFilePath=`${__dirname}/data.json`;
+            dataFilePath=dataFilePath.replace('node_modules/utils/','');
             fs.readFile(dataFilePath, "utf8", function(err, data) {
                 var resData=data;
                 if (err){

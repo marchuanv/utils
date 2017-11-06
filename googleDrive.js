@@ -17,10 +17,10 @@ function GoogleDrive(key){
         console.log(err);
         return;
       }
-      drive = google.drive({
+    });
+    drive = google.drive({
         version: 'v3',
         auth: jwtClient
-      });
     });
     
     function getFileId(name, callback){

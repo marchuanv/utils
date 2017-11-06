@@ -30,10 +30,10 @@ function GoogleDrive(key){
                 console.log(err);
                 return;
               }
-              console.log('res.files',res.files);
               for (var i = 0; i < res.files.length; i++) {
                 const file = res.files[i];
                 if (file.name==name){
+                    console.log('file was found: ',file);
                     callback(file.id);
                     return;
                 }

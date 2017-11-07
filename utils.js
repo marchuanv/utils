@@ -292,5 +292,28 @@ module.exports={
         filePath=filePath.replace('node_modules/utils/','');
         const fs=require('fs');
         fs.writeFile(filePath, 'utf8', data);
-    }
+    },
+    replaceFile: function(name, data){
+        var filePath=´${__dirname}/${name}´;
+        filePath=filePath.replace('.json','');
+        filePath=´${filePath}.json´;
+        filePath=filePath.replace('node_modules/utils/','');
+        const fs=require('fs');
+        fs.unlink(filePath, function(err) {
+           // Ignore error if no file already exists	 
+           if (err && err.code !== 'ENOENT') {
+              throw err;
+           }
+           const dataStr = module.exports.getJSONString(data);
+           var options = {
+              flag: 'w'
+           };
+           fs.writeFile(filePath, dataStr, options, function(err) {
+              if (err) {
+                 throw err;
+              }
+              callback();
+           });
+         });
+      }
 };

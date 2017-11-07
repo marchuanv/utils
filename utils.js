@@ -285,7 +285,12 @@ module.exports={
             callback(data);
         });
     },
-    createFile: function(){
-        
+    createFile: function(name, data){
+        var filePath=´${__dirname}/${name}´;
+        filePath=filePath.replace('.json','');
+        filePath=´${filePath}.json´;
+        filePath=filePath.replace('node_modules/utils/','');
+        const fs=require('fs');
+        fs.writeFile(filePath, 'utf8', data);
     }
 };

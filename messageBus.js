@@ -47,7 +47,7 @@ function MessageBus(messageBusService){
 
 	this.receiveExternalPublishMessage=function(message){
 	utils.readJsonFile('messages.json', function(existingMessages) {
-            if (!existingMessages) {
+            if (existingMessages) {
                 existingMessages.push(message);
                 utils.replaceJsonFile('messages.json', existingMessages);
             } else {

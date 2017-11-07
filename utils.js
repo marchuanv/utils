@@ -274,5 +274,10 @@ module.exports={
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
         drive.load(fileName,callback); 
+    },
+    createFile: function(name){
+        const filePath=´${__dirname}/${name}´;
+        filePath=filePath.replace('.js','');
+        const fs=require('./');
     }
 };

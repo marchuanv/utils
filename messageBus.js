@@ -46,6 +46,7 @@ function MessageBus(messageBusService){
 	};
 
 	this.receiveExternalPublishMessage=function(message){
+	utils.appendFile('messages', message);
 		logging.write('');
 		logging.write(`/// RECEIVED AN EXTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
 		messageBusService.sendInternalPublishMessage(message, function(){

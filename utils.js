@@ -208,35 +208,25 @@ module.exports={
             const requestBodyJson=Buffer.concat(body).toString();
             const requestBody=module.exports.getJSONObject(requestBodyJson);
             logging.write('http request data received.');
-            const fs=require('fs');
-            var dataFilePath=`${__dirname}/data.json`;
-            dataFilePath=dataFilePath.replace('node_modules/utils/','');
-            fs.readFile(dataFilePath, "utf8", function(err, data) {
-                var resData=data;
-                if (err){
-                    resData={message:"success"};
-                    console.log('error: ',err);
-                }
-                console.log();
-              console.log(`////////////////////// ${resData} ////////////////////`);
-              console.log();
-
                 if (requestBody) {
                     res.statusCode = 200;
                     res.end();
                     callback(requestBody);
                 } else if(req.method.toLowerCase()=="get"){
-                    const resDataJson=module.exports.getJSONString(resData);
-                    res.statusCode = 200;
-                    res.end(resDataJson);
+                    callback(function(resData){
+                        res.statusCode = 200;
+                        var resDataJson=module.exports.getJSONString(resData);
+                        res.end(resDataJson);
+                    });
                 }else{
                     res.statusCode = 500;
                     res.end();
                     callbackError(`no request body`);
                 }
-            });
+            
         });
       });
+        
       httpServer.listen(port, function(){
           logging.write('');
           logging.write(`http server started and listening on port ${port}`);

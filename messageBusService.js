@@ -14,9 +14,13 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
     const thisService = this;
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
-        utils.receiveHttpRequest(port, function requestReceived(receiveMessage) {
-            if (receiveMessage.data && receiveMessage.channel) {
+        utils.receiveHttpRequest(port, function requestReceived(obj) {
+            if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(receiveMessage);
+            } else if(type obj==='function'){
+                utils.readJsonFile('messages.json', function(data){
+                    obj(data);
+                });
             } else {
                 logging.write('received http message structure is wrong.');
             }

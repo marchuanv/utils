@@ -275,14 +275,6 @@ module.exports={
             callback(data);
         });
     },
-    createJsonFile: function(name, data){
-        var filePath=`${__dirname}/${name}`;
-        filePath=filePath.replace('.json','');
-        filePath=`${filePath}.json`;
-        filePath=filePath.replace('node_modules/utils/','');
-        const fs=require('fs');
-        fs.writeFile(filePath, 'utf8', data);
-    },
     replaceJsonFile: function(name, data){
         var filePath=`${__dirname}/${name}`;
         filePath=filePath.replace('.json','');

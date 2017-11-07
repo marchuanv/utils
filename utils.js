@@ -275,28 +275,28 @@ module.exports={
         const drive=new GoogleDrive(key);
         drive.load(fileName,callback); 
     },
-    readFile: function(name, callback){
-        var filePath=´${__dirname}/${name}´;
+    readJsonFile: function(name, callback){
+        var filePath=`${__dirname}/${name}`;
         filePath=filePath.replace('.json','');
-        filePath=´${filePath}.json´;
+        filePath=`${filePath}.json`;
         filePath=filePath.replace('node_modules/utils/','');
         const fs=require('fs');
         fs.readFile(filePath, 'utf8', function(err, data){
             callback(data);
         });
     },
-    createFile: function(name, data){
-        var filePath=´${__dirname}/${name}´;
+    createJsonFile: function(name, data){
+        var filePath=`${__dirname}/${name}`;
         filePath=filePath.replace('.json','');
-        filePath=´${filePath}.json´;
+        filePath=`${filePath}.json`;
         filePath=filePath.replace('node_modules/utils/','');
         const fs=require('fs');
         fs.writeFile(filePath, 'utf8', data);
     },
-    replaceFile: function(name, data){
-        var filePath=´${__dirname}/${name}´;
+    replaceJsonFile: function(name, data){
+        var filePath=`${__dirname}/${name}`;
         filePath=filePath.replace('.json','');
-        filePath=´${filePath}.json´;
+        filePath=`${filePath}.json`;
         filePath=filePath.replace('node_modules/utils/','');
         const fs=require('fs');
         fs.unlink(filePath, function(err) {

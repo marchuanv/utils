@@ -46,11 +46,15 @@ function MessageBus(messageBusService){
 	};
 
 	this.receiveExternalPublishMessage=function(message){
-	utils.readJsonFile('messages.json', function(existingMessages){
-		existingMessages.push(message);
-		utils.replaceJsonFile('messages.json', existingMessages);
+	utils.readJsonFile('messages.json', function(existingMessages) {
+            if (!existingMessages) {
+                existingMessages.push(message);
+                utils.replaceJsonFile('messages.json', existingMessages);
+            } else {
+                utils.replaceJsonFile('messages.json', [message]);
+            }
         });
-		logging.write('');
+		logging.write('');		
 		logging.write(`/// RECEIVED AN EXTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
 		messageBusService.sendInternalPublishMessage(message, function(){
 			logging.write('external message was sent internally');

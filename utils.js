@@ -312,7 +312,6 @@ module.exports={
               if (err) {
                  throw err;
               }
-              callback();
            });
          });
       }

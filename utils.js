@@ -271,7 +271,8 @@ module.exports={
         filePath=`${filePath}.json`;
         filePath=filePath.replace('node_modules/utils/','');
         const fs=require('fs');
-        fs.readFile(filePath, 'utf8', function(err, data){
+        fs.readFile(filePath, 'utf8', function(err, jsonStr){
+            const data=module.exports.getJSONObject(jsonStr);
             callback(data);
         });
     },

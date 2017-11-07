@@ -253,7 +253,7 @@ module.exports={
     createLogging: function(){
       return require('./logging.js');
     },
-    storeData: function(key, fileName, data){
+    uploadToGoogleDrive: function(key, fileName, data){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
         drive.replace(fileName, data, function(){

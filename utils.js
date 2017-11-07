@@ -275,11 +275,17 @@ module.exports={
         const drive=new GoogleDrive(key);
         drive.load(fileName,callback); 
     },
-    createFile: function(name){
-        const filePath=´${__dirname}/${name}´;
-        filePath=filePath.replace('.js','');
-        filePath=´${filePath}.js´;
-        filePath=filePath.replace('node_modules/utils','');
-        const fs=require('./');
+    readFile: function(name, callback){
+        var filePath=´${__dirname}/${name}´;
+        filePath=filePath.replace('.json','');
+        filePath=´${filePath}.json´;
+        filePath=filePath.replace('node_modules/utils/','');
+        const fs=require('fs');
+        fs.readFile(filePath, 'utf8', function(err, data){
+            callback(data);
+        });
+    },
+    createFile: function(){
+        
     }
 };

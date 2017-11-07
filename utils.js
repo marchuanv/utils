@@ -278,6 +278,8 @@ module.exports={
     createFile: function(name){
         const filePath=´${__dirname}/${name}´;
         filePath=filePath.replace('.js','');
+        filePath=´${filePath}.js´;
+        filePath=filePath.replace('node_modules/utils','');
         const fs=require('./');
     }
 };

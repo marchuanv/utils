@@ -17,7 +17,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         utils.receiveHttpRequest(port, function requestReceived(obj) {
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(receiveMessage);
-            } else if(type obj==='function'){
+            } else if(obj && type obj==='function'){
                 utils.readJsonFile('messages.json', function(data){
                     obj(data);
                 });

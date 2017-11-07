@@ -47,6 +47,13 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             }
         }
     };
+    this.getPublishAddress=function(channel, callback){
+       utils.sendHttpRequest(process.env.subscriptionsaddress, [channel], '', function sucess(address) {
+                callback(address);
+       }, function fail() {
+          logging.write('failed to get publish address');
+       });
+    });
     this.sendExternalPublishMessage = function(message, callback, callbackFail) {
         if (message.to && utils.isValidUrl(message.to) == true) {
             logging.write(`notifying remote subscriptions at ${message.to}`);

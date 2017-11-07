@@ -65,14 +65,17 @@ function MessageBus(messageBusService){
 	this.publish=function(channel, userId, data) {
   		logging.write('');
   		logging.write(`/// PUBLISHING TO ${channel} ///`);
-		messageBusService.sendExternalPublishMessage({
+   messageBusService.getPublishAddress(channel, function(toAddress){
+
+		 messageBusService.sendExternalPublishMessage({
 			channel: channel,
-  	 		to: process.env.remoteserveraddress,
+  	 		to: toAddress,
   	 		from: process.env.thisserveraddress,
 			date:(new Date()).toString(),
 			userId: userId,
   	 		data: data
   	 	});
+});
   	 	logging.write('');
   	};
 

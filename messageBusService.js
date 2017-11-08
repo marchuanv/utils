@@ -18,9 +18,11 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                utils.downloadGoogleDriveData(privatekey, fileName, function(messages) {
+                utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
                    const messagesJson=utils.getJSONString(messages);
                    obj(messagesJson);
+                },function notFound(){
+                    obj('no messages found');
                 });
             } else {
                 logging.write('received http message structure is wrong.');

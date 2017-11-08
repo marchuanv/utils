@@ -53,6 +53,14 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                     logging.write(`notifying remote subscriptions at ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
                         callback();
+                        utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
+                            if (existingMessages) {
+                                existingMessages.push(message);
+                                utils.uploadGoogleDriveData(privatekey, 'messages', existingMessages);
+                            } else {
+                                 utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
+                            }
+                        });
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -77,16 +85,6 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                     });
                 }
             };
-        });
-        utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
-            if (existingMessages) {
-                console.log('ADDING MESSAGE TO EXISTING MESSAGES');
-                existingMessages.push(message);
-                utils.uploadGoogleDriveData(privatekey, 'messages', existingMessages);
-            } else {
-                 console.log('ADDING MESSAGE FOR THE FIRST TIME');
-                 utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
-            }
         });
     };
     

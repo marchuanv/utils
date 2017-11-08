@@ -33,7 +33,7 @@ function GoogleDrive(key){
 
     function getFileId(name, cbFound, cbNotFound){
           drive.files.list(function(err, res){
-              if (err && err.code!=403) {
+              if (err && err.code!=404) {
                 console.log(err);
                 return;
               }

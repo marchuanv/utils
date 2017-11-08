@@ -82,11 +82,11 @@ function GoogleDrive(key){
                 mimeType: 'application/json',
                 body: dataStr
               }
-            }, function(err, data){
+            }, function(err, file){
                 if (err){
                   console.log(err);
                 }else{
-                  console.log(`FILE CREATED ${name} WITH id ${data}`);
+                  console.log(`FILE CREATED ${name} WITH id ${file.id}`);
                   if (cbDone){
                       cbDone();
                   }

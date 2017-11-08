@@ -82,6 +82,9 @@ module.exports={
     if (typeof jsonString !== 'string'){
       throw 'jsonString parameter was not of type string' 
     }
+    if (jsonString === 'undefined'){
+      throw 'UNDEFINED json string' 
+    }
     try{
       logging.write(`parsing ${jsonString} to object`);
       return JSON.parse(jsonString);

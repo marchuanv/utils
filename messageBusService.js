@@ -52,7 +52,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 return y.date-x.date;
             });
             while(messages.length > 0) {
-                const msg=messages.splice(0,1);
+                const msg=messages.splice(0,1)[0];
                 thisService.messageBus.publish(msg.channel, msg.userId, msg.data);
             };
             utils.uploadGoogleDriveData(privatekey, fileName, []); //clear messages as they will be recreated during publish

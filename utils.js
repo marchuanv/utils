@@ -100,7 +100,7 @@ module.exports={
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
       const googleDrivePrivateKey=process.env.privatekey;
-      const publishonrestart=process.env.publishonrestart;
+      var publishonrestart=process.env.publishonrestart;
       if (routingMode == undefined || routingMode == null || routingMode == ''){
          routingMode=false;
       }
@@ -113,7 +113,7 @@ module.exports={
       if (!thisServerAddress || module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
       }
-      
+
       if (!googleDrivePrivateKey){
         throw 'no privatekey was provided for google drive';
       }

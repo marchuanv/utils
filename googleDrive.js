@@ -63,6 +63,7 @@ function GoogleDrive(key){
                   fileId: _fileId
               },function(){
                 console.log(`${_fileId} was deleted.`);
+                cbDone();
               });
         }, cbDone);
     };

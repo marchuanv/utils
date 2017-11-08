@@ -14,7 +14,8 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
                 utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
-                   obj(existingMessages);
+                   const resData=utils.getJSONString(existingMessages);
+                   obj(resData);
                 });
             } else {
                 logging.write('received http message structure is wrong.');

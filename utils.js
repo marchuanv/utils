@@ -79,13 +79,16 @@ module.exports={
       }
   },
   getJSONObject: function(jsonString){
-     try{
-        logging.write(`parsing ${jsonString} to object`);
-        return JSON.parse(jsonString);
-      }catch(err){
-        logging.write('parsing failed with error:',err);
-        return null;
-      }
+    if (typeof jsonString !== 'string'){
+      throw 'jsonString parameter was not of type string' 
+    }
+    try{
+      logging.write(`parsing ${jsonString} to object`);
+      return JSON.parse(jsonString);
+    }catch(err){
+      logging.write('parsing failed with error:',err);
+      return null;
+    }
   },
   newGuid: function(){
       var d = new Date().getTime();

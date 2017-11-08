@@ -7,6 +7,21 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
     const thisService = this;
     const privatekey=utils.getJSONObject(process.env.privatekey);
 
+    const unsavedMessages=[];
+    const saveTimer=utils.createTimer(true, 'save ');
+    saveTimer.setTime(10000);
+    saveTimer.start(function(){
+        utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
+            while(unsavedMessages.length>0){
+                    const message=unsavedMessages.splice(0, 1);
+                    messages.push(message);
+            };
+            utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
+        },function notFound(){
+            utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
+        });
+    });
+
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
         utils.receiveHttpRequest(port, function requestReceived(obj) {
@@ -53,12 +68,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`notifying remote subscriptions at ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                        utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
-                            messages.push(message);
-                            utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
-                        },function notFound(){
-                            utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
-                        });
+                        unsavedMessages.push(message);
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -66,12 +76,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                         serviceUnavailableRetry.start(function() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                                utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
-                                    messages.push(message);
-                                    utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
-                                },function notFound(){
-                                    utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
-                                });
+                                unsavedMessages.push(message);
                                 serviceUnavailableRetry.stop();
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {

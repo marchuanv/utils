@@ -15,6 +15,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             } else if(typeof obj==='function'){
                 utils.downloadGoogleDriveData(privatekey, 'messages.json', function(existingMessages) {
                    const resData=utils.getJSONString(existingMessages);
+                   console.log('BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', resData);
                    obj(resData);
                 });
             } else {

@@ -41,7 +41,7 @@ function GoogleDrive(key){
           });
     };
 
-     getFileId('messages', function(_fileId){
+     getFileId('messages.json', function(_fileId){
           if (_fileId){
             drive.files.delete({
               fileId: _fileId

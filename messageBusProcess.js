@@ -15,6 +15,7 @@ new MessageBusService(
 	routingMode,
 	process,
 	messageSendRetryMax,
-	true
+	true,
+	false
 );
 console.log('message bus service started on child process');

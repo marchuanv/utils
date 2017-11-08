@@ -100,12 +100,20 @@ module.exports={
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
       const googleDrivePrivateKey=process.env.privatekey;
+      const publishonrestart=process.env.publishonrestart;
       if (routingMode == undefined || routingMode == null || routingMode == ''){
          routingMode=false;
       }
+      if (publishonrestart == undefined || publishonrestart == null || publishonrestart == '' || publishonrestart==false){
+         publishonrestart=false;
+      }else{
+         publishonrestart=true;
+      }
+
       if (!thisServerAddress || module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
       }
+      
       if (!googleDrivePrivateKey){
         throw 'no privatekey was provided for google drive';
       }
@@ -124,7 +132,8 @@ module.exports={
           routingMode,
           messageBusProcess,
           messageSendRetryMax,
-          false
+          false,
+          publishonrestart
       );
       return messageBusService.messageBus;
   },

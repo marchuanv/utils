@@ -2,16 +2,13 @@ const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 
-function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost) {
+function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost, publishOnRestart) {
     
     this.messageBus = new MessageBus(this);
     
     const thisService = this;
     const privatekey=utils.getJSONObject(process.env.privatekey);
     const unsavedMessages=[];
-    const serviceName=process.env.thisserveraddress.split('.')[0];
-    const fileName=`${serviceName}.json`;
-
 
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
@@ -29,8 +26,11 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 logging.write('received http message structure is wrong.');
             }
         });
-    }else{
+    }else if (publishOnRestart==true){
 
+        const serviceName=process.env.thisserveraddress.split('.')[0];
+        const fileName=`${serviceName}.json`;
+        
         utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
         },function notFound(){
             const messages=[];
@@ -84,7 +84,9 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`notifying remote subscriptions at ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                        unsavedMessages.push(message);
+                        if (publishOnRestart==true){
+                            unsavedMessages.push(message);
+                        }
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -92,7 +94,9 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                         serviceUnavailableRetry.start(function() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                                unsavedMessages.push(message);
+                                if (publishOnRestart==true){
+                                    unsavedMessages.push(message);
+                                }
                                 serviceUnavailableRetry.stop();
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {

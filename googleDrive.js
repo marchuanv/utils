@@ -50,7 +50,7 @@ function GoogleDrive(key){
                     cbFound(file.id);
                 }
               };
-              if (!exists){
+              if (exists==false){
                 if (cbNotFound){
                   cbNotFound(null);
                 }

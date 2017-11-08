@@ -103,6 +103,7 @@ function GoogleDrive(key){
                 if (err){
                    console.log(err);
                 } else {
+                    console.log(`FILE DELETED ${name} WITH id ${_fileId}`);
                     thisInstance.new(
                       name, 
                       dataStr, 

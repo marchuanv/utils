@@ -88,7 +88,7 @@ function GoogleDrive(key){
                 }else{
                   console.log(`FILE CREATED ${name} WITH id ${file.id}`);
                   if (cbDone){
-                      cbDone();
+                      cbDone(file.id);
                   }
                 }
             });
@@ -99,19 +99,22 @@ function GoogleDrive(key){
         thisInstance.new(
           name, 
           dataStr, 
-          cbDone
+          function done(_newfileId){
+            getFileId(name, function found(_fileId){
+              if (_fileId!=_newfileId){
+                drive.files.delete({
+                    fileId: _fileId
+                },function(err){
+                    if (err){
+                       console.log(err);
+                    } else {
+                        console.log(`FILE DELETED ${name} WITH id ${_fileId}`);
+                    }
+                });
+              }
+            },cbNotFound);
+          }
         );
-        getFileId(name, function found(_fileId){
-            drive.files.delete({
-                fileId: _fileId
-            },function(err){
-                if (err){
-                   console.log(err);
-                } else {
-                    console.log(`FILE DELETED ${name} WITH id ${_fileId}`);
-                }
-            });
-        },cbNotFound);
     };
     
     this.load=function(name, cbFound, cbNotFound){

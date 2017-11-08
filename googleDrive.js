@@ -94,10 +94,13 @@ function GoogleDrive(key){
     };
 
     this.replace=function(name, dataStr, cbDone, cbNotFound){
+      console.log(1);
         getFileId(name, function found(_fileId){
+            console.log(2);
             drive.files.delete({
                 fileId: _fileId
             },function(err){
+                console.log(3);
                 if (err){
                    console.log(err);
                 } else {

@@ -69,6 +69,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                         serviceUnavailableRetry.start(function() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
+                                console.log('BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
                                 utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
                                     if (existingMessages) {
                                         existingMessages.push(message);

@@ -9,7 +9,8 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
     const thisService = this;
     const privatekey=utils.getJSONObject(process.env.privatekey);
     const unsavedMessages=[];
-    const fileName=`${process.env.thisserveraddress}.json`;
+    const serviceName=process.env.thisserveraddress.split('.')[0];
+    const fileName=`${serviceName}.json`;
 
 
     if (isHost == true) {

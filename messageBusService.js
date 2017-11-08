@@ -8,6 +8,8 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
     
     const thisService = this;
     const privatekey=utils.getJSONObject(process.env.privatekey);
+    const serviceName=process.env.thisserveraddress.split('.')[0];
+    const fileName=`${serviceName}.json`;
     const unsavedMessages=[];
 
     if (isHost == true) {
@@ -28,8 +30,6 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         });
     }else if (publishOnRestart==true){
 
-        const serviceName=process.env.thisserveraddress.split('.')[0];
-        const fileName=`${serviceName}.json`;
         
         utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
         },function notFound(){

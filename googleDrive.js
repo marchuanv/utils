@@ -3,7 +3,7 @@ function GoogleDrive(key){
     var drive = null;
 
     var authScopes =  ['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/drive.file'];
-
+    const thisInstance=this;
     var jwtClient = new google.auth.JWT(
       key.client_email,
       null,
@@ -101,10 +101,10 @@ function GoogleDrive(key){
                 if (err){
                    console.log(err);
                 } else {
-                    this.new(
-                        name, 
-                        dataStr, 
-                        cbDone
+                    thisInstance.new(
+                      name, 
+                      dataStr, 
+                      cbDone
                     );
                 }
             });

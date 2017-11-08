@@ -95,7 +95,7 @@ function GoogleDrive(key){
         });
     };
 
-    this.replace=function(name, dataStr, cbDone, cbNotFound){
+    this.replace=function(name, dataStr, cbDone){
         thisInstance.new(
           name, 
           dataStr, 
@@ -112,7 +112,7 @@ function GoogleDrive(key){
                     }
                 });
               }
-            },cbNotFound);
+            });
           }
         );
     };

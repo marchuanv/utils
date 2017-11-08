@@ -118,8 +118,11 @@ function GoogleDrive(key){
                 mimeType: 'application/json',
                 alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
             }, function(err, result) {
-                if(err && err.code!=404  && err.code!=403){
+                if(err){
                   console.log(err);
+                  if (err.code==404  || err.code==403){
+                      cbNotFound();
+                  }
                 }else{
                   cbFound(result);
                 }

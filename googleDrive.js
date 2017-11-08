@@ -101,9 +101,7 @@ function GoogleDrive(key){
                 alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
             }, function(err, result) {
                 if(err){
-                  if (!cbNotFound){
-                      console.log(err);
-                  }
+                  console.log(err);
                 }else{
                   cbFound(result);
                 }

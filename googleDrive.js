@@ -40,6 +40,14 @@ function GoogleDrive(key){
               callback(null);
           });
     };
+
+     getFileId('messages', function(_fileId){
+          if (_fileId){
+            drive.files.delete({
+              fileId: _fileId
+            });
+          }
+     });
     
     this.replace=function(name, data, callback){
       getFileId(name, function(_fileId){

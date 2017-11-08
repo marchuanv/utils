@@ -42,13 +42,17 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         const saveTimer=utils.createTimer(true, 'save ');
         saveTimer.setTime(10000);
         saveTimer.start(function(){
+            logging.write('');
+            logging.write('////////////////// SAVE TIMER ////////////////////');
             utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
+                logging.write('messages downloaded');
                 while(unsavedMessages.length>0){
                         const message=unsavedMessages.splice(0, 1);
                         messages.push(message);
                 };
                 utils.uploadGoogleDriveData(privatekey, fileName, messages);
             });
+            logging.write('');
         });
     }
 

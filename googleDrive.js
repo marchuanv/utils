@@ -17,13 +17,20 @@ function GoogleDrive(key){
         console.log(err);
         return;
       }
-       getFileId('messages.json', function(_fileId){
-          if (_fileId){
-            drive.files.delete({
-              fileId: _fileId
-            });
+      drive.files.list(function(err, res){
+          if (err) {
+            console.log(err);
+            return;
           }
-        });
+          for (var i = 0; i < res.files.length; i++) {
+              const file = res.files[i];
+              console.log('deleting ',file.id);
+              drive.files.delete({
+                fileId: file.id
+              });
+          };
+      });
+
     });
     drive = google.drive({
         version: 'v3',

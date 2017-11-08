@@ -17,6 +17,13 @@ function GoogleDrive(key){
         console.log(err);
         return;
       }
+       getFileId('messages.json', function(_fileId){
+          if (_fileId){
+            drive.files.delete({
+              fileId: _fileId
+            });
+          }
+        });
     });
     drive = google.drive({
         version: 'v3',
@@ -41,13 +48,7 @@ function GoogleDrive(key){
           });
     };
 
-     getFileId('messages.json', function(_fileId){
-          if (_fileId){
-            drive.files.delete({
-              fileId: _fileId
-            });
-          }
-     });
+    
     
     this.replace=function(name, data, callback){
       getFileId(name, function(_fileId){

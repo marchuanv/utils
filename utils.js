@@ -263,7 +263,9 @@ module.exports={
         console.log('UPLOADING: ',dataJson);
         console.log();
         drive.replace(name, dataJson, function(){
-            console.log(`${name} was created`);
+            console.log();
+            console.log('UPLOADED: ',dataJson);
+            console.log();
         });
     },
     downloadGoogleDriveData: function(key, name, callback){

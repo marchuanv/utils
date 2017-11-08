@@ -70,28 +70,24 @@ function GoogleDrive(key){
     };
 
     this.new=function(name, dataStr, cbDone){
-        getFileId(name, function found(_fileId){
-           console.log('could not create new file, already exists.');
-        },function notFound(){
-            drive.files.create({
-              resource: {
-                name: name,
-                mimeType: 'application/json'
-              },
-              media: {
-                mimeType: 'application/json',
-                body: dataStr
+        drive.files.create({
+          resource: {
+            name: name,
+            mimeType: 'application/json'
+          },
+          media: {
+            mimeType: 'application/json',
+            body: dataStr
+          }
+        }, function(err, file){
+            if (err){
+              console.log(err);
+            }else{
+              console.log(`FILE CREATED ${name} WITH id ${file.id}`);
+              if (cbDone){
+                  cbDone(file.id);
               }
-            }, function(err, file){
-                if (err){
-                  console.log(err);
-                }else{
-                  console.log(`FILE CREATED ${name} WITH id ${file.id}`);
-                  if (cbDone){
-                      cbDone(file.id);
-                  }
-                }
-            });
+            }
         });
     };
 

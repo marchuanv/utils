@@ -11,6 +11,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
     const unsavedMessages=[];
     const fileName=`${process.env.thisserveraddress}.json`;
 
+
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
         utils.receiveHttpRequest(port, function requestReceived(obj) {
@@ -26,18 +27,17 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             }
         });
     }else{
-        utils.clearGoogleDriveData(privatekey);
+
+        utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
+        },function notFound(){
+            const messages=[];
+            utils.uploadGoogleDriveData(privatekey, fileName, messages);
+        });
+
         const saveTimer=utils.createTimer(true, 'save ');
         saveTimer.setTime(10000);
         saveTimer.start(function(){
             utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
-                while(unsavedMessages.length>0){
-                        const message=unsavedMessages.splice(0, 1);
-                        messages.push(message);
-                };
-                utils.uploadGoogleDriveData(privatekey, fileName, messages);
-            },function notFound(){
-                const messages=[];
                 while(unsavedMessages.length>0){
                         const message=unsavedMessages.splice(0, 1);
                         messages.push(message);

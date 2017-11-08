@@ -31,7 +31,7 @@ function GoogleDrive(key){
         auth: jwtClient
     });
 
-    function getFileId(name, cbFound, cbNotFound, cbComplete){
+    function getFileId(name, cbFound, cbNotFound){
           drive.files.list(function(err, res){
               if (err) {
                 console.log(err);
@@ -52,8 +52,6 @@ function GoogleDrive(key){
                 if (cbNotFound){
                   cbNotFound(null);
                 }
-              }else if (cbComplete){
-                cbComplete();
               }
           });
     };
@@ -66,7 +64,7 @@ function GoogleDrive(key){
               },function(){
                 console.log(`${_fileId} was deleted.`);
               });
-        }, cbDone, cbDone);
+        }, cbDone);
     };
 
     this.new=function(name, dataStr, cbDone){

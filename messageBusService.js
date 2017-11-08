@@ -25,6 +25,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             }
         });
     }else{
+        utils.clearGoogleDriveData();
         const saveTimer=utils.createTimer(true, 'save ');
         saveTimer.setTime(10000);
         saveTimer.start(function(){

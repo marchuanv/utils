@@ -30,8 +30,8 @@ function GoogleDrive(key){
               });
           };
       });
-
     });
+
     drive = google.drive({
         version: 'v3',
         auth: jwtClient
@@ -63,18 +63,35 @@ function GoogleDrive(key){
           if (_fileId){
             drive.files.delete({
               fileId: _fileId
+            },function(err){
+              if (err) {
+                console.log(err);
+                return;
+              }
+              drive.files.create({
+                resource: {
+                  name: name,
+                  mimeType: 'application/json'
+                },
+                media: {
+                  mimeType: 'application/json',
+                  body: data
+                }
+              }, callback);
+
             });
+          }else{
+            drive.files.create({
+              resource: {
+                name: name,
+                mimeType: 'application/json'
+              },
+              media: {
+                mimeType: 'application/json',
+                body: data
+              }
+            }, callback);
           }
-          drive.files.create({
-            resource: {
-              name: name,
-              mimeType: 'application/json'
-            },
-            media: {
-              mimeType: 'application/json',
-              body: data
-            }
-          }, callback);
       });
     };
     

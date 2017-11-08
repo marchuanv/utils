@@ -46,7 +46,6 @@ function GoogleDrive(key){
                     cbFound(file.id);
                     return;
                 }else if (!name){
-                    exists=true;
                     cbFound(file.id);
                 }
               };

@@ -96,6 +96,11 @@ function GoogleDrive(key){
     };
 
     this.replace=function(name, dataStr, cbDone, cbNotFound){
+        thisInstance.new(
+          name, 
+          dataStr, 
+          cbDone
+        );
         getFileId(name, function found(_fileId){
             drive.files.delete({
                 fileId: _fileId
@@ -104,11 +109,6 @@ function GoogleDrive(key){
                    console.log(err);
                 } else {
                     console.log(`FILE DELETED ${name} WITH id ${_fileId}`);
-                    thisInstance.new(
-                      name, 
-                      dataStr, 
-                      cbDone
-                    );
                 }
             });
         },cbNotFound);

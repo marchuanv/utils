@@ -30,16 +30,10 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         });
     }else if (publishOnRestart==true){
 
+        const publisherTimer=utils.createTimer(true, 'publisher');
+        publisherTimer.setTime(10000);
 
-        utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
-        },function notFound(){
-            const messages=[];
-            utils.uploadGoogleDriveData(privatekey, fileName, messages);
-        });
-
-        const saveTimer=utils.createTimer(true, 'save ');
-        saveTimer.setTime(10000);
-        saveTimer.start(function(){
+        function savePublishedMessages(){
             logging.write('');
             logging.write('////////////////// SAVE TIMER ////////////////////');
             utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
@@ -51,7 +45,24 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 utils.uploadGoogleDriveData(privatekey, fileName, messages);
             });
             logging.write('');
+        };
+
+        utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
+            messages.sort(function(x,y){
+                return y.date-x.date;
+            });
+            while(messages.length > 0) {
+                const msg=messages.splice(0,1);
+                thisService.messageBus.publish(msg.channel, msg.userId, msg.data);
+            };
+            utils.uploadGoogleDriveData(privatekey, fileName, []); //clear messages as they will be recreated during publish
+            publisherTimer.start(savePublishedMessages);
+        },function notFound(){
+            const messages=[];
+            utils.uploadGoogleDriveData(privatekey, fileName, messages);
+            publisherTimer.start(savePublishedMessages);
         });
+
     }else {
          utils.uploadGoogleDriveData(privatekey, fileName, []);
     }

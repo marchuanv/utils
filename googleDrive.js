@@ -42,7 +42,7 @@ function GoogleDrive(key){
                 const file = res.files[i];
                 if (file.name==name){
                     exists=true;
-                    console.log(`FILE FOUND WITH NAME ${name}`);
+                    console.log(`FILE FOUND WITH NAME ${name} AND id ${file.id}`);
                     cbFound(file.id);
                     return;
                 }else if (!name){
@@ -82,10 +82,11 @@ function GoogleDrive(key){
                 mimeType: 'application/json',
                 body: dataStr
               }
-            }, function(err){
+            }, function(err, data){
                 if (err){
                   console.log(err);
                 }else{
+                  console.log(`FILE CREATED ${name} WITH id ${data}`);
                   if (cbDone){
                       cbDone();
                   }

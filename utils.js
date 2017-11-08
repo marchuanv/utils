@@ -260,7 +260,6 @@ module.exports={
         const drive=new GoogleDrive(key);
         const dataStr=module.exports.getJSONString(data);
         drive.replace(name, dataStr, cbDone, function notFound(){
-            console.log(`${name} could not be found, creating new file.`);
             drive.new(name, dataStr, cbDone);
         });
     },

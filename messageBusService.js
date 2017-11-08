@@ -30,12 +30,14 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         saveTimer.start(function(){
             console.log('DOWNLOADING...');
             utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
+                console.log('DOWNLOADED');
                 while(unsavedMessages.length>0){
                         const message=unsavedMessages.splice(0, 1);
                         messages.push(message);
                 };
                 utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
             },function notFound(){
+                console.log('NOT FOUND');
                 const messages=[];
                 while(unsavedMessages.length>0){
                         const message=unsavedMessages.splice(0, 1);

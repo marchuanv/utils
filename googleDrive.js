@@ -42,6 +42,7 @@ function GoogleDrive(key){
                 const file = res.files[i];
                 if (file.name==name){
                     exists=true;
+                    console.log(`FILE FOUND WITH NAME ${name}`);
                     cbFound(file.id);
                     return;
                 }else if (!name){

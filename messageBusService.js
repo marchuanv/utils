@@ -31,6 +31,8 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         });
     }else{
 
+        utils.clearGoogleDriveData(privatekey);
+
         utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
         },function notFound(){
             const messages=[];

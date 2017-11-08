@@ -12,6 +12,7 @@ logging.condition(function(message) {
 function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost) {
     this.messageBus = new MessageBus(this);
     const thisService = this;
+
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
         utils.receiveHttpRequest(port, function requestReceived(obj) {
@@ -26,6 +27,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             }
         });
     }
+
     messageBusProcess.on('message', (receiveMessage) => {
         if (routingMode == true) {
             logging.write('internal message will be sent to routing subscription');
@@ -34,6 +36,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             thisService.messageBus.receiveInternalPublishMessage(receiveMessage);
         }
     });
+
     this.sendInternalPublishMessage = function(message, callback, callbackFail) {
         logging.write(`sending internal message to ${message.channel} channel.`);
         const result = messageBusProcess.send(message);
@@ -47,47 +50,41 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             }
         }
     };
-    this.getPublishAddress=function(channel, callback){
-       utils.sendHttpRequest(process.env.subscriptionsaddress, [channel], '', function sucess(address) {
-                callback(address);
-       }, function fail() {
-          logging.write('failed to get publish address');
-       });
-    });
+
     this.sendExternalPublishMessage = function(message, callback, callbackFail) {
-        if (message.to && utils.isValidUrl(message.to) == true) {
-            logging.write(`notifying remote subscriptions at ${message.to}`);
-            utils.sendHttpRequest(message.to, message, '', function sucess() {
-                callback();
-            }, function fail() {
-                var retryCounter = 0;
-                const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
-                serviceUnavailableRetry.setTime(5000);
-                serviceUnavailableRetry.start(function() {
-                    logging.write(`retry: sending message to ${message.to} on channel #{message.channel}`);
-                    utils.sendHttpRequest(message.to, message, '', function success() {
+        utils.readJsonFile('publishAddresses.json', function(publishAddresses) {
+            for (var i = publishAddresses.length - 1; i >= 0; i--) {
+                const publishAddress=publishAddresses[i];
+                if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
+                    logging.write(`notifying remote subscriptions at ${publishAddress.address}`);
+                    utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
                         callback();
-                        serviceUnavailableRetry.stop();
                     }, function fail() {
-                        if (retryCounter > messageSendRetryMax) {
-                            if (callbackFail) {
-                                callbackFail();
-                            } else {
-                                logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
-                            }
-                            serviceUnavailableRetry.stop();
-                        }
-                        retryCounter++;
+                        var retryCounter = 0;
+                        const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
+                        serviceUnavailableRetry.setTime(5000);
+                        serviceUnavailableRetry.start(function() {
+                            logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
+                            utils.sendHttpRequest(publishAddress.address, message, '', function success() {
+                                callback();
+                                serviceUnavailableRetry.stop();
+                            }, function fail() {
+                                if (retryCounter > messageSendRetryMax) {
+                                    if (callbackFail) {
+                                        callbackFail();
+                                    } else {
+                                        logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
+                                    }
+                                    serviceUnavailableRetry.stop();
+                                }
+                                retryCounter++;
+                            });
+                        });
                     });
-                });
-            });
-        } else {
-            if (callbackFail) {
-                callbackFail();
-            } else {
-                logging.write(`can't send a message that does not have a to address.`);
-            }
-        }
+                }
+            };
+        });
     };
+    
 };
 module.exports = MessageBusService;

@@ -9,6 +9,7 @@ logging.condition(function(message){
 });
 
 function MessageBus(messageBusService){
+
 	const subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;
@@ -37,16 +38,14 @@ function MessageBus(messageBusService){
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
 		logging.write(`subscription count ${subscriptions.length}`);
 		getSubscriptions.apply(this, [message.channel, function(subscription){
-			
-		subscription.callback(message.data, message.userId);
-		logging.write(`calling ${message.channel} channel subscribers callbacks.`);
-			
+			subscription.callback(message.data, message.userId);
+			logging.write(`calling ${message.channel} channel subscribers callbacks.`);
 		}]);
 		logging.write('');
 	};
 
 	this.receiveExternalPublishMessage=function(message){
-	utils.readJsonFile('messages.json', function(existingMessages) {
+		utils.readJsonFile('messages.json', function(existingMessages) {
             if (existingMessages) {
                 existingMessages.push(message);
                 utils.replaceJsonFile('messages.json', existingMessages);
@@ -65,17 +64,13 @@ function MessageBus(messageBusService){
 	this.publish=function(channel, userId, data) {
   		logging.write('');
   		logging.write(`/// PUBLISHING TO ${channel} ///`);
-   messageBusService.getPublishAddress(channel, function(toAddress){
-
-		 messageBusService.sendExternalPublishMessage({
+		messageBusService.sendExternalPublishMessage({
 			channel: channel,
-  	 		to: toAddress,
   	 		from: process.env.thisserveraddress,
 			date:(new Date()).toString(),
 			userId: userId,
   	 		data: data
   	 	});
-});
   	 	logging.write('');
   	};
 

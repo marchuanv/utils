@@ -51,15 +51,15 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             messages.sort(function(x,y){
                 return y.date-x.date;
             });
-            logger.write('');
-            logger.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
-            logger.write('messages: ',messages);
+            logging.write('');
+            logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
+            logging.write('messages: ',messages);
             while(messages.length > 0) {
                 const msg=messages.splice(0, 1)[0];
 
                 thisService.messageBus.publish(msg.channel, msg.userId, msg.data);
             };
-            logger.write('');
+            logging.write('');
             utils.uploadGoogleDriveData(privatekey, fileName, []); //clear messages as they will be recreated during publish
             publisherTimer.start(savePublishedMessages);
         },function notFound(){

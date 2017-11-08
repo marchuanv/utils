@@ -58,7 +58,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                                 existingMessages.push(message);
                                 utils.uploadGoogleDriveData(privatekey, 'messages', existingMessages);
                             } else {
-                                
+
                                 utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
                             }
                         });
@@ -71,6 +71,15 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
                                 callback();
                                 serviceUnavailableRetry.stop();
+                                utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
+                                    if (existingMessages) {
+                                        existingMessages.push(message);
+                                        utils.uploadGoogleDriveData(privatekey, 'messages', existingMessages);
+                                    } else {
+                                        
+                                        utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
+                                    }
+                                });
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {
                                     if (callbackFail) {

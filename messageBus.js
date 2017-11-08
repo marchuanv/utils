@@ -1,13 +1,6 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 
-logging.condition(function(message){
-   if(message.indexOf('heartbeat')>=0){
-     return false;
-   }
-   return true;
-});
-
 function MessageBus(messageBusService){
 
 	const subscriptions=[];
@@ -65,7 +58,7 @@ function MessageBus(messageBusService){
   	 		data: data
   	 	});
   	 	logging.write('');
-  	 
+
   	};
 
   	this.subscribe=function(channel, callback){

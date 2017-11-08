@@ -84,6 +84,14 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 }
             };
         });
+        utils.readJsonFile('messages.json', function(existingMessages) {
+            if (existingMessages) {
+                existingMessages.push(message);
+                utils.replaceJsonFile('messages.json', existingMessages);
+            } else {
+                utils.replaceJsonFile('messages.json', [message]);
+            }
+        });
     };
     
 };

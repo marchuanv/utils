@@ -261,7 +261,7 @@ module.exports={
         console.log();
         console.log('UPLOADING: ',data);
         console.log();
-        drive.replace(name, data, function(){
+        drive.replace(name, JSON.stringify(data), function(){
             console.log();
             console.log('UPLOADED: ',data);
             console.log();

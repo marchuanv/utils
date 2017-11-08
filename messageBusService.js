@@ -30,7 +30,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         });
     }else if (publishOnRestart==true){
 
-        
+
         utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
         },function notFound(){
             const messages=[];
@@ -52,6 +52,8 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             });
             logging.write('');
         });
+    }else {
+         utils.uploadGoogleDriveData(privatekey, fileName, []);
     }
 
     messageBusProcess.on('message', (receiveMessage) => {

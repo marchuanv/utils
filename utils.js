@@ -270,6 +270,7 @@ module.exports={
         drive.load(name, function(data){
           console.log();
           console.log('DOWNLOADED: ',data);
+          console.log('DOWNLOADED LENGTH: ',data.length);
           console.log('TYPE: ',typeof data);
           console.log();
           callback(data);

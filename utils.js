@@ -259,6 +259,9 @@ module.exports={
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
         const dataJson=utils.getJSONString(data);
+        console.log();
+        console.log('UPLOADING: ',dataJson);
+        console.log();
         drive.replace(name, dataJson, function(){
             console.log(`${name} was created`);
         });
@@ -268,7 +271,7 @@ module.exports={
         const drive=new GoogleDrive(key);
         drive.load(name,function(rawData){
           console.log();
-          console.log('RAW DATA FROM GOOGLE DRIVE: ',rawData);
+          console.log('DOWNLOADED: ',rawData);
           console.log();
           const jsonData=module.exports.getJSONObject(rawData);
           callback(jsonData);

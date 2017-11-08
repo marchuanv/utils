@@ -3,29 +3,12 @@ const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 
 function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost) {
+    
     this.messageBus = new MessageBus(this);
+    
     const thisService = this;
     const privatekey=utils.getJSONObject(process.env.privatekey);
-
     const unsavedMessages=[];
-    const saveTimer=utils.createTimer(true, 'save ');
-    saveTimer.setTime(10000);
-    saveTimer.start(function(){
-        utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
-            while(unsavedMessages.length>0){
-                    const message=unsavedMessages.splice(0, 1);
-                    messages.push(message);
-            };
-            utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
-        },function notFound(){
-            const messages=[];
-            while(unsavedMessages.length>0){
-                    const message=unsavedMessages.splice(0, 1);
-                    messages.push(message);
-            };
-            utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
-        });
-    });
 
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
@@ -40,6 +23,25 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             } else {
                 logging.write('received http message structure is wrong.');
             }
+        });
+    }else{
+        const saveTimer=utils.createTimer(true, 'save ');
+        saveTimer.setTime(10000);
+        saveTimer.start(function(){
+            utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
+                while(unsavedMessages.length>0){
+                        const message=unsavedMessages.splice(0, 1);
+                        messages.push(message);
+                };
+                utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
+            },function notFound(){
+                const messages=[];
+                while(unsavedMessages.length>0){
+                        const message=unsavedMessages.splice(0, 1);
+                        messages.push(message);
+                };
+                utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
+            });
         });
     }
 

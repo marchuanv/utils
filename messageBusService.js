@@ -13,7 +13,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
+                utils.downloadGoogleDriveData(privatekey, 'messages.json', function(existingMessages) {
                    const resData=utils.getJSONString(existingMessages);
                    obj(resData);
                 });
@@ -53,13 +53,13 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`notifying remote subscriptions at ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                        utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
+                        utils.downloadGoogleDriveData(privatekey, 'messages.json', function(existingMessages) {
                             if (existingMessages) {
                                 existingMessages.push(message);
-                                utils.uploadGoogleDriveData(privatekey, 'messages', existingMessages);
+                                utils.uploadGoogleDriveData(privatekey, 'messages.json', existingMessages);
                             } else {
 
-                                utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
+                                utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
                             }
                         });
                     }, function fail() {
@@ -69,13 +69,13 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                         serviceUnavailableRetry.start(function() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                                utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
+                                utils.downloadGoogleDriveData(privatekey, 'messages.json', function(existingMessages) {
                                     if (existingMessages) {
                                         existingMessages.push(message);
-                                        utils.uploadGoogleDriveData(privatekey, 'messages', existingMessages);
+                                        utils.uploadGoogleDriveData(privatekey, 'messages.json', existingMessages);
                                     } else {
                                         
-                                        utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
+                                        utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
                                     }
                                 });
                                 serviceUnavailableRetry.stop();

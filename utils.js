@@ -258,7 +258,8 @@ module.exports={
     uploadGoogleDriveData: function(key, name, data){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.replace(name, data, function(){
+        const dataJson=utils.getJSONString(data);
+        drive.replace(name, dataJson, function(){
             console.log(`${name} was created`);
         });
     },

@@ -45,7 +45,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         }
     };
 
-    this.sendExternalPublishMessage = function(message, callback, callbackFail) {
+    this.sendExternalPublishMessage = function(message) {
         utils.readJsonFile('publishAddresses.json', function(publishAddresses) {
             for (var i = publishAddresses.length - 1; i >= 0; i--) {
                 const publishAddress=publishAddresses[i];
@@ -61,7 +61,6 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                                 utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
                             }
                         });
-                        callback();
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -79,15 +78,10 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                                         utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
                                     }
                                 });
-                                callback();
                                 serviceUnavailableRetry.stop();
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {
-                                    if (callbackFail) {
-                                        callbackFail();
-                                    } else {
-                                        logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
-                                    }
+                                    logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
                                     serviceUnavailableRetry.stop();
                                 }
                                 retryCounter++;

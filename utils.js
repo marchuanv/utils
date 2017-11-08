@@ -258,7 +258,9 @@ module.exports={
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
         const dataStr=module.exports.getJSONString(data);
-        drive.replace(name, dataStr, cbDone);
+        drive.delete(name,function(){
+          drive.new(name, dataStr, cbDone);
+        });
     },
     downloadGoogleDriveData: function(key, name, cbFound, cbNotFound){
         const GoogleDrive=require('./googleDrive.js');

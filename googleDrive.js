@@ -31,7 +31,7 @@ function GoogleDrive(key){
         auth: jwtClient
     });
 
-    function getFileId(name, cbFound, cbNotFound){
+    function getFileId(name, cbFound, cbNotFound, cbComplete){
           drive.files.list(function(err, res){
               if (err) {
                 console.log(err);
@@ -50,13 +50,17 @@ function GoogleDrive(key){
                     cbFound(file.id);
                 }
               };
-              if (!exists && cbNotFound){
+              if (!exists){
+                if (cbNotFound){
                   cbNotFound(null);
+                }
+              }else if (cbComplete){
+                cbComplete();
               }
           });
     };
     
-    this.delete=function(name){
+    this.delete=function(name, cbDone){
         getFileId(name, function found(_fileId){
               console.log(`deleting ${_fileId}.`);
               drive.files.delete({
@@ -66,7 +70,7 @@ function GoogleDrive(key){
               });
         },function notFound(){
            console.log('no files to delete');
-        });
+        },cbDone);
     };
 
     this.new=function(name, dataStr, cbDone){
@@ -91,28 +95,6 @@ function GoogleDrive(key){
         });
     };
 
-    this.replace=function(name, dataStr, cbDone){
-        thisInstance.new(
-          name, 
-          dataStr, 
-          function done(_newfileId){
-            getFileId(name, function found(_fileId){
-              if (_fileId!=_newfileId){
-                drive.files.delete({
-                    fileId: _fileId
-                },function(err){
-                    if (err){
-                       console.log(err);
-                    } else {
-                        console.log(`FILE DELETED ${name} WITH id ${_fileId}`);
-                    }
-                });
-              }
-            });
-          }
-        );
-    };
-    
     this.load=function(name, cbFound, cbNotFound){
         getFileId(name, function found(_fileId){
             drive.files.get({

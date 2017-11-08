@@ -70,8 +70,10 @@ function GoogleDrive(key){
               }, function(err, result) {
                   if(err){
                     console.log(err);
+                    callback(null);
+                  }else{
+                    callback(result);
                   }
-                  callback(result);
               });
           }else{
             console.log(`${name} does not exist`);

@@ -13,10 +13,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                console.log('');
-                console.log('DOWNLOADING...');
                 utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
-                    console.log('DOWNLOADED',existingMessages);
                    obj(existingMessages);
                 });
             } else {
@@ -61,6 +58,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                                 existingMessages.push(message);
                                 utils.uploadGoogleDriveData(privatekey, 'messages', existingMessages);
                             } else {
+                                
                                 utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
                             }
                         });

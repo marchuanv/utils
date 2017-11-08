@@ -66,6 +66,7 @@ function GoogleDrive(key){
           if (_fileId){
               drive.files.get({
                   fileId: _fileId,
+                  mimeType: 'application/json',
                   alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
               }, function(err, result) {
                   if(err){

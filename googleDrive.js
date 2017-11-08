@@ -122,9 +122,6 @@ function GoogleDrive(key){
                   if (!cbNotFound){
                       console.log(err);
                   }
-                  if (err.code==404  || err.code==403){
-                      cbNotFound();
-                  }
                 }else{
                   cbFound(result);
                 }

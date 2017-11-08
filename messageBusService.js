@@ -18,7 +18,12 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             };
             utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
         },function notFound(){
-            utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
+            const messages=[];
+            while(unsavedMessages.length>0){
+                    const message=unsavedMessages.splice(0, 1);
+                    messages.push(message);
+            };
+            utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
         });
     });
 

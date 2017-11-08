@@ -33,7 +33,7 @@ function GoogleDrive(key){
 
     function getFileId(name, cbFound, cbNotFound){
           drive.files.list(function(err, res){
-              if (err && err.code!=404) {
+              if (err) {
                 console.log(err);
                 return;
               }
@@ -118,7 +118,7 @@ function GoogleDrive(key){
                 mimeType: 'application/json',
                 alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
             }, function(err, result) {
-                if(err){
+                if(err && err.code!=404  && err.code!=403){
                   console.log(err);
                 }else{
                   cbFound(result);

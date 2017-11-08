@@ -258,25 +258,23 @@ module.exports={
     uploadGoogleDriveData: function(key, name, data){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        const dataJson=module.exports.getJSONString(data);
         console.log();
-        console.log('UPLOADING: ',dataJson);
+        console.log('UPLOADING: ',data);
         console.log();
-        drive.replace(name, dataJson, function(){
+        drive.replace(name, data, function(){
             console.log();
-            console.log('UPLOADED: ',dataJson);
+            console.log('UPLOADED: ',data);
             console.log();
         });
     },
     downloadGoogleDriveData: function(key, name, callback){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.load(name, function(rawData){
+        drive.load(name, function(data){
           console.log();
-          console.log('DOWNLOADED: ',rawData);
+          console.log('DOWNLOADED: ',data);
           console.log();
-          const jsonData=module.exports.getJSONObject(rawData);
-          callback(jsonData);
+          callback(data);
         }); 
     },
     readJsonFile: function(name, callback){

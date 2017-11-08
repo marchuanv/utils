@@ -9,6 +9,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
     const thisService = this;
     const privatekey=utils.getJSONObject(process.env.privatekey);
     const unsavedMessages=[];
+    const fileName=`${thisserveraddress}.json`;
 
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
@@ -16,7 +17,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                utils.downloadGoogleDriveData(privatekey, 'messages.json', function(messages) {
+                utils.downloadGoogleDriveData(privatekey, fileName, function(messages) {
                    const messagesJson=utils.getJSONString(messages);
                    obj(messagesJson);
                 });
@@ -29,19 +30,19 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         const saveTimer=utils.createTimer(true, 'save ');
         saveTimer.setTime(10000);
         saveTimer.start(function(){
-            utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
+            utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
                 while(unsavedMessages.length>0){
                         const message=unsavedMessages.splice(0, 1);
                         messages.push(message);
                 };
-                utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
+                utils.uploadGoogleDriveData(privatekey, fileName, messages);
             },function notFound(){
                 const messages=[];
                 while(unsavedMessages.length>0){
                         const message=unsavedMessages.splice(0, 1);
                         messages.push(message);
                 };
-                utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
+                utils.uploadGoogleDriveData(privatekey, fileName, messages);
             });
         });
     }

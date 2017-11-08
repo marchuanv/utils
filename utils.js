@@ -83,6 +83,7 @@ module.exports={
         logging.write('parsing object to JSON');
         return JSON.parse(jsonString);
       }catch(err){
+        logging.write('parsing failed with error:',err);
         return null;
       }
   },

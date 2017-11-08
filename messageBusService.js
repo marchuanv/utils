@@ -12,8 +12,8 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                utils.readJsonFile('messages.json', function(data){
-                    obj(data);
+                utils.downloadGoogleDriveData(process.env.privatekey, 'messages', function(existingMessages) {
+                   obj(existingMessages);
                 });
             } else {
                 logging.write('received http message structure is wrong.');
@@ -77,12 +77,12 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 }
             };
         });
-        utils.readJsonFile('messages.json', function(existingMessages) {
+        utils.downloadGoogleDriveData(process.env.privatekey, 'messages', function(existingMessages) {
             if (existingMessages) {
                 existingMessages.push(message);
-                utils.replaceJsonFile('messages.json', existingMessages);
+                utils.uploadGoogleDriveData(process.env.privatekey, 'messages', existingMessages);
             } else {
-                utils.replaceJsonFile('messages.json', [message]);
+                 utils.uploadGoogleDriveData(process.env.privatekey, 'messages', [message]);
             }
         });
     };

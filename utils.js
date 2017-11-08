@@ -1,7 +1,7 @@
 const http=require('http');
 const logging=require('./logging.js');
 
-function createMessageBusProcess(name, fileName, thisServerAddress, routingMode, messageSendRetryMax, autoRestart, restartTimer){
+function createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, routingMode, messageSendRetryMax, autoRestart, restartTimer){
     logging.write('');
     logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
     if (!restartTimer){
@@ -11,7 +11,7 @@ function createMessageBusProcess(name, fileName, thisServerAddress, routingMode,
     const childFile=`${__dirname}/messageBusProcess.js`;
     const cp = require('child_process');
     const childProcess=cp.fork(childFile, 
-        [name, fileName, thisServerAddress, messageSendRetryMax, routingMode]
+        [name, fileName, thisServerAddress, messageSendRetryMax, routingMode, googleDrivePrivateKey]
         // { silent: true }
     );
     function handleEvent(reason, error){
@@ -20,7 +20,7 @@ function createMessageBusProcess(name, fileName, thisServerAddress, routingMode,
         logging.write(`reason: ${reason}, error: ${error}`);
         if (autoRestart && restartTimer.started==false){
             restartTimer.start(function(){
-                createMessageBusProcess(name, fileName, thisServerAddress, routingMode, messageSendRetryMax, autoRestart, restartTimer);
+                createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, routingMode, messageSendRetryMax, autoRestart, restartTimer);
                 restartTimer.stop();
             });
         }
@@ -99,11 +99,15 @@ module.exports={
       const MessageBus=require('./messageBus.js');
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
+      const googleDrivePrivateKey=process.env.privatekey;
       if (routingMode == undefined || routingMode == null || routingMode == ''){
          routingMode=false;
       }
       if (!thisServerAddress || module.exports.isValidUrl(thisServerAddress)==false){
         throw 'child process was provided with an invalid sender address';
+      }
+      if (!googleDrivePrivateKey){
+        throw 'no privatekey was provided for google drive';
       }
 
       var messageSendRetryMax=5;
@@ -111,6 +115,7 @@ module.exports={
           'ChildMessageBus', 
           './messageBus.js', 
           thisServerAddress,
+          googleDrivePrivateKey,
           routingMode,
           messageSendRetryMax, 
           true
@@ -249,17 +254,17 @@ module.exports={
     createLogging: function(){
       return require('./logging.js');
     },
-    uploadToGoogleDrive: function(key, fileName, data){
+    uploadGoogleDriveData: function(key, name, data){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.replace(fileName, data, function(){
-            console.log(`${fileName} was created`);
+        drive.replace(name, data, function(){
+            console.log(`${name} was created`);
         });
     },
-    getData: function(key, fileName, callback){
+    downloadGoogleDriveData: function(key, name, callback){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.load(fileName,callback); 
+        drive.load(name,callback); 
     },
     readJsonFile: function(name, callback){
         var filePath=`${__dirname}/${name}`;

@@ -52,7 +52,6 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`notifying remote subscriptions at ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                        callback();
                         utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
                             if (existingMessages) {
                                 existingMessages.push(message);
@@ -62,6 +61,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                                 utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
                             }
                         });
+                        callback();
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -69,8 +69,6 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                         serviceUnavailableRetry.start(function() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                                callback();
-                                serviceUnavailableRetry.stop();
                                 utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
                                     if (existingMessages) {
                                         existingMessages.push(message);
@@ -80,6 +78,8 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                                         utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
                                     }
                                 });
+                                callback();
+                                serviceUnavailableRetry.stop();
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {
                                     if (callbackFail) {

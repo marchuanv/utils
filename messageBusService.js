@@ -5,6 +5,7 @@ const MessageBus = require('./messageBus.js');
 function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost) {
     this.messageBus = new MessageBus(this);
     const thisService = this;
+    const privatekey=utils.getJSONObject(process.env.privatekey);
 
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
@@ -12,7 +13,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                utils.downloadGoogleDriveData(process.env.privatekey, 'messages', function(existingMessages) {
+                utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
                    obj(existingMessages);
                 });
             } else {
@@ -77,12 +78,12 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 }
             };
         });
-        utils.downloadGoogleDriveData(process.env.privatekey, 'messages', function(existingMessages) {
+        utils.downloadGoogleDriveData(privatekey, 'messages', function(existingMessages) {
             if (existingMessages) {
                 existingMessages.push(message);
-                utils.uploadGoogleDriveData(process.env.privatekey, 'messages', existingMessages);
+                utils.uploadGoogleDriveData(privatekey, 'messages', existingMessages);
             } else {
-                 utils.uploadGoogleDriveData(process.env.privatekey, 'messages', [message]);
+                 utils.uploadGoogleDriveData(privatekey, 'messages', [message]);
             }
         });
     };

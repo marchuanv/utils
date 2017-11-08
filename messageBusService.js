@@ -39,7 +39,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
                 logging.write('messages downloaded');
                 while(unsavedMessages.length>0){
-                        const message=unsavedMessages.splice(0, 1);
+                        const message=unsavedMessages.splice(0, 1)[0];
                         messages.push(message);
                 };
                 utils.uploadGoogleDriveData(privatekey, fileName, messages);

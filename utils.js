@@ -212,7 +212,7 @@ module.exports={
             logging.write('http request data received.');
                 if (requestBody) {
                     res.statusCode = 200;
-                    res.end();
+                    res.end('success');
                     callback(requestBody);
                 } else if(req.method.toLowerCase()=="get"){
                     callback(function(resData){
@@ -222,7 +222,7 @@ module.exports={
                     });
                 }else{
                     res.statusCode = 500;
-                    res.end();
+                    res.end('failed');
                     callbackError(`no request body`);
                 }
             
@@ -269,7 +269,7 @@ module.exports={
     downloadGoogleDriveData: function(key, name, callback){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.load(name,function(rawData){
+        drive.load(name, function(rawData){
           console.log();
           console.log('DOWNLOADED: ',rawData);
           console.log();

@@ -255,26 +255,24 @@ module.exports={
     createLogging: function(){
       return require('./logging.js');
     },
-    uploadGoogleDriveData: function(key, name, data){
+    uploadGoogleDriveData: function(key, name, data, cbDone){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.replace(name, data, function(){
-            console.log();
-            console.log('UPLOADED: ',data);
-            console.log();
+        const dataStr=module.exports.getJSONString(data);
+        drive.replace(name, dataStr, cbDone, function notFound(){
+            console.log(`${name} could not be found, creating new file.`);
+            drive.new(name, dataStr, cbDone);
         });
     },
-    downloadGoogleDriveData: function(key, name, callback){
+    downloadGoogleDriveData: function(key, name, cbFound, cbNotFound){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.load(name, function(data){
-          console.log();
-          console.log('DOWNLOADED: ',data);
-          console.log('DOWNLOADED LENGTH: ',data.length);
-          console.log('TYPE: ',typeof data);
-          console.log();
-          callback(data);
-        }); 
+        drive.load(name, cbFound, cbNotFound);
+    },
+    clearGoogleDriveData: function(key){
+        const GoogleDrive=require('./googleDrive.js');
+        const drive=new GoogleDrive(key);
+        drive.delete(null); 
     },
     readJsonFile: function(name, callback){
         var filePath=`${__dirname}/${name}`;

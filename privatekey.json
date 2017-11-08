@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "api-project-927120566382",
+  "private_key_id": "4f98a5024b7619c2c1ab5976960c004f3ef13f31",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCk07u2c8eL/6jF\ne83t6Hwx9CLKslyaKPt27GWVVq2FGADt2L7g9Rcifh88G7O4bVW8nYa/JqIY7mkT\nzi2apJo4CLw4WwloZSR8IAy9jlnw26w/lpzTC8XQOVEgzUV5K2F39l0MTA3qCvPw\nMrg+0+oD9u34doLRUOIm1D233tibVy8r3S6a1g7NxwuZbphPKGmFpcBWydQNDhuX\ncb7bNygpUpzS9rZNPUv7O3QCkwu3vUoQw6dPjFkTlM+vRUqCtTGhQOKqNZwt6Hy8\n07V8BiS9hrNXS6SqKJEAe9Olsi124hoW4gFfihcRMljJKFl/6o+7iK3yeSEDFphS\nlLkjzCa7AgMBAAECggEAAbkVphV8nlQm7+2LtJgfp+CljQlwNSaaxAZce2VCwCNA\nxpxu5XxUtUeWCJnVCw8zCo/PNuJYC8abB+bH+JIC4BHEBJgVVtCesgzOshZOSlx/\n5uKTtiSTnhEKbfFcttUF+wtTnK2HhEi5UM8buKMT87vskgnndl/++dPM+FcjeGiS\nr+Ue5RnkcWBBTLNybhqjTd3zAQPOvMi4h9eYwl692PWcLdScsBng8/HMuSipAwGI\n5gvpWsJ+pwCvTLbDuzCdmLFfE4aNaEW491b46Va8wYT7NgiYxEJ8tajINHd7tZbw\nQI8Srrh6yyKLYXH5P3+7SDKp2vd6adx/b6BsgBKmwQKBgQDOvy21NhLTn7UU+oto\nTg3iVB2azRmKyRjIwNL4bvN8tAvXf6bimwURWNiPLp/S65gS+tN50Yjb4yjaus42\nU2dv1vURxTgTjVPuyzSCd44jy1SIeeHVSticPQraWPROgOxiP2X1nNqq6kQ9j+M8\nQL5vX9MDtS4wUVeREfVS6KeSewKBgQDMGAGxFrWxEB9e+QW/5/Vm59r4G4tNJpT1\nW36s6Kdiz2YodLfPpJ8x87zSV5Qxi0gyvtvNrc0mwgS/6eHybN1VjGsd9O+RB60C\nAJNRYHvaxJjjlxijaRuJPQCpvuwIliFfjwbgqTOyIfzMcX4i3tqBUTaE46FTaxds\n6dLMoyKowQKBgDJ4q3DkjX4KLAu+ClBhVbRd8og677RY2WsQ36/0bg6QaZ+nMxd4\n3qjYdq2lpTC5gPuJLh08ENwVPYEAP501iTfdUyCOc90aEFZoVx5Oj22fkrhqgL4w\nMmcZ489gDewoPwzRC1QFgcBdxmD9Am1QJO1NiFcMYQU8plLs/mXKFDaHAoGAYpxC\nzP6NASUqEyg8x/FaV8M0wGYGk1tN45K2jPLIVWyiDm/+k9wVcvwyQmtAVgPW+XXQ\nG/uawNxDkTp/CjPhaUE0TEAZNDjCNdJzW4FDtnsA6A4MQIA7Zr7LwDhYMPng3Bvu\nFcSLDslvLJS1fkGwz4Se0+xr+TMoGV6MlIVJ7MECgYA4k/vEuSP9k9SceyXkjYzx\nQS/2IcaY/flDbr2VlKYaZXlqi2LT/qQeZFxF/robTGXR9tdi0gZXuLPGQdcroweT\ndVdemeSQPW6HO+cxPDnDKDhHv8sJsqiak1d7Qho5CDtS3u6fl6W821FuJ/6G63ou\n4ahxmPZOVoFol+yYBjFfCg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "sanctusfamilybot@api-project-927120566382.iam.gserviceaccount.com",
+  "client_id": "113695026432383234451",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sanctusfamilybot%40api-project-927120566382.iam.gserviceaccount.com"
+}

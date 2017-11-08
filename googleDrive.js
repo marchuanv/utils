@@ -22,13 +22,7 @@ function GoogleDrive(key){
             console.log(err);
             return;
           }
-          for (var i = 0; i < res.files.length; i++) {
-              const file = res.files[i];
-              console.log('deleting ',file.id);
-              drive.files.delete({
-                fileId: file.id
-              });
-          };
+      
       });
     });
 
@@ -36,50 +30,48 @@ function GoogleDrive(key){
         version: 'v3',
         auth: jwtClient
     });
-    
-    function getFileId(name, callback){
-        
+
+    function getFileId(name, cbFound, cbNotFound){
           drive.files.list(function(err, res){
               if (err) {
                 console.log(err);
                 return;
               }
+              var exists=false;
               for (var i = 0; i < res.files.length; i++) {
                 const file = res.files[i];
                 if (file.name==name){
-                    console.log('file was found: ',file.id);
-                    callback(file.id);
+                    exists=true;
+                    cbFound(file.id);
                     return;
+                }else if (!name){
+                    exists=true;
+                    cbFound(file.id);
                 }
               };
-              callback(null);
+              if (!exists && cbNotFound){
+                  cbNotFound(null);
+              }
           });
     };
     
-    
-    this.replace=function(name, data, callback){
-      getFileId(name, function(_fileId){
-          if (_fileId){
-            drive.files.delete({
-              fileId: _fileId
-            },function(err){
-              if (err) {
-                console.log(err);
-                return;
-              }
-              drive.files.create({
-                resource: {
-                  name: name,
-                  mimeType: 'application/json'
-                },
-                media: {
-                  mimeType: 'application/json',
-                  body: data
-                }
-              }, callback);
+    this.delete=function(name){
+        getFileId(name, function found(_fileId){
+              console.log(`deleting ${_fileId}.`);
+              drive.files.delete({
+                  fileId: _fileId
+              },function(){
+                console.log(`${_fileId} was deleted.`);
+              });
+        },function notFound(){
+           console.log('no files to delete');
+        });
+    };
 
-            });
-          }else{
+    this.new=function(name, dataStr, cbDone){
+        getFileId(name, function found(_fileId){
+           console.log('could not create new file, already exists.');
+        },function notFound(){
             drive.files.create({
               resource: {
                 name: name,
@@ -87,33 +79,52 @@ function GoogleDrive(key){
               },
               media: {
                 mimeType: 'application/json',
-                body: data
+                body: dataStr
               }
-            }, callback);
-          }
-      });
+            }, function(err){
+                if (err){
+                  console.log(err);
+                }else{
+                  if (cbDone){
+                      cbDone();
+                  }
+                }
+            });
+        });
+    };
+
+    this.replace=function(name, dataStr, cbDone, cbNotFound){
+        getFileId(name, function found(_fileId){
+            drive.files.delete({
+                fileId: _fileId
+            },function(err){
+                if (err){
+                   console.log(err);
+                } else {
+                    this.new(
+                        name, 
+                        dataStr, 
+                        cbDone
+                    );
+                }
+            });
+        },cbNotFound);
     };
     
-    this.load=function(name, callback){
-        getFileId(name, function(_fileId){
-          if (_fileId){
-              drive.files.get({
-                  fileId: _fileId,
-                  mimeType: 'application/json',
-                  alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
-              }, function(err, result) {
-                  if(err){
-                    console.log(err);
-                    callback(null);
-                  }else{
-                    callback(result);
-                  }
-              });
-          }else{
-            console.log(`${name} does not exist`);
-            callback(null);
-          }
-        });
+    this.load=function(name, cbFound, cbNotFound){
+        getFileId(name, function found(_fileId){
+            drive.files.get({
+                fileId: _fileId,
+                mimeType: 'application/json',
+                alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
+            }, function(err, result) {
+                if(err){
+                  console.log(err);
+                }else{
+                  cbFound(result);
+                }
+            });
+        },cbNotFound);
     }
 }
 module.exports=GoogleDrive;

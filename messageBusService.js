@@ -13,10 +13,9 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                utils.downloadGoogleDriveData(privatekey, 'messages.json', function(existingMessages) {
-                   const resData=utils.getJSONString(existingMessages);
-                   console.log('BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', existingMessages);
-                   obj(resData);
+                utils.downloadGoogleDriveData(privatekey, 'messages.json', function(messages) {
+                   const messagesJson=utils.getJSONString(messages);
+                   obj(messagesJson);
                 });
             } else {
                 logging.write('received http message structure is wrong.');
@@ -54,14 +53,11 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`notifying remote subscriptions at ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                        utils.downloadGoogleDriveData(privatekey, 'messages.json', function(existingMessages) {
-                            if (existingMessages) {
-                                existingMessages.push(message);
-                                utils.uploadGoogleDriveData(privatekey, 'messages.json', existingMessages);
-                            } else {
-
-                                utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
-                            }
+                        utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
+                            messages.push(message);
+                            utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
+                        },function notFound(){
+                            utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
                         });
                     }, function fail() {
                         var retryCounter = 0;
@@ -70,14 +66,11 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
                         serviceUnavailableRetry.start(function() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                                utils.downloadGoogleDriveData(privatekey, 'messages.json', function(existingMessages) {
-                                    if (existingMessages) {
-                                        existingMessages.push(message);
-                                        utils.uploadGoogleDriveData(privatekey, 'messages.json', existingMessages);
-                                    } else {
-                                        
-                                        utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
-                                    }
+                                utils.downloadGoogleDriveData(privatekey, 'messages.json', function found(messages) {
+                                    messages.push(message);
+                                    utils.uploadGoogleDriveData(privatekey, 'messages.json', messages);
+                                },function notFound(){
+                                    utils.uploadGoogleDriveData(privatekey, 'messages.json', [message]);
                                 });
                                 serviceUnavailableRetry.stop();
                             }, function fail() {

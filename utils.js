@@ -264,7 +264,10 @@ module.exports={
     downloadGoogleDriveData: function(key, name, callback){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.load(name,callback); 
+        drive.load(name,function(rawData){
+          const jsonData=module.exports.getJSONObject(rawData);
+          callback(jsonData);
+        }); 
     },
     readJsonFile: function(name, callback){
         var filePath=`${__dirname}/${name}`;

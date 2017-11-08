@@ -80,7 +80,6 @@ module.exports={
   },
   getJSONObject: function(jsonString){
     try{
-      logging.write(`parsing ${jsonString} to object`);
       return JSON.parse(jsonString);
     }catch(err){
       logging.write('parsing failed with error:',err);

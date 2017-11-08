@@ -79,12 +79,6 @@ module.exports={
       }
   },
   getJSONObject: function(jsonString){
-    if (typeof jsonString !== 'string'){
-      throw 'jsonString parameter was not of type string' 
-    }
-    if (!jsonString){
-      throw 'json string empty or undefined' 
-    }
     try{
       logging.write(`parsing ${jsonString} to object`);
       return JSON.parse(jsonString);
@@ -272,6 +266,9 @@ module.exports={
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
         drive.load(name,function(rawData){
+          console.log();
+          console.log('RAW DATA FROM GOOGLE DRIVE: ',rawData);
+          console.log();
           const jsonData=module.exports.getJSONObject(rawData);
           callback(jsonData);
         }); 

@@ -82,15 +82,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, publi
     }
 
     messageBusProcess.on('message', (receiveMessage) => {
-        if (receiveMessage.replay==true) {
-            logging.write('');
-            logging.write('/////////////////////////////// RESTARTING //////////////////////////////');
-            thisService.messageBus.restart();
-            unsavedMessages=[];
-            logging.write('');
-        } else {
-            thisService.messageBus.receiveInternalPublishMessage(receiveMessage);
-        }
+        thisService.messageBus.receiveInternalPublishMessage(receiveMessage);
     });
 
     this.sendInternalPublishMessage = function(message, callback, callbackFail) {

@@ -3,6 +3,7 @@ const logging = require('./logging.js');
 
 function MessageBus(messageBusService){
 
+	var restartCallback;
 	const subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;
@@ -19,12 +20,8 @@ function MessageBus(messageBusService){
   		}
   	};
 
-  	this.restart=function(){
-		getSubscriptions.apply(this, ['restart', function(routingSubscription){
-			routingSubscription.callback();
-			subscriptions=[];
-			logging.write(`calling restart routine`);
-		}]);
+  	this.app=function(initialiseCallback){
+  		this.subscribe('replay', initialiseCallback);
   	};
 
   	this.receiveInternalPublishMessage=function(message){

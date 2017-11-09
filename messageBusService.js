@@ -31,7 +31,7 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
     }else if (publishOnRestart==true){
 
         const publisherTimer=utils.createTimer(true, 'publisher');
-        publisherTimer.setTime(10000);
+        publisherTimer.setTime(240000);
 
         function savePublishedMessages(){
             logging.write('');

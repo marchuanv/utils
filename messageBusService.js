@@ -55,6 +55,9 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
     var lock=false;
     function queueMessageSave(message){
         if (isReplay==true && message.channel != 'replay' && message.channel != 'purge' && isHost==false){
+            console.log();
+            console.log(`/////////////////////// QUEUING MESSAGE ${message.channel} ////////////////////////`);
+            console.log();
             unsavedMessages.push(message);
             if (lock==false){
                 lock=true;
@@ -64,7 +67,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                     while(unsavedMessages.length>0){
                         const unsavedMessage=unsavedMessages.splice(0, 1);
                         console.log();
-                        console.log('/////////////////////// SAVING MESSAGE ${unsavedMessage.channel} ////////////////////////');
+                        console.log(`/////////////////////// SAVING MESSAGE ${unsavedMessage.channel} ////////////////////////`);
                         console.log();
                         for (var x = savedMessages.length - 1; x >= 0; x--) {
                             const savedMessage=savedMessages[x];

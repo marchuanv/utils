@@ -60,6 +60,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                 lock=true;
                 utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
                     logging.write('messages downloaded');
+                    utils.clearGoogleDriveData(privatekey, fileName);
                     while(unsavedMessages.length>0){
                         const unsavedMessage=unsavedMessages.splice(0,1);
                         for (var x = savedMessages.length - 1; x >= 0; x--) {

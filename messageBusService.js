@@ -52,7 +52,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
     });
 
     const saveMessageQueueTimer=utils.createTimer(false, 'save message queue');
-    function saveMessage(message){
+    function queueMessageSave(message){
         if (isReplay==true && message.channel != 'replay' && message.channel != 'purge'){
             const saveMessageTimer=utils.createTimer(true, 'save message');
             saveMessageTimer.start(function(){
@@ -104,7 +104,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`sending message to ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                       saveMessage(message);
+                       queueMessageSave(message);
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -112,7 +112,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                         serviceUnavailableRetry.start(function() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                                saveMessage(message);
+                                queueMessageSave(message);
                                 serviceUnavailableRetry.stop();
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {

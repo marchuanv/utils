@@ -39,19 +39,23 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, publi
             utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
                 logging.write('messages downloaded');
                 while(unsavedMessages.length>0){
-                        const unsavedMessage=unsavedMessages.splice(0, 1)[0];
-                        var exists=false;
-                        for (var i = savedMessages.length - 1; i >= 0; i--) {
-                            const savedMessage=savedMessages[i];
-                            if (savedMessage.userId==unsavedMessage.userId
-                                    && savedMessage.date==unsavedMessage.date)
-                            {
-                                exists=true;
+                    const unsavedMessage=unsavedMessages.splice(0, 1)[0];
+                    savedMessages.push(unsavedMessage);
+                };
+                for (var x = savedMessages.length - 1; x >= 0; x--) {
+                    const savedMessage1=savedMessages[x];
+                    var count=0;
+                    for (var i = savedMessages.length - 1; i >= 0; i--) {
+                        const savedMessage2=savedMessages[i];
+                        if (savedMessage1.userId==savedMessage2.userId
+                                && savedMessage1.date==savedMessage2.date)
+                        {
+                            count++;
+                            if (count>1){
+                                savedMessages.splice(i, 1);
                             }
-                        };
-                        if (exists==false){
-                            savedMessages.push(unsavedMessage);
                         }
+                    };
                 };
                 utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
             });

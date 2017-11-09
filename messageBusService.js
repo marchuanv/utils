@@ -51,22 +51,31 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
         utils.uploadGoogleDriveData(privatekey, fileName, []);
     });
 
+    const saveMessageQueueTimer=utils.createTimer(false, 'save message queue');
     function queueMessageSave(message){
         if (isReplay==true && message.channel != 'replay' && message.channel != 'purge'){
-            utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
-                logging.write('messages downloaded');
-                var exists=false;
-                for (var x = savedMessages.length - 1; x >= 0; x--) {
-                    const savedMessage=savedMessages[x];
-                    if (savedMessage.userId==message.userId && savedMessage.date==message.date) {
-                        savedMessages.splice(x, 1);
-                        exists=true;
-                    }
-                };
-                if (exists==false){
-                    savedMessages.push(message);
+            const saveMessageTimer=utils.createTimer(true, 'save message');
+            saveMessageTimer.start(function(){
+                if (saveMessageQueueTimer.started==false){
+                    saveMessageTimer.stop();
+                    saveMessageQueueTimer.start(function() {
+                        utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
+                            logging.write('messages downloaded');
+                            var exists=false;
+                            for (var x = savedMessages.length - 1; x >= 0; x--) {
+                                const savedMessage=savedMessages[x];
+                                if (savedMessage.userId==message.userId && savedMessage.date==message.date) {
+                                    savedMessages.splice(x, 1);
+                                    exists=true;
+                                }
+                            };
+                            if (exists==false){
+                                savedMessages.push(message);
+                            }
+                            utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
+                        });
+                    });
                 }
-                utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
             });
         }
     };

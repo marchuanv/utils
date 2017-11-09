@@ -57,6 +57,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
             const saveMessageTimer=utils.createTimer(true, 'save message');
             saveMessageTimer.start(function(){
                 if (saveMessageQueueTimer.started==false){
+                    saveMessageTimer.stop();
                     saveMessageQueueTimer.start(function() {
                         utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
                             logging.write('messages downloaded');

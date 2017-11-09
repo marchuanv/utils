@@ -52,7 +52,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
 
     const unsavedMessages=[];
     const saveMessageQueueTimer=utils.createTimer(false, 'save message queue');
-    const lock=false;
+    var lock=false;
     function queueMessageSave(message){
         if (isReplay==true && message.channel != 'replay' && message.channel != 'purge' && isHost==false){
             unsavedMessages.push(message);

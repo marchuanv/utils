@@ -1,7 +1,7 @@
 const http=require('http');
 const logging=require('./logging.js');
 
-function createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, routingMode, messageSendRetryMax, autoRestart, restartTimer){
+function createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, messageSendRetryMax, autoRestart, restartTimer){
     logging.write('');
     logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
     if (!restartTimer){
@@ -11,7 +11,7 @@ function createMessageBusProcess(name, fileName, thisServerAddress, googleDriveP
     const childFile=`${__dirname}/messageBusProcess.js`;
     const cp = require('child_process');
     const childProcess=cp.fork(childFile, 
-        [name, fileName, thisServerAddress, messageSendRetryMax, routingMode, googleDrivePrivateKey]
+        [name, fileName, thisServerAddress, messageSendRetryMax, googleDrivePrivateKey]
         // { silent: true }
     );
     function handleEvent(reason, error){
@@ -20,7 +20,7 @@ function createMessageBusProcess(name, fileName, thisServerAddress, googleDriveP
         logging.write(`reason: ${reason}, error: ${error}`);
         if (autoRestart && restartTimer.started==false){
             restartTimer.start(function(){
-                createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, routingMode, messageSendRetryMax, autoRestart, restartTimer);
+                createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, messageSendRetryMax, autoRestart, restartTimer);
                 restartTimer.stop();
             });
         }
@@ -124,12 +124,10 @@ module.exports={
           './messageBus.js', 
           thisServerAddress,
           googleDrivePrivateKey,
-          routingMode,
           messageSendRetryMax, 
           true
       );
       const messageBusService = new MessageBusService(
-          routingMode,
           messageBusProcess,
           messageSendRetryMax,
           false,

@@ -1,7 +1,7 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 
-function MessageBus(messageBusService){
+function MessageBus(messageBusService, serviceFileName, canReplay){
 
 	var restartCallback;
 	var subscriptions=[];
@@ -21,12 +21,35 @@ function MessageBus(messageBusService){
   	};
 
   	this.app=function(start){
-  		this.subscribe('replay', function(){
-  			logging.write(`subscription count ${subscriptions.length}`);
-  			subscriptions=[];
-  			start();
-  			logging.write(`subscription count ${subscriptions.length}`);
-  		});
+  		function purgeSubscription(){
+        	utils.clearGoogleDriveData(privatekey, serviceFileName);
+		    utils.uploadGoogleDriveData(privatekey, serviceFileName, []);
+  		};
+  		function replaySubscription(){
+			logging.write(`subscription count ${subscriptions.length}`);
+			subscriptions=[];
+			this.subscribe('replay', replaySubscription);
+			this.subscribe('purge', purgeSubscription);
+			start();
+			logging.write(`subscription count ${subscriptions.length}`);
+			utils.downloadGoogleDriveData(privatekey, serviceFileName, function found(messages) {
+				messages.sort(function(x,y){
+				    return y.date-x.date;
+				});
+				logging.write('');
+				logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
+				logging.write('messages: ',messages);
+				while(messages.length > 0) {
+				    const msg=messages.splice(0, 1)[0];
+				    thisService.messageBus.publish(msg.channel, msg.userId, msg.data);
+				};
+				logging.write('');
+			});
+  		};
+  		if (canReplay){
+  			this.subscribe('replay', replaySubscription);
+  		}
+  		this.subscribe('purge', purgeSubscription);
   		start();
   	};
 

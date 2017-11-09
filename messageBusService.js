@@ -2,22 +2,23 @@ const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 
-function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isReplay) {
+function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay) {
     
-    this.messageBus = new MessageBus(this);
     
     const thisService = this;
     const privatekey=utils.getJSONObject(process.env.privatekey);
     const serviceName=process.env.thisserveraddress.split('.')[0];
-    const fileName=`${serviceName}.json`;
+    const serviceFileName=`${serviceName}.json`;
 
+    this.messageBus = new MessageBus(this, serviceFileName, canReplay);
+    
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
         utils.receiveHttpRequest(port, function requestReceived(obj) {
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
+                utils.downloadGoogleDriveData(privatekey, serviceFileName, function found(messages) {
                    const messagesJson=utils.getJSONString(messages);
                    obj(messagesJson);
                 },function notFound(){
@@ -27,43 +28,22 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                 logging.write('received http message structure is wrong.');
             }
         });
-    }else if (isReplay==true){
-        this.messageBus.subscribe('replay',function(){
-            utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
-                messages.sort(function(x,y){
-                    return y.date-x.date;
-                });
-                logging.write('');
-                logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
-                logging.write('messages: ',messages);
-                while(messages.length > 0) {
-                    const msg=messages.splice(0, 1)[0];
-                    thisService.messageBus.publish(msg.channel, msg.userId, msg.data);
-                };
-                logging.write('');
-            });
-        });
     }
-
-    this.messageBus.subscribe('purge',function(){
-        utils.clearGoogleDriveData(privatekey, fileName);
-        utils.uploadGoogleDriveData(privatekey, fileName, []);
-    });
 
     const unsavedMessages=[];
     const saveMessageQueueTimer=utils.createTimer(false, 'save message queue');
     var lock=false;
     function queueMessageSave(message){
-        if (isReplay==true && message.channel != 'replay' && message.channel != 'purge' && isHost==false){
+        if (canReplay==true && message.channel != 'replay' && message.channel != 'purge' && isHost==false){
             console.log();
             console.log(`/////////////////////// QUEUING MESSAGE ${message.channel} ////////////////////////`);
             console.log();
             unsavedMessages.push(message);
             if (lock==false){
                 lock=true;
-                utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
+                utils.downloadGoogleDriveData(privatekey, serviceFileName, function found(savedMessages) {
                     logging.write('messages downloaded');
-                    utils.clearGoogleDriveData(privatekey, fileName);
+                    utils.clearGoogleDriveData(privatekey, serviceFileName);
                     while(unsavedMessages.length>0){
                         const unsavedMessage=unsavedMessages.splice(0, 1)[0];
                         console.log();
@@ -77,7 +57,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                         };
                         savedMessages.push(unsavedMessage);
                     };
-                    utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
+                    utils.uploadGoogleDriveData(privatekey, serviceFileName, savedMessages);
                     lock=false;
                 },function notFound(){
                     lock=false;

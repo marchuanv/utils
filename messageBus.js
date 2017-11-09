@@ -4,7 +4,7 @@ const logging = require('./logging.js');
 function MessageBus(messageBusService){
 
 	var restartCallback;
-	const subscriptions=[];
+	var subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;
   		for (var i = subscriptions.length - 1; i >= 0; i--) {

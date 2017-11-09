@@ -10,7 +10,6 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
     const privatekey=utils.getJSONObject(process.env.privatekey);
     const serviceName=process.env.thisserveraddress.split('.')[0];
     const fileName=`${serviceName}.json`;
-    const unsavedMessages=[];
 
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
@@ -51,31 +50,24 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
         utils.uploadGoogleDriveData(privatekey, fileName, []);
     });
 
+    const unsavedMessages=[];
     const saveMessageQueueTimer=utils.createTimer(false, 'save message queue');
     function queueMessageSave(message){
         if (isReplay==true && message.channel != 'replay' && message.channel != 'purge' && isHost==false){
-            const saveMessageTimer=utils.createTimer(true, 'save message');
-            saveMessageTimer.start(function(){
-                if (saveMessageQueueTimer.started==false){
-                    saveMessageQueueTimer.start(function() {
-                        saveMessageTimer.stop();
-                        utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
-                            logging.write('messages downloaded');
-                            var exists=false;
-                            for (var x = savedMessages.length - 1; x >= 0; x--) {
-                                const savedMessage=savedMessages[x];
-                                if (savedMessage.userId==message.userId && savedMessage.date==message.date) {
-                                    savedMessages.splice(x, 1);
-                                    exists=true;
-                                }
-                            };
-                            if (exists==false){
-                                savedMessages.push(message);
-                            }
-                            utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
-                        });
-                    });
-                }
+            unsavedMessages.push(message);
+            utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
+                logging.write('messages downloaded');
+                while(unsavedMessages.length>0){
+                    const unsavedMessage=unsavedMessages.splice(0,1);
+                    for (var x = savedMessages.length - 1; x >= 0; x--) {
+                        const savedMessage=savedMessages[x];
+                        if (savedMessage.userId==unsavedMessage.userId && savedMessage.date==unsavedMessage.date) {
+                            savedMessages.splice(x, 1);
+                        }
+                    };
+                    savedMessages.push(unsavedMessage);
+                };
+                utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
             });
         }
     };

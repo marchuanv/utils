@@ -64,7 +64,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                             for (var x = savedMessages.length - 1; x >= 0; x--) {
                                 const savedMessage=savedMessages[x];
                                 if (savedMessage.userId==message.userId && savedMessage.date==message.date) {
-                                    savedMessages.splice(i, 1);
+                                    savedMessages.splice(x, 1);
                                     exists=true;
                                 }
                             };

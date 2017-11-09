@@ -29,39 +29,6 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
             }
         });
     }else if (isReplay==true){
-
-        const publisherTimer=utils.createTimer(true, 'publisher');
-        publisherTimer.setTime(240000);
-
-        function savePublishedMessages(){
-            logging.write('');
-            logging.write('////////////////// SAVE TIMER ////////////////////');
-            utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
-                logging.write('messages downloaded');
-                while(unsavedMessages.length>0){
-                    const unsavedMessage=unsavedMessages.splice(0, 1)[0];
-                    savedMessages.push(unsavedMessage);
-                };
-                for (var x = savedMessages.length - 1; x >= 0; x--) {
-                    const savedMessage1=savedMessages[x];
-                    var count=0;
-                    for (var i = savedMessages.length - 1; i >= 0; i--) {
-                        const savedMessage2=savedMessages[i];
-                        if (savedMessage1.userId==savedMessage2.userId
-                                && savedMessage1.date==savedMessage2.date)
-                        {
-                            count++;
-                            if (count>1){
-                                savedMessages.splice(i, 1);
-                            }
-                        }
-                    };
-                };
-                utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
-            });
-            logging.write('');
-        };
-
         this.messageBus.subscribe('replay',function(){
             utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
                 messages.sort(function(x,y){
@@ -75,21 +42,32 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                     thisService.messageBus.publish(msg.channel, msg.userId, msg.data);
                 };
                 logging.write('');
-                publisherTimer.start(savePublishedMessages);
-            },function notFound(){
-                const messages=[];
-                utils.uploadGoogleDriveData(privatekey, fileName, messages);
-                publisherTimer.start(savePublishedMessages);
             });
         });
-
     }else {
          utils.uploadGoogleDriveData(privatekey, fileName, []);
     }
 
     function saveMessage(message){
         if (isReplay==true){
-            unsavedMessages.push(message);
+            const saveMessageTimer=utils.createTimer(true, 'save message');
+            saveMessageTimer.setTime(10000);
+            saveMessageTimer.start(function(){
+                saveMessageTimer.stop();
+                utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
+                    logging.write('messages downloaded');
+                    for (var x = savedMessages.length - 1; x >= 0; x--) {
+                        const savedMessage=savedMessages[x];
+                        if (savedMessage.userId==message.userId && savedMessage.date==message.date) {
+                            savedMessages.splice(i, 1);
+                        }
+                    };
+                    utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
+                },function notFound(){
+                    const messages=[];
+                    utils.uploadGoogleDriveData(privatekey, fileName, messages);
+                });
+            });
         }
     };
 

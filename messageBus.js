@@ -3,7 +3,7 @@ const logging = require('./logging.js');
 
 function MessageBus(messageBusService, serviceFileName, canReplay){
 
-	var restartCallback;
+	const thisService=this;
 	var subscriptions=[];
 	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;
@@ -28,8 +28,8 @@ function MessageBus(messageBusService, serviceFileName, canReplay){
   		function replaySubscription(){
 			logging.write(`subscription count ${subscriptions.length}`);
 			subscriptions=[];
-			this.subscribe('replay', replaySubscription);
-			this.subscribe('purge', purgeSubscription);
+			thisService.subscribe('replay', replaySubscription);
+			thisService.subscribe('purge', purgeSubscription);
 			resubscribe();
 			logging.write(`subscription count ${subscriptions.length}`);
   			if (canReplay==true){
@@ -42,7 +42,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay){
 					logging.write('messages: ',messages);
 					while(messages.length > 0) {
 					    const msg=messages.splice(0, 1)[0];
-					    thisService.messageBus.publish(msg.channel, msg.userId, msg.data);
+					    thisService.publish(msg.channel, msg.userId, msg.data);
 					};
 					logging.write('');
 				});

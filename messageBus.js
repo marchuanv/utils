@@ -42,7 +42,11 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 					logging.write('messages: ',messages);
 					while(messages.length > 0) {
 					    const msg=messages.splice(0, 1)[0];
-					    thisService.publish(msg.channel, msg.userId, msg.data);
+					    const publishTimer=utils.createTimer(false,'publish');
+					    publishTimer.setTime(4000);
+					    publishTimer.start(function(){
+					    	thisService.publish(msg.channel, msg.userId, msg.data);
+					    });
 					};
 					logging.write('');
 				});

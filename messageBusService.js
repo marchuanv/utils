@@ -53,7 +53,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
 
     const saveMessageQueueTimer=utils.createTimer(false, 'save message queue');
     function queueMessageSave(message){
-        if (isReplay==true && message.channel != 'replay' && message.channel != 'purge'){
+        if (isReplay==true && message.channel != 'replay' && message.channel != 'purge' && isHost==false){
             const saveMessageTimer=utils.createTimer(true, 'save message');
             saveMessageTimer.start(function(){
                 if (saveMessageQueueTimer.started==false){

@@ -20,8 +20,9 @@ function MessageBus(messageBusService){
   		}
   	};
 
-  	this.app=function(initialiseCallback){
-  		this.subscribe('replay', initialiseCallback);
+  	this.app=function(start){
+  		this.subscribe('replay', start);
+  		start();
   	};
 
   	this.receiveInternalPublishMessage=function(message){

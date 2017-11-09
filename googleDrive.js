@@ -65,7 +65,9 @@ function GoogleDrive(key){
                 console.log(`${_fileId} was deleted.`);
                 cbDone();
               });
-        }, cbDone);
+        }, function(){
+          console.log(`${name} not found`);
+        });
     };
 
     this.new=function(name, dataStr, cbDone){

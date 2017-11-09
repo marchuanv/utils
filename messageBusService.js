@@ -50,6 +50,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
 
     this.messageBus.subscribe('purge',function(){
         utils.clearGoogleDriveData(privatekey, fileName);
+        utils.uploadGoogleDriveData(privatekey, fileName, []);
     });
 
     function saveMessage(message){
@@ -72,8 +73,6 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                         savedMessages.push(message);
                     }
                     utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
-                },function notFound(){
-                    utils.uploadGoogleDriveData(privatekey, fileName, [message]);
                 });
             });
         }

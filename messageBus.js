@@ -45,7 +45,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 					    const publishTimer=utils.createTimer(false,'publish');
 					    publishTimer.setTime(4000);
 					    publishTimer.start(function(){
-					    	thisService.publish(msg.channel, msg.userId, msg.data);
+					    	messageBusService.sendExternalPublishMessage(msg);
 					    });
 					};
 					logging.write('');
@@ -81,6 +81,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   		logging.write('');
   		logging.write(`/// PUBLISHING TO ${channel} ///`);
 		messageBusService.sendExternalPublishMessage({
+			id: utils.newGuid(),
 			channel: channel,
   	 		from: process.env.thisserveraddress,
 			date:(new Date()).toString(),

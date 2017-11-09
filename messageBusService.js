@@ -51,7 +51,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                         console.log();
                         for (var x = savedMessages.length - 1; x >= 0; x--) {
                             const savedMessage=savedMessages[x];
-                            if (savedMessage.userId==unsavedMessage.userId && savedMessage.channel==unsavedMessage.channel && savedMessage.date==unsavedMessage.date) {
+                            if (savedMessage.id==unsavedMessage.id) {
                                 savedMessages.splice(x, 1)[0];
                             }
                         };

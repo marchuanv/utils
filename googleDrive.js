@@ -59,16 +59,18 @@ function GoogleDrive(key){
     this.delete=function(name, cbDone){
         getFileId(name, function found(_fileId){
               console.log(`deleting ${_fileId}.`);
-              drive.files.delete({
-                  fileId: _fileId
-              },function(err, file){
-                if (err){
-                  console.log(err);
-                  return;
-                }
-                console.log(`${_fileId} was deleted.`);
-                cbDone();
-              });
+              setTimeout(function(){
+                  drive.files.delete({
+                      fileId: _fileId
+                  },function(err, file){
+                    if (err){
+                      console.log(err);
+                      return;
+                    }
+                    console.log(`${_fileId} was deleted.`);
+                    cbDone();
+                  });
+              },2000);
         }, function(){
           console.log(`${name} not found`);
         });

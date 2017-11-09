@@ -21,14 +21,18 @@ function MessageBus(messageBusService){
   	};
 
   	this.app=function(start){
-  		this.subscribe('replay', start);
+  		this.subscribe('replay', function(){
+  			logging.write(`subscription count ${subscriptions.length}`);
+  			subscriptions=[];
+  			start();
+  			logging.write(`subscription count ${subscriptions.length}`);
+  		});
   		start();
   	};
 
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
-		logging.write(`subscription count ${subscriptions.length}`);
 		getSubscriptions.apply(this, [message.channel, function(subscription){
 			subscription.callback(message.data, message.userId);
 			logging.write(`calling ${message.channel} channel subscribers callbacks.`);

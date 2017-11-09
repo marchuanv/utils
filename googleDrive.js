@@ -77,40 +77,44 @@ function GoogleDrive(key){
     };
 
     this.new=function(name, dataStr, cbDone){
-        drive.files.create({
-          resource: {
-            name: name,
-            mimeType: 'application/json'
-          },
-          media: {
-            mimeType: 'application/json',
-            body: dataStr
-          }
-        }, function(err, file){
-            if (err){
-              console.log(err);
-            }else{
-              console.log(`FILE CREATED ${name} WITH id ${file.id}`);
-              if (cbDone){
-                  cbDone(file.id);
-              }
+        setTimeout(function(){
+          drive.files.create({
+            resource: {
+              name: name,
+              mimeType: 'application/json'
+            },
+            media: {
+              mimeType: 'application/json',
+              body: dataStr
             }
-        });
+          }, function(err, file){
+              if (err){
+                console.log(err);
+              }else{
+                console.log(`FILE CREATED ${name} WITH id ${file.id}`);
+                if (cbDone){
+                    cbDone(file.id);
+                }
+              }
+          });
+        },2000);
     };
 
     this.load=function(name, cbFound, cbNotFound){
         getFileId(name, function found(_fileId){
-            drive.files.get({
-                fileId: _fileId,
-                mimeType: 'application/json',
-                alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
-            }, function(err, result) {
-                if(err){
-                  console.log(err);
-                }else{
-                  cbFound(result);
-                }
-            });
+            setTimeout(function(){
+              drive.files.get({
+                  fileId: _fileId,
+                  mimeType: 'application/json',
+                  alt: 'media' // THIS IS IMPORTANT PART! WITHOUT THIS YOU WOULD GET ONLY METADATA
+              }, function(err, result) {
+                  if(err){
+                    console.log(err);
+                  }else{
+                    cbFound(result);
+                  }
+              });
+            },2000);
         },cbNotFound);
     }
 }

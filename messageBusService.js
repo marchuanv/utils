@@ -2,7 +2,7 @@ const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 
-function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, isHost, publishOnRestart) {
+function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, publishOnRestart) {
     
     this.messageBus = new MessageBus(this);
     
@@ -82,9 +82,12 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
     }
 
     messageBusProcess.on('message', (receiveMessage) => {
-        if (routingMode == true) {
-            logging.write('internal message will be sent to routing subscription');
-            thisService.messageBus.receiveRoutingMessage(receiveMessage);
+        if (receiveMessage.replay==true) {
+            logging.write('');
+            logging.write('/////////////////////////////// RESTARTING //////////////////////////////');
+            thisService.messageBus.restart();
+            unsavedMessages=[];
+            logging.write('');
         } else {
             thisService.messageBus.receiveInternalPublishMessage(receiveMessage);
         }

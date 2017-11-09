@@ -19,10 +19,11 @@ function MessageBus(messageBusService){
   		}
   	};
 
-  	this.receiveRoutingMessage=function(message){
-		getSubscriptions.apply(this, ['routing', function(routingSubscription){
-			routingSubscription.callback(message);
-			logging.write(`handing message to routing mechanism`);
+  	this.restart=function(){
+		getSubscriptions.apply(this, ['restart', function(routingSubscription){
+			routingSubscription.callback();
+			subscriptions=[];
+			logging.write(`calling restart routine`);
 		}]);
   	};
 
@@ -58,7 +59,6 @@ function MessageBus(messageBusService){
   	 		data: data
   	 	});
   	 	logging.write('');
-
   	};
 
   	this.subscribe=function(channel, callback){

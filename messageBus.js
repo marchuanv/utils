@@ -55,7 +55,9 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   		};
 		this.subscribe('replay', replaySubscription);
   		this.subscribe('purge', purgeSubscription);
-  		resubscribe();
+  		resubscribe(function(){
+  			console.log('initial startup');
+  		});
   	};
 
   	this.receiveInternalPublishMessage=function(message){

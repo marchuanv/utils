@@ -2,7 +2,7 @@ const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 
-function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, publishOnRestart) {
+function MessageBusService(messageBusProcess, messageSendRetryMax, isHost) {
     
     this.messageBus = new MessageBus(this);
     

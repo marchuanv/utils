@@ -44,8 +44,6 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                 logging.write('');
             });
         });
-    }else {
-         utils.uploadGoogleDriveData(privatekey, fileName, []);
     }
 
     this.messageBus.subscribe('purge',function(){

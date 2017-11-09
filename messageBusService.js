@@ -36,13 +36,24 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
         function savePublishedMessages(){
             logging.write('');
             logging.write('////////////////// SAVE TIMER ////////////////////');
-            utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
+            utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
                 logging.write('messages downloaded');
                 while(unsavedMessages.length>0){
-                        const message=unsavedMessages.splice(0, 1)[0];
-                        messages.push(message);
+                        const unsavedMessage=unsavedMessages.splice(0, 1)[0];
+                        var exists=false;
+                        for (var i = savedMessages.length - 1; i >= 0; i--) {
+                            const savedMessage=savedMessages[i];
+                            if (savedMessage.userId==unsavedMessage.userId
+                                    && savedMessage.date==unsavedMessage.date)
+                            {
+                                exists=true;
+                            }
+                        };
+                        if (exists==false){
+                            savedMessages.push(unsavedMessage);
+                        }
                 };
-                utils.uploadGoogleDriveData(privatekey, fileName, messages);
+                utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
             });
             logging.write('');
         };
@@ -56,11 +67,9 @@ function MessageBusService(routingMode, messageBusProcess, messageSendRetryMax, 
             logging.write('messages: ',messages);
             while(messages.length > 0) {
                 const msg=messages.splice(0, 1)[0];
-
                 thisService.messageBus.publish(msg.channel, msg.userId, msg.data);
             };
             logging.write('');
-            utils.uploadGoogleDriveData(privatekey, fileName, []); //clear messages as they will be recreated during publish
             publisherTimer.start(savePublishedMessages);
         },function notFound(){
             const messages=[];

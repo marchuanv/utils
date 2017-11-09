@@ -48,6 +48,10 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
          utils.uploadGoogleDriveData(privatekey, fileName, []);
     }
 
+    this.messageBus.subscribe('purge',function(){
+        utils.clearGoogleDriveData(privatekey, fileName);
+    });
+
     function saveMessage(message){
         if (isReplay==true){
             const saveMessageTimer=utils.createTimer(true, 'save message');

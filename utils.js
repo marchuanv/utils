@@ -274,10 +274,10 @@ module.exports={
         const drive=new GoogleDrive(key);
         drive.load(name, cbFound, cbNotFound);
     },
-    clearGoogleDriveData: function(key){
+    clearGoogleDriveData: function(key, name){
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
-        drive.delete(null,function(){
+        drive.delete(name, function(){
           logging.write('all google drive files were deleted');
         }); 
     },

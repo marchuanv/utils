@@ -278,7 +278,7 @@ module.exports={
         const GoogleDrive=require('./googleDrive.js');
         const drive=new GoogleDrive(key);
         drive.delete(name, function(){
-          logging.write('all google drive files were deleted');
+          logging.write(`all ${name} files were deleted`);
         }); 
     },
     readJsonFile: function(name, callback){

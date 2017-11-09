@@ -87,7 +87,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 			id: utils.newGuid(),
 			channel: channel,
   	 		from: process.env.thisserveraddress,
-			date:(new Date()).toString(),
+			date: new Date(),
 			userId: userId,
   	 		data: data
   	 	});

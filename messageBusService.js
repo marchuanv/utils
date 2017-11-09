@@ -65,14 +65,14 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
                     logging.write('messages downloaded');
                     utils.clearGoogleDriveData(privatekey, fileName);
                     while(unsavedMessages.length>0){
-                        const unsavedMessage=unsavedMessages.splice(0, 1);
+                        const unsavedMessage=unsavedMessages.splice(0, 1)[0];
                         console.log();
                         console.log(`/////////////////////// SAVING MESSAGE ${unsavedMessage.channel} ////////////////////////`);
                         console.log();
                         for (var x = savedMessages.length - 1; x >= 0; x--) {
                             const savedMessage=savedMessages[x];
-                            if (savedMessage.userId==unsavedMessage.userId && savedMessage.date==unsavedMessage.date) {
-                                savedMessages.splice(x, 1);
+                            if (savedMessage.userId==unsavedMessage.userId && savedMessage.channel==unsavedMessage.channel && savedMessage.date==unsavedMessage.date) {
+                                savedMessages.splice(x, 1)[0];
                             }
                         };
                         savedMessages.push(unsavedMessage);

@@ -33,6 +33,8 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, publi
         const publisherTimer=utils.createTimer(true, 'publisher');
         publisherTimer.setTime(240000);
 
+        utils.clearGoogleDriveData(privatekey);
+
         function savePublishedMessages(){
             logging.write('');
             logging.write('////////////////// SAVE TIMER ////////////////////');

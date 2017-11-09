@@ -57,18 +57,22 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
             const saveMessageTimer=utils.createTimer(true, 'save message');
             saveMessageTimer.setTime(10000);
             saveMessageTimer.start(function(){
+                saveMessageTimer.stop();
                 utils.downloadGoogleDriveData(privatekey, fileName, function found(savedMessages) {
-                    saveMessageTimer.stop();
                     logging.write('messages downloaded');
+                    var exists=false;
                     for (var x = savedMessages.length - 1; x >= 0; x--) {
                         const savedMessage=savedMessages[x];
                         if (savedMessage.userId==message.userId && savedMessage.date==message.date) {
                             savedMessages.splice(i, 1);
+                            exists=true;
                         }
                     };
+                    if (exists==false){
+                        savedMessages.push(message);
+                    }
                     utils.uploadGoogleDriveData(privatekey, fileName, savedMessages);
                 },function notFound(){
-                    saveMessageTimer.stop();
                     utils.uploadGoogleDriveData(privatekey, fileName, [message]);
                 });
             });
@@ -98,7 +102,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, isRep
             for (var i = publishAddresses.length - 1; i >= 0; i--) {
                 const publishAddress=publishAddresses[i];
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
-                    logging.write(`notifying remote subscriptions at ${publishAddress.address}`);
+                    logging.write(`sending message to ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
                        saveMessage(message);
                     }, function fail() {

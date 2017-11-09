@@ -61,7 +61,11 @@ function GoogleDrive(key){
               console.log(`deleting ${_fileId}.`);
               drive.files.delete({
                   fileId: _fileId
-              },function(){
+              },function(err, file){
+                if (err){
+                  console.log(err);
+                  return;
+                }
                 console.log(`${_fileId} was deleted.`);
                 cbDone();
               });

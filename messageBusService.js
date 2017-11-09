@@ -19,6 +19,9 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
                 utils.downloadGoogleDriveData(privatekey, serviceFileName, function found(messages) {
+                   messages.sort(function(x,y){
+                        return y.date-x.date;
+                   });
                    const messagesJson=utils.getJSONString(messages);
                    obj(messagesJson);
                 },function notFound(){

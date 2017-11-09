@@ -10,7 +10,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
     const serviceName=process.env.thisserveraddress.split('.')[0];
     const serviceFileName=`${serviceName}.json`;
 
-    this.messageBus = new MessageBus(this, serviceFileName, canReplay);
+    this.messageBus = new MessageBus(this, serviceFileName, privatekey, canReplay);
     
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;

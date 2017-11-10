@@ -75,6 +75,8 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 					console.log('client has unsubscribed');
 				});
 			};
+		},function notFound(){
+			logging.write(`/// RECEIVED INTERNAL PUBLISH MESSAGE DID NOT HAVE ANY SUBSCRIPTIONS ${message.channel} ///`, message);		
 		}]);
 		logging.write('');
 	};

@@ -3,7 +3,7 @@ const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 const MessageStore = require('./messageStore.js');
 
-function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay, ) {
+function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay) {
     
     const thisService = this;
     const serviceName=process.env.thisserveraddress.split('.')[0];

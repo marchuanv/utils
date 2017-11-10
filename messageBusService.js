@@ -1,16 +1,16 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
+const MessageStore = require('./messageStore.js');
 
-function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay) {
-    
+function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay, ) {
     
     const thisService = this;
-    const privatekey=utils.getJSONObject(process.env.privatekey);
     const serviceName=process.env.thisserveraddress.split('.')[0];
     const serviceFileName=`${serviceName}.json`;
 
-    this.messageBus = new MessageBus(this, serviceFileName, privatekey, canReplay);
+    this.messageStore = new MessageStore(process.env.privatekey);
+    this.messageBus = new MessageBus(this, serviceFileName, canReplay, this.messageStore);
     
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
@@ -18,56 +18,15 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
             } else if(typeof obj==='function'){
-                utils.downloadGoogleDriveData(privatekey, serviceFileName, function found(messages) {
-                   messages.sort(function(x,y){
-                        return y.date-x.date;
-                   });
+                thisService.messageStore.load(function(messages){
                    const messagesJson=utils.getJSONString(messages);
                    obj(messagesJson);
-                },function notFound(){
-                    obj('no messages found');
                 });
             } else {
                 logging.write('received http message structure is wrong.');
             }
         });
     }
-
-    const unsavedMessages=[];
-    const saveMessageQueueTimer=utils.createTimer(false, 'save message queue');
-    var lock=false;
-    function queueMessageSave(message){
-        if (canReplay==true && message.channel != 'replay' && message.channel != 'purge' && isHost==false){
-            console.log();
-            console.log(`/////////////////////// QUEUING MESSAGE FOR SAVING ${message.channel} ////////////////////////`);
-            console.log();
-            unsavedMessages.push(message);
-            if (lock==false){
-                lock=true;
-                utils.downloadGoogleDriveData(privatekey, serviceFileName, function found(savedMessages) {
-                    logging.write('messages downloaded');
-                    utils.clearGoogleDriveData(privatekey, serviceFileName);
-                    while(unsavedMessages.length>0){
-                        const unsavedMessage=unsavedMessages.splice(0, 1)[0];
-                        console.log();
-                        console.log(`/////////////////////// SAVING MESSAGE ${unsavedMessage.channel} ////////////////////////`);
-                        console.log();
-                        for (var x = savedMessages.length - 1; x >= 0; x--) {
-                            const savedMessage=savedMessages[x];
-                            if (savedMessage.id==unsavedMessage.id) {
-                                savedMessages.splice(x, 1)[0];
-                            }
-                        };
-                        savedMessages.push(unsavedMessage);
-                    };
-                    utils.uploadGoogleDriveData(privatekey, serviceFileName, savedMessages);
-                    lock=false;
-                },function notFound(){
-                    lock=false;
-                });
-            }
-        }
-    };
 
     messageBusProcess.on('message', (receiveMessage) => {
         thisService.messageBus.receiveInternalPublishMessage(receiveMessage);
@@ -94,10 +53,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`sending message to ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                        queueMessageSave(message);
-                        if (callback){
-                            callback();
-                        }
+                        thisService.messageStore.save(message, callback);
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -105,11 +61,8 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                         serviceUnavailableRetry.start(function() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                                queueMessageSave(message);
                                 serviceUnavailableRetry.stop();
-                                if (callback){
-                                    callback();
-                                }
+                                thisService.messageStore.save(message, callback);
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {
                                     logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);

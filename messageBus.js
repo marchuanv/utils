@@ -1,7 +1,7 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 
-function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
+function MessageBus(messageBusService, serviceFileName, canReplay, messageStore){
 
 	const thisService=this;
 	var subscriptions=[];
@@ -32,8 +32,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 	
   	this.app=function(resubscribe){
   		function purgeSubscription(){
-        	utils.clearGoogleDriveData(privatekey, serviceFileName);
-		    utils.uploadGoogleDriveData(privatekey, serviceFileName, []);
+        	messageStore.purge();
   		};
   		function replaySubscription(){
 			logging.write(`subscription count ${subscriptions.length}`);
@@ -43,16 +42,13 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 			resubscribe(function ready(){
 				logging.write(`subscription count ${subscriptions.length}`);
 	  			if (canReplay==true){
-					utils.downloadGoogleDriveData(privatekey, serviceFileName, function found(messages) {
-						messages.sort(function(x,y){
-						    return y.date-x.date;
-						});
+	  				messageStore.load(function(messages){
 						logging.write('');
 						logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
 						logging.write('messages: ',messages);
 						republish(messages);
 						logging.write('');
-					});
+	  				});
 				}
 			});
   		};

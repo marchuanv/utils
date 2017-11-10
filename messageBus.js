@@ -103,16 +103,13 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   	this.subscribe=function(channel, callback){
   		logging.write('');
   		logging.write(`/// SUBSCRIBING TO ${channel} ///`);
-  		const message={
-			channel: channel,
-			callback: callback
-  		};
-  		//get all local subscriptions and add them if they don't exist.
-		getSubscriptions(message.channel, function(subscription){
+		getSubscriptions(channel, function(subscription){
 			subscription.callbacks.push(callback);
 		},function notFound(){
-			logging.write('adding client side subscriptions');
-			subscriptions.push(message);
+			subscriptions.push({
+				channel: channel,
+				callbacks: [callback]
+			});
 		});
   		logging.write('');
   	};

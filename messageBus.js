@@ -5,11 +5,11 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 
 	const thisService=this;
 	var subscriptions=[];
-	function getSubscriptions(channel, id, callback, callbackFail){
+	function getSubscriptions(channel, callback, callbackFail){
   		var exists=false;
   		for (var i = subscriptions.length - 1; i >= 0; i--) {
   			const msg=subscriptions[i];
-  			if ( ( (channel && msg.channel==channel) || !channel) && (id && msg.id==id || !id) ) {
+  			if ( (channel && msg.channel==channel) || (!channel)) {
 				callback(msg, i);
 				exists=true;
 				break;
@@ -66,7 +66,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
-		getSubscriptions.apply(this, [message.channel, null, function(subscription){
+		getSubscriptions.apply(this, [message.channel, function(subscription){
 			subscription.callback(message.data, message.userId);
 			logging.write(`calling ${message.channel} channel subscribers callbacks.`);
 		}]);
@@ -101,18 +101,21 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   		logging.write('');
   		logging.write(`/// SUBSCRIBING TO ${channel} ///`);
   		const message={
-			id : utils.newGuid(),
 			channel: channel,
 			callback: callback
   		};
-		subscriptions.push(message);
-		logging.write('subscription added');
+  		//get all local subscriptions and add them if they don't exist.
+		getSubscriptions(message.channel, function(subscription){
+			subscription.callback=callback;
+		},function notFound(){
+			logging.write('adding client side subscriptions');
+			subscriptions.push(message);
+		});
   		logging.write('');
-		return message.id;
   	};
 
-  	this.unsubscribe=function(subscriptionId, callback, callbackFail){
-  		getSubscriptions(null, subscriptionId, function(subscription, index){
+  	this.unsubscribe=function(channel, callback, callbackFail){
+  		getSubscriptions(channel, function(subscription, index){
 			subscriptions.splice(index, 1);
 			callback();
 		}, callbackFail);

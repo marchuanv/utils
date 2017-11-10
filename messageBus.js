@@ -111,8 +111,8 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 		return message.id;
   	};
 
-  	this.unsubscribe=function(channel, subscriptionId, callback, callbackFail){
-  		getSubscriptions(channel, subscriptionId, function(subscription, index){
+  	this.unsubscribe=function(subscriptionId, callback, callbackFail){
+  		getSubscriptions(null, subscriptionId, function(subscription, index){
 			subscriptions.splice(index, 1);
 			callback();
 		}, callbackFail);

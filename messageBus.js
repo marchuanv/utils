@@ -69,7 +69,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 		getSubscriptions.apply(this, [message.channel, function(subscription){
 			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
 				const callback=subscription.callbacks[i];
-				callback(message.data, message.userId);
+				callback.callback(message.data, message.userId);
 				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
 			};
 		}]);
@@ -103,21 +103,37 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   	this.subscribe=function(channel, callback){
   		logging.write('');
   		logging.write(`/// SUBSCRIBING TO ${channel} ///`);
+		const callbackId=utils.newGuid();
 		getSubscriptions(channel, function(subscription){
-			subscription.callbacks.push(callback);
+			subscription.callbacks.push({
+				id: callbackId,
+				callback: callback
+			});
 		},function notFound(){
 			subscriptions.push({
 				channel: channel,
-				callbacks: [callback]
+				callbacks: [{
+					id: callbackId,
+					callback: callback
+				}]
 			});
 		});
   		logging.write('');
+		return callbackId;
   	};
 
-  	this.unsubscribe=function(channel, callback, callbackFail){
-  		getSubscriptions(channel, function(subscription, index){
-			subscriptions.splice(index, 1);
-			callback();
+  	this.unsubscribe=function(callbackId, callback, callbackFail){
+  		getSubscriptions(null, function(subscription, index){
+			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
+				const callback=subscription.callbacks[i];
+				if (callback.id==callbackId){
+					subscription.callbacks.splice(i, 1);
+					callback();
+					logging.write(`callback removed for subscription`);
+					return;
+				}
+			};
+			
 		}, callbackFail);
   	};
 };

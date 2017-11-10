@@ -39,7 +39,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
     function queueMessageSave(message){
         if (canReplay==true && message.channel != 'replay' && message.channel != 'purge' && isHost==false){
             console.log();
-            console.log(`/////////////////////// QUEUING MESSAGE ${message.channel} ////////////////////////`);
+            console.log(`/////////////////////// QUEUING MESSAGE FOR SAVING ${message.channel} ////////////////////////`);
             console.log();
             unsavedMessages.push(message);
             if (lock==false){

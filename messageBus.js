@@ -100,15 +100,15 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   	this.subscribe=function(channel, callback){
   		logging.write('');
   		logging.write(`/// SUBSCRIBING TO ${channel} ///`);
-		const subscriptionId=utils.newGuid();
   		const message={
+			id : utils.newGuid(),
 			channel: channel,
 			callback: callback
   		};
 		subscriptions.push(message);
 		logging.write('subscription added');
   		logging.write('');
-		return subscriptionId;
+		return message.id;
   	};
 
   	this.unsubscribe=function(channel, subscriptionId, callback, callbackFail){

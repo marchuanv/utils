@@ -68,11 +68,12 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
 		getSubscriptions.apply(this, [message.channel, function(subscription){
 			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
-				const callback=subscription.callbacks[i];
-				callback.callback(message.data, message.userId, function unsubscribe(){
-					subscription.callbacks.splice(i,1)[0];
-				});
 				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
+				const callback=subscription.callbacks[i];
+				callback(message.data, message.userId, function unsubscribe(){
+					subscription.callbacks.splice(i,1);
+					console.log('client has unsubscribed');
+				});
 			};
 		}]);
 		logging.write('');
@@ -105,23 +106,15 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   	this.subscribe=function(channel, callback){
   		logging.write('');
   		logging.write(`/// SUBSCRIBING TO ${channel} ///`);
-		const callbackId=utils.newGuid();
 		getSubscriptions(channel, function(subscription){
-			subscription.callbacks.push({
-				id: callbackId,
-				callback: callback
-			});
+			subscription.callbacks.push(callback);
 		},function notFound(){
 			subscriptions.push({
 				channel: channel,
-				callbacks: [{
-					id: callbackId,
-					callback: callback
-				}]
+				callbacks: [callback]
 			});
 		});
   		logging.write('');
-		return callbackId;
   	};
 };
 module.exports=MessageBus;

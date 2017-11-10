@@ -83,7 +83,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 		logging.write('');
 	};
 
-	this.publish=function(channel, data) {
+	this.publish=function(channel, userId, data) {
   		logging.write('');
   		logging.write(`/// PUBLISHING TO ${channel} ///`);
 		messageBusService.sendExternalPublishMessage({

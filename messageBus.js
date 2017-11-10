@@ -19,7 +19,17 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   			callbackFail();
   		}
   	};
-
+	
+	function republish(messages){
+		while(messages.length > 0) {
+		    	const msg=messages.splice(0, 1)[0];
+			messageBusService.sendExternalPublishMessage(msg,function complete(){
+				republish(messages);				
+			});
+			return;
+		};
+	};
+	
   	this.app=function(resubscribe){
   		function purgeSubscription(){
         	utils.clearGoogleDriveData(privatekey, serviceFileName);
@@ -40,14 +50,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 						logging.write('');
 						logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
 						logging.write('messages: ',messages);
-						while(messages.length > 0) {
-						    const msg=messages.splice(0, 1)[0];
-						    const publishTimer=utils.createTimer(false,'publish');
-						    publishTimer.setTime(4000);
-						    publishTimer.start(function(){
-						    	messageBusService.sendExternalPublishMessage(msg);
-						    });
-						};
+						republish(messages);
 						logging.write('');
 					});
 				}

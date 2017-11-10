@@ -69,7 +69,9 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 		getSubscriptions.apply(this, [message.channel, function(subscription){
 			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
 				const callback=subscription.callbacks[i];
-				callback.callback(message.data, message.userId);
+				callback.callback(message.data, message.userId, function unsubscribe(){
+					subscription.callbacks.splice(i,1)[0];
+				});
 				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
 			};
 		}]);
@@ -120,21 +122,6 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 		});
   		logging.write('');
 		return callbackId;
-  	};
-
-  	this.unsubscribe=function(callbackId, callback, callbackFail){
-  		getSubscriptions(null, function(subscription, index){
-			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
-				const callback=subscription.callbacks[i];
-				if (callback.id==callbackId){
-					subscription.callbacks.splice(i, 1);
-					callback();
-					logging.write(`callback removed for subscription`);
-					return;
-				}
-			};
-			
-		}, callbackFail);
   	};
 };
 module.exports=MessageBus;

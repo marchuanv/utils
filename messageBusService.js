@@ -87,14 +87,15 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
         }
     };
 
-    this.sendExternalPublishMessage = function(message) {
+    this.sendExternalPublishMessage = function(message, callback) {
         utils.readJsonFile('publishAddresses.json', function(publishAddresses) {
             for (var i = publishAddresses.length - 1; i >= 0; i--) {
                 const publishAddress=publishAddresses[i];
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`sending message to ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                       queueMessageSave(message);
+                        queueMessageSave(message);
+                        callback();
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -104,6 +105,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
                                 queueMessageSave(message);
                                 serviceUnavailableRetry.stop();
+                                callback();
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {
                                     logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);

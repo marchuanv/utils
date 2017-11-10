@@ -95,7 +95,9 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                     logging.write(`sending message to ${publishAddress.address}`);
                     utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
                         queueMessageSave(message);
-                        callback();
+                        if (callback){
+                            callback();
+                        }
                     }, function fail() {
                         var retryCounter = 0;
                         const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
@@ -105,7 +107,9 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                             utils.sendHttpRequest(publishAddress.address, message, '', function success() {
                                 queueMessageSave(message);
                                 serviceUnavailableRetry.stop();
-                                callback();
+                                if (callback){
+                                    callback();
+                                }
                             }, function fail() {
                                 if (retryCounter > messageSendRetryMax) {
                                     logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);

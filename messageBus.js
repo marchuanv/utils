@@ -66,7 +66,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
-		getSubscriptions.apply(this, null, [message.channel, function(subscription){
+		getSubscriptions.apply(this, [message.channel, null, function(subscription){
 			subscription.callback(message.data, message.userId);
 			logging.write(`calling ${message.channel} channel subscribers callbacks.`);
 		}]);

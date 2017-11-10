@@ -24,20 +24,34 @@ function MessageStore(privatekeyJson) {
 	};
 
 	function writeMessages(messages, callback){
-		fs.unlink(filePath, (err) => {
-	        if (err) {
-	            console.log(err);
-	            return
-	        } 
-			const messagesStr=utils.getJSONString(messages);
-	   		fs.writeFile(filePath, messagesStr, function(err){
-	   			if(err){
-		        	console.log(err);
-		        	return;
-		        }
-		   	  	console.log(`${filePath} created.`);
-		   	  	callback();
-		   	});
+		fs.exists(filePath, function(exists){
+			if (exists==true){
+				fs.unlink(filePath, (err) => {
+			        if (err) {
+			            console.log(err);
+			            return
+			        } 
+					const messagesStr=utils.getJSONString(messages);
+			   		fs.writeFile(filePath, messagesStr, function(err){
+			   			if(err){
+				        	console.log(err);
+				        	return;
+				        }
+				   	  	console.log(`${filePath} created.`);
+				   	  	callback();
+				   	});
+				});
+			}else{
+				const messagesStr=utils.getJSONString(messages);
+		   		fs.writeFile(filePath, messagesStr, function(err){
+		   			if(err){
+			        	console.log(err);
+			        	return;
+			        }
+			   	  	console.log(`${filePath} created.`);
+			   	  	callback();
+			   	});
+			}
 		});
 	};
 

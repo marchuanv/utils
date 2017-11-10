@@ -67,8 +67,11 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
 		logging.write('');
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
 		getSubscriptions.apply(this, [message.channel, function(subscription){
-			subscription.callback(message.data, message.userId);
-			logging.write(`calling ${message.channel} channel subscribers callbacks.`);
+			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
+				const callback=subscription.callbacks[i];
+				callback(message.data, message.userId);
+				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
+			};
 		}]);
 		logging.write('');
 	};
@@ -106,7 +109,7 @@ function MessageBus(messageBusService, serviceFileName, privatekey, canReplay){
   		};
   		//get all local subscriptions and add them if they don't exist.
 		getSubscriptions(message.channel, function(subscription){
-			subscription.callback=callback;
+			subscription.callbacks.push(callback);
 		},function notFound(){
 			logging.write('adding client side subscriptions');
 			subscriptions.push(message);

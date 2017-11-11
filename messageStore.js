@@ -35,7 +35,9 @@ function MessageStore(privatekeyJson, isHost, fileName) {
 				        	return;
 				        }
 				   	  	console.log(`${filePath} created.`);
-				   	  	callback();
+				   	  	if (callback){
+				   	  		callback();
+				   	  	}
 				   	});
 				});
 			}else{
@@ -46,7 +48,9 @@ function MessageStore(privatekeyJson, isHost, fileName) {
 			        	return;
 			        }
 			   	  	console.log(`${filePath} created.`);
-			   	  	callback();
+			   	  	if (callback){
+				   		callback();
+					}
 			   	});
 			}
 		});

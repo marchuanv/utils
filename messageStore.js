@@ -89,9 +89,11 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 			console.log();
 			uploadTimer.start(function(){
 				readMessages(function(messages){
-		    		utils.clearGoogleDriveData(privatekey, fileName);
-					utils.uploadGoogleDriveData(privatekey, fileName, messages);
-					console.log('messages uploaded to google drive from disk');
+					if (messages.length>0){
+			    		utils.clearGoogleDriveData(privatekey, fileName);
+						utils.uploadGoogleDriveData(privatekey, fileName, messages);
+						console.log('messages uploaded to google drive from disk');
+					}
 		    	});
 			});
 			console.log();

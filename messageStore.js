@@ -1,13 +1,11 @@
 const fs=require('fs');
 const utils = require('./utils.js');
-function MessageStore(privatekeyJson) {
+function MessageStore(privatekeyJson, isHost) {
 	
 	const privatekey=utils.getJSONObject(privatekeyJson);
 	var fileName='messages.json';
 	var filePath=`${__dirname}/${fileName}`;
 	filePath=filePath.replace('/node_modules/utils','');
-	const saveTimer=utils.createTimer(true, 'save');
-	saveTimer.setTime(60000);
 
 	function readMessages(callback){
 		fs.readFile(filePath, {encoding: "utf8"}, function(err, messagesStr){
@@ -55,23 +53,27 @@ function MessageStore(privatekeyJson) {
 		});
 	};
 
-	utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
-		console.log('downloaded messages from google drive.');
-		writeMessages(messages, function(){
-			console.log('messages downloaded from google drive saved to disk');
-		});
-    },function notFound(){
-    	writeMessages([], function(){
-    		console.log('no messages found on google drive, local file created');
-		});
-    });
+	if (isHost==false){
+		utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
+			console.log('downloaded messages from google drive.');
+			writeMessages(messages, function(){
+				console.log('messages downloaded from google drive saved to disk');
+			});
+	    },function notFound(){
+	    	writeMessages([], function(){
+	    		console.log('no messages found on google drive, local file created');
+			});
+	    });
 
-    saveTimer.start(function(){
-    	readMessages(function(messages){
-			utils.uploadGoogleDriveData(privatekey, fileName, messages);
-			console.log('messages uploaded to google drive from disk');
-    	});
-    });
+		const saveTimer=utils.createTimer(true, 'save');
+		saveTimer.setTime(60000);
+	    saveTimer.start(function(){
+	    	readMessages(function(messages){
+				utils.uploadGoogleDriveData(privatekey, fileName, messages);
+				console.log('messages uploaded to google drive from disk');
+	    	});
+	    });
+	}
 
 	this.save=function(message, callback){
 		fs.exists(filePath, function(exists){

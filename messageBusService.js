@@ -9,7 +9,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
     const serviceName=process.env.thisserveraddress.split('.')[0];
     const serviceFileName=`${serviceName}.json`;
 
-    this.messageStore = new MessageStore(process.env.privatekey);
+    this.messageStore = new MessageStore(process.env.privatekey, isHost);
     this.messageBus = new MessageBus(this, serviceFileName, canReplay, this.messageStore);
     
     if (isHost == true) {

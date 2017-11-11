@@ -53,17 +53,17 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`sending message to ${publishAddress.address}`);
                     var retryCounter = 0;
-                    const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
+                    const serviceUnavailableRetry = utils.createTimer(false, `${message.channel} retrying`);
                     serviceUnavailableRetry.setTime(1000);
                     serviceUnavailableRetry.start(function() {
                         logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                         utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                            serviceUnavailableRetry.stop();
                             thisService.messageStore.save(message, callback);
                         }, function fail() {
                             if (retryCounter > messageSendRetryMax) {
                                 logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
-                                serviceUnavailableRetry.stop();
+                            }else{
+                                serviceUnavailableRetry.start();
                             }
                             retryCounter++;
                         });

@@ -62,7 +62,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
-		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
+		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
 		getSubscriptions.apply(this, [message.channel, function(subscription){
 			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
 				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
@@ -73,7 +73,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 				});
 			};
 		},function notFound(){
-			logging.write(`/// RECEIVED INTERNAL PUBLISH MESSAGE DID NOT HAVE ANY SUBSCRIPTIONS ${message.channel} ///`, message);		
+			logging.write(`/// RECEIVED INTERNAL PUBLISH MESSAGE DID NOT HAVE ANY SUBSCRIPTIONS ${message.channel} ///`);		
 		}]);
 		logging.write('');
 	};
@@ -81,7 +81,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 	this.receiveExternalPublishMessage=function(message){
 		
 		logging.write('');		
-		logging.write(`/// RECEIVED AN EXTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`, message);
+		logging.write(`/// RECEIVED AN EXTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
 		messageBusService.sendInternalPublishMessage(message, function(){
 			logging.write('external message was sent internally');
 		});

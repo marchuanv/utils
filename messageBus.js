@@ -21,7 +21,6 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
   	};
 	
 	function republish(messages){
-		messageStore.purge();
 		while(messages.length > 0) {
 		    const msg=messages.splice(0, 1)[0];
 			messageBusService.sendExternalPublishMessage(msg, function complete(){
@@ -47,6 +46,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 						logging.write('');
 						logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
 						logging.write('messages: ',messages);
+						messageStore.purge();
 						republish(messages);
 						logging.write('');
 	  				});

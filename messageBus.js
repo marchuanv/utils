@@ -95,7 +95,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 
 	this.publish=function(channel, userId, data) {
   		logging.write('');
-  		logging.write(`/// PUBLISHING TO ${channel} ///`);
+  		logging.write(`/// PUBLISHING TO: ${channel} AS USER: ${userId} ///`);
 		messageBusService.sendExternalPublishMessage({
 			id: utils.newGuid(),
 			channel: channel,

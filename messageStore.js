@@ -60,6 +60,8 @@ function MessageStore(privatekeyJson) {
 		writeMessages(messages, function(){
 			console.log('messages downloaded from google drive saved to disk');
 		});
+    },function notFound(){
+    	console.log('no messages found on google drive.');
     });
 
     saveTimer.start(function(){

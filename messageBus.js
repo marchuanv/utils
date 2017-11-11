@@ -78,7 +78,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 				});
 			};
 		},function notFound(){
-			logging.write(`/// RECEIVED INTERNAL PUBLISH MESSAGE DID NOT HAVE ANY SUBSCRIPTIONS ${message.channel} ///`);		
+			logging.write(`/// NO SUBSCRIPTIONS FOUND FOR: ${message.channel}, USER: ${message.userId} ///`);		
 		}]);
 		logging.write('');
 	};

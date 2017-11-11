@@ -56,18 +56,21 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 		});
 	};
 
+	fs.exists(filePath, function(exists){
+		if (exists==false){
+			writeMessages([], function(){
+	    		console.log('no messages found on google drive, local file created');
+			});
+		}
+	});
+
 	if (canReplay==true){
 		utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
 			console.log('downloaded messages from google drive.');
 			writeMessages(messages, function(){
 				console.log('messages downloaded from google drive saved to disk');
 			});
-	    },function notFound(){
-	    	writeMessages([], function(){
-	    		console.log('no messages found on google drive, local file created');
-			});
 	    });
-
 		const saveTimer=utils.createTimer(true, 'save');
 		saveTimer.setTime(60000);
 	    saveTimer.start(function(){

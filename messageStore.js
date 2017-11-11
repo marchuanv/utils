@@ -1,9 +1,8 @@
 const fs=require('fs');
 const utils = require('./utils.js');
-function MessageStore(privatekeyJson, isHost) {
+function MessageStore(privatekeyJson, isHost, fileName) {
 	
 	const privatekey=utils.getJSONObject(privatekeyJson);
-	var fileName='messages.json';
 	var filePath=`${__dirname}/${fileName}`;
 	filePath=filePath.replace('/node_modules/utils','');
 

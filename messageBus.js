@@ -115,6 +115,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 		},function notFound(){
 			subscriptions.push({
 				channel: channel,
+				userId: userId,
 				callbacks: [callback]
 			});
 		});

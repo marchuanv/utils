@@ -61,7 +61,9 @@ function MessageStore(privatekeyJson) {
 			console.log('messages downloaded from google drive saved to disk');
 		});
     },function notFound(){
-    	console.log('no messages found on google drive.');
+    	writeMessages([], function(){
+    		console.log('no messages found on google drive, local file created');
+		});
     });
 
     saveTimer.start(function(){

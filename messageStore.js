@@ -22,14 +22,6 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 		});
 	};
 
-	function upload(){
-		readMessages(function(messages){
-    		utils.clearGoogleDriveData(privatekey, fileName);
-			utils.uploadGoogleDriveData(privatekey, fileName, messages);
-			console.log('messages uploaded to google drive from disk');
-    	});
-	}
-
 	function writeMessages(messages, callback){
 		fs.exists(filePath, function(exists){
 			if (exists==true){
@@ -91,7 +83,13 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 			console.log();
 			console.log('////////////////////////////// UPLOAD TIMER STARTED //////////////////////////////');
 			console.log();
-			uploadTimer.start(upload);
+			uploadTimer.start(function(){
+				readMessages(function(messages){
+		    		utils.clearGoogleDriveData(privatekey, fileName);
+					utils.uploadGoogleDriveData(privatekey, fileName, messages);
+					console.log('messages uploaded to google drive from disk');
+		    	});
+			});
 			console.log();
 		}
 		readMessages(function(messages) {

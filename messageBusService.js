@@ -25,6 +25,8 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
             } else {
                 logging.write('received http message structure is wrong.');
             }
+        },function fail(err){
+            console.log(err);
         });
     }
 

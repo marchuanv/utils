@@ -33,10 +33,10 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 	
   	this.app=function(resubscribe){
   		function purgeSubscription(backupMessages){
-  			console.log('BACKUP MESSAGES: ',backupMessages);
         	messageStore.purge();
   		};
-  		function replaySubscription(){
+  		function replaySubscription(backupMessages){
+  			console.log('BACKUP MESSAGES: ',backupMessages);
 			logging.write(`subscription count ${subscriptions.length}`);
 			subscriptions=[];
 			thisService.subscribe('replay', replaySubscription);

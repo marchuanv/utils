@@ -109,7 +109,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 
   	this.subscribe=function(channel, userId, callback){
   		logging.write('');
-  		logging.write(`/// SUBSCRIBING TO ${channel} ///`);
+  		logging.write(`/// SUBSCRIBING TO: ${channel} AS USER: ${userId} ///`);
 		getSubscriptions(channel, userId, function(subscription){
 			subscription.callbacks.push(callback);
 		},function notFound(){

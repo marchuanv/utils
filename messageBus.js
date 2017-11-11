@@ -32,7 +32,8 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 	};
 	
   	this.app=function(resubscribe){
-  		function purgeSubscription(){
+  		function purgeSubscription(backupMessages){
+  			console.log('BACKUP MESSAGES: ',backupMessages);
         	messageStore.purge();
   		};
   		function replaySubscription(){

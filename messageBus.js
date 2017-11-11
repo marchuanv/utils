@@ -21,13 +21,17 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
   	};
 	
 	function republish(messages){
-		while(messages.length > 0) {
-		    const msg=messages.splice(0, 1)[0];
-			messageBusService.sendExternalPublishMessage(msg, function complete(){
-				republish(messages);				
-			});
-			return;
-		};
+		const republish=utils.createTimer(false,'republish');
+		republish.setTimeout(5000);
+		republish.start(function(){
+			while(messages.length > 0) {
+			    const msg=messages.splice(0, 1)[0];
+				messageBusService.sendExternalPublishMessage(msg, function complete(){
+					republish(messages);				
+				});
+				return;
+			};
+		});
 	};
 	
   	this.app=function(resubscribe){

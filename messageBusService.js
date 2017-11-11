@@ -52,24 +52,20 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                 const publishAddress=publishAddresses[i];
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
                     logging.write(`sending message to ${publishAddress.address}`);
-                    utils.sendHttpRequest(publishAddress.address, message, '', function sucess() {
-                        thisService.messageStore.save(message, callback);
-                    }, function fail() {
-                        var retryCounter = 0;
-                        const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
-                        serviceUnavailableRetry.setTime(5000);
-                        serviceUnavailableRetry.start(function() {
-                            logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
-                            utils.sendHttpRequest(publishAddress.address, message, '', function success() {
+                    var retryCounter = 0;
+                    const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
+                    serviceUnavailableRetry.setTime(5000);
+                    serviceUnavailableRetry.start(function() {
+                        logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
+                        utils.sendHttpRequest(publishAddress.address, message, '', function success() {
+                            serviceUnavailableRetry.stop();
+                            thisService.messageStore.save(message, callback);
+                        }, function fail() {
+                            if (retryCounter > messageSendRetryMax) {
+                                logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
                                 serviceUnavailableRetry.stop();
-                                thisService.messageStore.save(message, callback);
-                            }, function fail() {
-                                if (retryCounter > messageSendRetryMax) {
-                                    logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
-                                    serviceUnavailableRetry.stop();
-                                }
-                                retryCounter++;
-                            });
+                            }
+                            retryCounter++;
                         });
                     });
                 }

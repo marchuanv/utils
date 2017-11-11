@@ -79,6 +79,10 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 		if (canReplay==false){
 			return;
 		}
+		readMessages(function(messages) {
+			messages.push(message);
+			writeMessages(messages, callback);
+		});
 		if (uploadTimer.started==false){
 			console.log();
 			console.log('////////////////////////////// UPLOAD TIMER STARTED //////////////////////////////');
@@ -92,10 +96,6 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 			});
 			console.log();
 		}
-		readMessages(function(messages) {
-			messages.push(message);
-			writeMessages(messages, callback);
-		});
 	};
 
 	this.load=function(callback){

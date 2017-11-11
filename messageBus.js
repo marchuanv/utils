@@ -5,11 +5,11 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 
 	const thisService=this;
 	var subscriptions=[];
-	function getSubscriptions(channel, callback, callbackFail){
+	function getSubscriptions(channel, userId, callback, callbackFail){
   		var exists=false;
   		for (var i = subscriptions.length - 1; i >= 0; i--) {
   			const msg=subscriptions[i];
-  			if ( (channel && msg.channel==channel) || (!channel)) {
+  			if (msg.channel==channel && msg.userId==userId) {
 				callback(msg, i);
 				exists=true;
 				break;
@@ -68,7 +68,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
 		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
-		getSubscriptions.apply(this, [message.channel, function(subscription){
+		getSubscriptions.apply(this, [message.channel, message.userId, function(subscription){
 			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
 				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
 				const callback=subscription.callbacks[i];
@@ -107,10 +107,10 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
   	 	logging.write('');
   	};
 
-  	this.subscribe=function(channel, callback){
+  	this.subscribe=function(channel, userId, callback){
   		logging.write('');
   		logging.write(`/// SUBSCRIBING TO ${channel} ///`);
-		getSubscriptions(channel, function(subscription){
+		getSubscriptions(channel, userId, function(subscription){
 			subscription.callbacks.push(callback);
 		},function notFound(){
 			subscriptions.push({

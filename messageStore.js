@@ -95,7 +95,7 @@ function MessageStore(privatekeyJson, isHost) {
 	};
 
 	this.purge=function(){
-		utils.clearGoogleDriveData(privatekey, serviceFileName);
+		utils.clearGoogleDriveData(privatekey, fileName);
 		fs.unlink(filePath, (err) => {
 	        if (err) {
 	            console.log(err);

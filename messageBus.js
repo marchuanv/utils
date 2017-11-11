@@ -44,7 +44,7 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 				logging.write(`subscription count ${subscriptions.length}`);
 	  			if (canReplay==true){
 	  				messageStore.load(function(messages){
-	  					const replayMessages=messages;
+	  					var replayMessages=messages;
 	  					if (replayMessages.length==0 && backupMessages.length > 0){
 	  						replayMessages=backupMessages;
 	  					}

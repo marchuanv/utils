@@ -80,7 +80,7 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 	}
 
 	this.save=function(message, callback){
-		if (canReplay==true){
+		if (canReplay==false){
 			return;
 		}
 		readMessages(function(messages) {

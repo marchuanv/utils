@@ -72,6 +72,7 @@ function MessageStore(privatekeyJson, isHost, fileName) {
 		saveTimer.setTime(60000);
 	    saveTimer.start(function(){
 	    	readMessages(function(messages){
+	    		utils.clearGoogleDriveData(privatekey, fileName);
 				utils.uploadGoogleDriveData(privatekey, fileName, messages);
 				console.log('messages uploaded to google drive from disk');
 	    	});

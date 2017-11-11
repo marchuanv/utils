@@ -103,7 +103,7 @@ module.exports={
       if (routingMode == undefined || routingMode == null || routingMode == ''){
          routingMode=false;
       }
-      if (publishonrestart == undefined || publishonrestart == null || publishonrestart == '' || publishonrestart==false){
+      if (publishonrestart == undefined || publishonrestart == null || publishonrestart == '' || publishonrestart==false || publishonrestart=='false'){
          publishonrestart=false;
       }else{
          publishonrestart=true;

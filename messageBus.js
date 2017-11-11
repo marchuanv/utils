@@ -61,20 +61,20 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 		this.subscribe('replay', 10, replaySubscription);
   		this.subscribe('purge', 10, purgeSubscription);
   		resubscribe(function(){
-  			console.log('initial startup');
+  			logging.write(`initial start`);
   		});
   	};
 
   	this.receiveInternalPublishMessage=function(message){
 		logging.write('');
-		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL ${message.channel} ///`);
+		logging.write(`/// RECEIVED AN INTERNAL PUBLISH MESSAGE ON CHANNEL: ${message.channel} ///`, message);
 		getSubscriptions.apply(this, [message.channel, message.userId, function(subscription){
 			for (var i = subscription.callbacks.length - 1; i >= 0; i--) {
-				logging.write(`calling ${message.channel} channel subscribers callbacks.`);
+				logging.write(`callbacks on channel: ${message.channel} for user: ${message.userId}`);
 				const callback=subscription.callbacks[i];
 				callback(message.data, message.userId, function unsubscribe(){
 					subscription.callbacks.splice(i,1);
-					console.log('client has unsubscribed');
+					logging.write(`${message.userId} has unsubscribed to ${message.channel}`);
 				});
 			};
 		},function notFound(){

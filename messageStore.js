@@ -59,7 +59,6 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 	fs.exists(filePath, function(exists){
 		if (exists==false){
 			writeMessages([], function(){
-	    		console.log('no messages found on google drive, local file created');
 			});
 		}
 	});

@@ -1,6 +1,6 @@
 const fs=require('fs');
 const utils = require('./utils.js');
-function MessageStore(privatekeyJson, isHost, fileName) {
+function MessageStore(privatekeyJson, canReplay, fileName) {
 	
 	const privatekey=utils.getJSONObject(privatekeyJson);
 	var filePath=`${__dirname}/${fileName}`;
@@ -56,7 +56,7 @@ function MessageStore(privatekeyJson, isHost, fileName) {
 		});
 	};
 
-	if (isHost==false){
+	if (canReplay==true){
 		utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
 			console.log('downloaded messages from google drive.');
 			writeMessages(messages, function(){
@@ -80,7 +80,7 @@ function MessageStore(privatekeyJson, isHost, fileName) {
 	}
 
 	this.save=function(message, callback){
-		if (isHost==true){
+		if (canReplay==true){
 			return;
 		}
 		readMessages(function(messages) {

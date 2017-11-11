@@ -5,6 +5,8 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 	const privatekey=utils.getJSONObject(privatekeyJson);
 	var filePath=`${__dirname}/${fileName}`;
 	filePath=filePath.replace('/node_modules/utils','');
+	const uploadTimer=utils.createTimer(false, 'upload');
+	uploadTimer.setTime(10000);
 
 	function readMessages(callback){
 		fs.readFile(filePath, {encoding: "utf8"}, function(err, messagesStr){
@@ -19,6 +21,14 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 			callback(messages);
 		});
 	};
+
+	function upload(){
+		readMessages(function(messages){
+    		utils.clearGoogleDriveData(privatekey, fileName);
+			utils.uploadGoogleDriveData(privatekey, fileName, messages);
+			console.log('messages uploaded to google drive from disk');
+    	});
+	}
 
 	function writeMessages(messages, callback){
 		fs.exists(filePath, function(exists){
@@ -70,20 +80,19 @@ function MessageStore(privatekeyJson, canReplay, fileName) {
 				console.log('messages downloaded from google drive saved to disk');
 			});
 	    });
-		const saveTimer=utils.createTimer(true, 'save');
-		saveTimer.setTime(60000);
-	    saveTimer.start(function(){
-	    	readMessages(function(messages){
-	    		utils.clearGoogleDriveData(privatekey, fileName);
-				utils.uploadGoogleDriveData(privatekey, fileName, messages);
-				console.log('messages uploaded to google drive from disk');
-	    	});
-	    });
+	  
 	}
 
 	this.save=function(message, callback){
 		if (canReplay==false){
 			return;
+		}
+		if (uploadTimer.started==false){
+			console.log();
+			console.log('////////////////////////////// UPLOAD TIMER STARTED //////////////////////////////');
+			console.log();
+			uploadTimer.start(upload);
+			console.log();
 		}
 		readMessages(function(messages) {
 			messages.push(message);

@@ -68,7 +68,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                                 serviceUnavailableRetry.start(send);
                             }
                             retryCounter++;
-                        }
+                        });
                     };
                     send();
                 }

@@ -38,8 +38,8 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
   		function replaySubscription(backupMessages){
 			logging.write(`subscription count ${subscriptions.length}`);
 			subscriptions=[];
-			thisService.subscribe('replay', 0000, replaySubscription);
-			thisService.subscribe('purge', 0000, purgeSubscription);
+			thisService.subscribe('replay', 10, replaySubscription);
+			thisService.subscribe('purge', 10, purgeSubscription);
 			resubscribe(function ready(){
 				logging.write(`subscription count ${subscriptions.length}`);
 	  			if (canReplay==true){
@@ -58,8 +58,8 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 				}
 			});
   		};
-		this.subscribe('replay', 0000, replaySubscription);
-  		this.subscribe('purge', 0000, purgeSubscription);
+		this.subscribe('replay', 10, replaySubscription);
+  		this.subscribe('purge', 10, purgeSubscription);
   		resubscribe(function(){
   			console.log('initial startup');
   		});

@@ -80,6 +80,9 @@ function MessageStore(privatekeyJson, isHost, fileName) {
 	}
 
 	this.save=function(message, callback){
+		if (isHost==true){
+			return;
+		}
 		readMessages(function(messages) {
 			messages.push(message);
 			writeMessages(messages, callback);

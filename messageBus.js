@@ -36,7 +36,6 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
         	messageStore.purge();
   		};
   		function replaySubscription(backupMessages){
-  			console.log('BACKUP MESSAGES: ',backupMessages);
 			logging.write(`subscription count ${subscriptions.length}`);
 			subscriptions=[];
 			thisService.subscribe('replay', replaySubscription);
@@ -45,11 +44,15 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 				logging.write(`subscription count ${subscriptions.length}`);
 	  			if (canReplay==true){
 	  				messageStore.load(function(messages){
+	  					const replayMessages=messages;
+	  					if (replayMessages.length==0 && backupMessages.length > 0){
+	  						replayMessages=backupMessages;
+	  					}
 						logging.write('');
 						logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
-						logging.write('messages: ',messages);
+						logging.write('messages: ',replayMessages);
 						messageStore.purge();
-						republish(messages);
+						republish(replayMessages);
 						logging.write('');
 	  				});
 				}

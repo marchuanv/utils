@@ -56,6 +56,7 @@ function MessageStore(privatekeyJson) {
 	};
 
 	utils.downloadGoogleDriveData(privatekey, fileName, function found(messages) {
+		console.log('downloaded messages from google drive.');
 		writeMessages(messages, function(){
 			console.log('messages downloaded from google drive saved to disk');
 		});

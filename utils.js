@@ -118,7 +118,7 @@ module.exports={
         throw 'no privatekey was provided for google drive';
       }
 
-      var messageSendRetryMax=5;
+      var messageSendRetryMax=60;
       var messageBusProcess=createMessageBusProcess(
           'ChildMessageBus', 
           './messageBus.js', 

@@ -54,7 +54,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                     logging.write(`sending message to ${publishAddress.address}`);
                     var retryCounter = 0;
                     const serviceUnavailableRetry = utils.createTimer(true, `${message.channel} retrying`);
-                    serviceUnavailableRetry.setTime(5000);
+                    serviceUnavailableRetry.setTime(1000);
                     serviceUnavailableRetry.start(function() {
                         logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                         utils.sendHttpRequest(publishAddress.address, message, '', function success() {

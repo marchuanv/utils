@@ -75,15 +75,9 @@ function MessageStore(privatekeyJson, isHost, fileName) {
 	}
 
 	this.save=function(message, callback){
-		fs.exists(filePath, function(exists){
-			if (exists==true){
-				readMessages(function(messages) {
-					messages.push(message);
-					writeMessages(messages, callback);
-				});
-			}else{
-		       writeMessages([message], callback);
-			}
+		readMessages(function(messages) {
+			messages.push(message);
+			writeMessages(messages, callback);
 		});
 	};
 
@@ -95,11 +89,8 @@ function MessageStore(privatekeyJson, isHost, fileName) {
 
 	this.purge=function(){
 		utils.clearGoogleDriveData(privatekey, fileName);
-		fs.unlink(filePath, (err) => {
-	        if (err) {
-	            console.log(err);
-	            return
-	        } 
+		writeMessages([], function(){
+			console.log(`${fileName} cleaned`);
 		});
 	};
 };

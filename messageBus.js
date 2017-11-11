@@ -21,9 +21,10 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
   	};
 	
 	function republish(messages){
+		messageStore.purge();
 		while(messages.length > 0) {
-		    	const msg=messages.splice(0, 1)[0];
-			messageBusService.sendExternalPublishMessage(msg,function complete(){
+		    const msg=messages.splice(0, 1)[0];
+			messageBusService.sendExternalPublishMessage(msg, function complete(){
 				republish(messages);				
 			});
 			return;

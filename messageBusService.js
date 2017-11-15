@@ -5,10 +5,7 @@ const MessageBus = require('./messageBus.js');
 function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay) {
     
     const thisService = this;
-    const serviceName=process.env.thisserveraddress.split('.')[0];
-    const serviceFileName=`${serviceName}.json`;
-
-    this.messageBus = new MessageBus(this, serviceFileName, canReplay);
+    this.messageBus = new MessageBus(this, canReplay);
     
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
@@ -19,7 +16,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                 logging.write('received http message structure is wrong.');
             }
         },function fail(err){
-            console.log(err);
+            logging.write(err);
         });
     }
 

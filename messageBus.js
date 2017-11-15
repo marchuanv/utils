@@ -1,7 +1,7 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 
-function MessageBus(messageBusService, serviceFileName, canReplay){
+function MessageBus(messageBusService, canReplay){
 
 	const thisService=this;
 	var subscriptions=[];

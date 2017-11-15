@@ -1,7 +1,7 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 
-function MessageBus(messageBusService, serviceFileName, canReplay, messageStore){
+function MessageBus(messageBusService, serviceFileName, canReplay){
 
 	const thisService=this;
 	var subscriptions=[];
@@ -32,29 +32,20 @@ function MessageBus(messageBusService, serviceFileName, canReplay, messageStore)
 	};
 	
   	this.app=function(resubscribe){
-  		function purgeSubscription(backupMessages){
-        	messageStore.purge();
-  		};
-  		function replaySubscription(backupMessages){
-			logging.write(`subscription count ${subscriptions.length}`);
+  		function purgeSubscription(){
 			subscriptions=[];
+  		};
+  		function replaySubscription(replayMessages){
+			logging.write(`subscription count ${subscriptions.length}`);
 			thisService.subscribe('replay', 10, replaySubscription);
 			thisService.subscribe('purge', 10, purgeSubscription);
 			resubscribe(function ready(){
 				logging.write(`subscription count ${subscriptions.length}`);
 	  			if (canReplay==true){
-	  				messageStore.load(function(messages){
-	  					var replayMessages=messages;
-	  					if (replayMessages.length==0 && backupMessages.length > 0){
-	  						replayMessages=backupMessages;
-	  					}
-						logging.write('');
-						logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
-						logging.write('messages: ',replayMessages);
-						messageStore.purge();
-						republish(replayMessages);
-						logging.write('');
-	  				});
+					logging.write('');
+					logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
+					republish(replayMessages);
+					logging.write('');
 				}
 			});
   		};

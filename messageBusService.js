@@ -12,6 +12,9 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
         utils.receiveHttpRequest(port, function requestReceived(obj) {
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
+            }else if (typeof obj==='function'){
+                const callback=obj;
+                callback(thisService.messageBus.subscriptions);
             } else {
                 logging.write('received http message structure is wrong.');
             }

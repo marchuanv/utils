@@ -4,11 +4,11 @@ const logging = require('./logging.js');
 function MessageBus(messageBusService, canReplay){
 
 	const thisService=this;
-	var subscriptions=[];
+	this.subscriptions=[];
 	function getSubscriptions(channel, userId, callback, callbackFail){
   		var exists=false;
-  		for (var i = subscriptions.length - 1; i >= 0; i--) {
-  			const msg=subscriptions[i];
+  		for (var i = thisService.subscriptions.length - 1; i >= 0; i--) {
+  			const msg=thisService.subscriptions[i];
   			if (msg.channel==channel && msg.userId==userId) {
 				callback(msg, i);
 				exists=true;
@@ -33,14 +33,14 @@ function MessageBus(messageBusService, canReplay){
 	
   	this.app=function(resubscribe){
   		function purgeSubscription(){
-			subscriptions=[];
+			thisService.subscriptions=[];
   		};
   		function replaySubscription(replayMessages){
-			logging.write(`subscription count ${subscriptions.length}`);
+			logging.write(`subscription count ${thisService.subscriptions.length}`);
 			thisService.subscribe('replay', 10, replaySubscription);
 			thisService.subscribe('purge', 10, purgeSubscription);
 			resubscribe(function ready(){
-				logging.write(`subscription count ${subscriptions.length}`);
+				logging.write(`subscription count ${thisService.subscriptions.length}`);
 	  			if (canReplay==true){
 					logging.write('');
 					logging.write('///////////////////////// REPUBLISHING MESSAGES ///////////////////////');
@@ -105,7 +105,7 @@ function MessageBus(messageBusService, canReplay){
 		getSubscriptions(channel, userId, function(subscription){
 			subscription.callbacks.push(callback);
 		},function notFound(){
-			subscriptions.push({
+			thisService.subscriptions.push({
 				channel: channel,
 				userId: userId,
 				callbacks: [callback]

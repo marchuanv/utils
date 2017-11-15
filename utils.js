@@ -260,24 +260,6 @@ module.exports={
     createLogging: function(){
       return require('./logging.js');
     },
-    uploadGoogleDriveData: function(key, name, data, cbDone){
-        const GoogleDrive=require('./googleDrive.js');
-        const drive=new GoogleDrive(key);
-        const dataStr=module.exports.getJSONString(data);
-        drive.new(name, dataStr, cbDone);
-    },
-    downloadGoogleDriveData: function(key, name, cbFound, cbNotFound){
-        const GoogleDrive=require('./googleDrive.js');
-        const drive=new GoogleDrive(key);
-        drive.load(name, cbFound, cbNotFound);
-    },
-    clearGoogleDriveData: function(key, name){
-        const GoogleDrive=require('./googleDrive.js');
-        const drive=new GoogleDrive(key);
-        drive.delete(name, function(){
-          logging.write(`all ${name} files were deleted`);
-        }); 
-    },
     readJsonFile: function(name, callback){
         var filePath=`${__dirname}/${name}`;
         filePath=filePath.replace('.json','');

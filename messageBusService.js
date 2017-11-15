@@ -1,7 +1,6 @@
 const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
-const MessageStore = require('./messageStore.js');
 
 function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay) {
     
@@ -9,19 +8,13 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
     const serviceName=process.env.thisserveraddress.split('.')[0];
     const serviceFileName=`${serviceName}.json`;
 
-    this.messageStore = new MessageStore(process.env.privatekey, canReplay, serviceFileName);
-    this.messageBus = new MessageBus(this, serviceFileName, canReplay, this.messageStore);
+    this.messageBus = new MessageBus(this, serviceFileName, canReplay);
     
     if (isHost == true) {
         const port = utils.getHostAndPortFromUrl(process.env.thisserveraddress).port;
         utils.receiveHttpRequest(port, function requestReceived(obj) {
             if (obj.data && obj.channel) {
                 thisService.messageBus.receiveExternalPublishMessage(obj);
-            } else if(typeof obj==='function'){
-                thisService.messageStore.load(function(messages){
-                   const messagesJson=utils.getJSONString(messages);
-                   obj(messagesJson);
-                });
             } else {
                 logging.write('received http message structure is wrong.');
             }
@@ -59,7 +52,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                     serviceUnavailableRetry.setTime(1000);
                     function send(){
                         utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                            thisService.messageStore.save(message, callback);
+                            callback();
                         }, function fail() {
                             logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
                             if (retryCounter > messageSendRetryMax) {

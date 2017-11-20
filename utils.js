@@ -14,15 +14,19 @@ function createMessageBusProcess(name, fileName, thisServerAddress, googleDriveP
         [name, fileName, thisServerAddress, messageSendRetryMax, googleDrivePrivateKey]
         // { silent: true }
     );
+    var restartCount=0;
     function handleEvent(reason, error){
         childProcess.kill();
         
         logging.write(`reason: ${reason}, error: ${error}`);
         if (autoRestart && restartTimer.started==false){
-            restartTimer.start(function(){
-                createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, messageSendRetryMax, autoRestart, restartTimer);
-                restartTimer.stop();
-            });
+            restartCount++;
+            if (restartCount < 10){
+              restartTimer.start(function(){
+                  createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, messageSendRetryMax, autoRestart, restartTimer);
+                  restartTimer.stop();
+              });
+            }
         }
     };
      childProcess.on('exit', function(obj){

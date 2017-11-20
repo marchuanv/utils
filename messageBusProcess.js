@@ -9,10 +9,6 @@ const logging = require('./logging.js');
 logging.write('PARAMS: ',process.argv);
 const MessageBusService = require('./messageBusService.js');
 process.env.thisserveraddress=thisServerAddress;
-
-
-
-
 new MessageBusService(
 	process,
 	messageSendRetryMax,

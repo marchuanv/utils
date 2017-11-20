@@ -42,30 +42,29 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
     };
 
     this.sendExternalPublishMessage = function(message, callback) {
-            for (var i = publishAddresses.length - 1; i >= 0; i--) {
-                const publishAddress=publishAddresses[i];
-                if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
-                    logging.write(`sending message to ${publishAddress.address}`);
-                    var retryCounter = 0;
-                    const serviceUnavailableRetry = utils.createTimer(false, `${message.channel} retrying`);
-                    serviceUnavailableRetry.setTime(1000);
-                    function send(){
-                        utils.sendHttpRequest(publishAddress.address, message, '', function success() {
-                            callback();
-                        }, function fail() {
-                            logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
-                            if (retryCounter > messageSendRetryMax) {
-                                logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
-                            }else{
-                                serviceUnavailableRetry.start(send);
-                            }
-                            retryCounter++;
-                        });
-                    };
-                    send();
-                }
-            };
-
+        for (var i = publishAddresses.length - 1; i >= 0; i--) {
+            const publishAddress=publishAddresses[i];
+            if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
+                logging.write(`sending message to ${publishAddress.address}`);
+                var retryCounter = 0;
+                const serviceUnavailableRetry = utils.createTimer(false, `${message.channel} retrying`);
+                serviceUnavailableRetry.setTime(1000);
+                function send(){
+                    utils.sendHttpRequest(publishAddress.address, message, '', function success() {
+                        callback();
+                    }, function fail() {
+                        logging.write(`retry: sending message to ${publishAddress.address} on channel #{message.channel}`);
+                        if (retryCounter > messageSendRetryMax) {
+                            logging.write(`retry limit of ${messageSendRetryMax} has been reached, stopping retry`);
+                        }else{
+                            serviceUnavailableRetry.start(send);
+                        }
+                        retryCounter++;
+                    });
+                };
+                send();
+            }
+        };
     };
     
 };

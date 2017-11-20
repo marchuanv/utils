@@ -111,9 +111,9 @@ module.exports={
       var autorestart=process.env.autorestart;
 
       if ( (publishAddresses && publishAddresses.length==0 ) || !publishAddresses){
-        module.exports.readJsonFile('publishAddresses.json', function(_publishAddresses) {
-            publishAddresses=_publishAddresses;
-        });
+          module.exports.readJsonFile('publishAddresses.json', function(_publishAddresses) {
+              publishAddresses=_publishAddresses;
+          });
       }
 
       if (publishonrestart == undefined || publishonrestart == null || publishonrestart == '' || publishonrestart==false || publishonrestart=='false'){
@@ -143,13 +143,15 @@ module.exports={
           thisServerAddress,
           googleDrivePrivateKey,
           messageSendRetryMax, 
-          autorestart
+          autorestart,
+          publishAddresses
       );
       const messageBusService = new MessageBusService(
           messageBusProcess,
           messageSendRetryMax,
           false,
-          publishonrestart
+          publishonrestart,
+          publishAddresses
       );
       return messageBusService.messageBus;
   },

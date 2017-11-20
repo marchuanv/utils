@@ -241,7 +241,9 @@ module.exports={
             logging.write('');
         });
       }catch(err){
-        if (err.message.indexOf('EADDRINUSE')==-1){
+        
+        console.log('MESSAGE: ',err.message);
+        if (err.message.indexOf('EADDRINUSE') == -1){
           throw err;
         }else{
           console.error(`port ${hostPort} already in use`);

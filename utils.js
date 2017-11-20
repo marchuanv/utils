@@ -4,22 +4,25 @@ const logging=require('./logging.js');
 function createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, messageSendRetryMax, autoRestart, restartTimer){
     logging.write('');
     logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
+    
     if (!restartTimer){
       restartTimer=module.exports.createTimer(false, 'child process restart');
       restartTimer.setTime(10000);
     }
+    
     const childFile=`${__dirname}/messageBusProcess.js`;
     const cp = require('child_process');
     const childProcess=cp.fork(childFile, 
         [name, fileName, thisServerAddress, messageSendRetryMax, googleDrivePrivateKey]
         // { silent: true }
     );
+    
     var restartCount=0;
     function handleEvent(reason, error){
         childProcess.kill();
         
         logging.write(`reason: ${reason}, error: ${error}`);
-        if (autoRestart && restartTimer.started==false){
+        if (autoRestart==true && restartTimer.started==false){
             restartCount++;
             if (restartCount < 10){
               restartTimer.start(function(){
@@ -29,7 +32,8 @@ function createMessageBusProcess(name, fileName, thisServerAddress, googleDriveP
             }
         }
     };
-     childProcess.on('exit', function(obj){
+    
+    childProcess.on('exit', function(obj){
       handleEvent("exit", obj);
     });
     childProcess.on('SIGINT',  function(obj){
@@ -104,13 +108,22 @@ module.exports={
       const thisServerAddress=process.env.thisserveraddress;
       const googleDrivePrivateKey=process.env.privatekey;
       var publishonrestart=process.env.publishonrestart;
+      var autorestart=process.env.autorestart;
+
       if (routingMode == undefined || routingMode == null || routingMode == ''){
          routingMode=false;
       }
+
       if (publishonrestart == undefined || publishonrestart == null || publishonrestart == '' || publishonrestart==false || publishonrestart=='false'){
          publishonrestart=false;
       }else{
          publishonrestart=true;
+      }
+
+      if (autorestart == undefined || autorestart == null || autorestart == '' || autorestart==false || autorestart=='false'){
+         autorestart=false;
+      }else{
+         autorestart=true;
       }
 
       if (!thisServerAddress || module.exports.isValidUrl(thisServerAddress)==false){
@@ -128,7 +141,7 @@ module.exports={
           thisServerAddress,
           googleDrivePrivateKey,
           messageSendRetryMax, 
-          true
+          autorestart
       );
       const messageBusService = new MessageBusService(
           messageBusProcess,

@@ -86,15 +86,16 @@ function MessageBus(messageBusService, canReplay){
 	};
 
 	this.publish=function(channel, userId, data) {
-  		logging.write('');
-  		logging.write(`/// PUBLISHING TO: ${channel} AS USER: ${userId} ///`);
-		messageBusService.sendExternalPublishMessage({
+  		messageBusService.sendExternalPublishMessage({
 			id: utils.newGuid(),
 			channel: channel,
   	 		from: process.env.thisserveraddress,
 			date: new Date(),
 			userId: userId,
   	 		data: data
+  	 	},function sent() {
+  	 		logging.write('');
+  			logging.write(`/// PUBLISHING TO: ${channel} AS USER: ${userId} ///`);
   	 	});
   	 	logging.write('');
   	};

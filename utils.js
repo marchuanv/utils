@@ -102,17 +102,13 @@ module.exports={
       });
       return uuid;
   },
-  createMessageBusClient: function(routingMode){
+  createMessageBusClient: function(){
       const MessageBus=require('./messageBus.js');
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
       const googleDrivePrivateKey=process.env.privatekey;
       var publishonrestart=process.env.publishonrestart;
       var autorestart=process.env.autorestart;
-
-      if (routingMode == undefined || routingMode == null || routingMode == ''){
-         routingMode=false;
-      }
 
       if (publishonrestart == undefined || publishonrestart == null || publishonrestart == '' || publishonrestart==false || publishonrestart=='false'){
          publishonrestart=false;

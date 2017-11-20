@@ -2,7 +2,7 @@ const utils = require('./utils.js');
 const logging = require('./logging.js');
 const MessageBus = require('./messageBus.js');
 
-function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay) {
+function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canReplay, publishAddresses) {
     
     const thisService = this;
     this.messageBus = new MessageBus(this, canReplay);
@@ -42,7 +42,6 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
     };
 
     this.sendExternalPublishMessage = function(message, callback) {
-        utils.readJsonFile('publishAddresses.json', function(publishAddresses) {
             for (var i = publishAddresses.length - 1; i >= 0; i--) {
                 const publishAddress=publishAddresses[i];
                 if (publishAddress.channel==message.channel && utils.isValidUrl(publishAddress.address)==true){
@@ -66,7 +65,7 @@ function MessageBusService(messageBusProcess, messageSendRetryMax, isHost, canRe
                     send();
                 }
             };
-        });
+
     };
     
 };

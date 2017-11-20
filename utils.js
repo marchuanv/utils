@@ -102,13 +102,19 @@ module.exports={
       });
       return uuid;
   },
-  createMessageBusClient: function(){
+  createMessageBusClient: function(publishAddresses){
       const MessageBus=require('./messageBus.js');
       const MessageBusService=require('./messageBusService.js');
       const thisServerAddress=process.env.thisserveraddress;
       const googleDrivePrivateKey=process.env.privatekey;
       var publishonrestart=process.env.publishonrestart;
       var autorestart=process.env.autorestart;
+
+      if ( (publishAddresses && publishAddresses.length==0 ) || !publishAddresses){
+        module.exports.readJsonFile('publishAddresses.json', function(_publishAddresses) {
+            publishAddresses=_publishAddresses;
+        });
+      }
 
       if (publishonrestart == undefined || publishonrestart == null || publishonrestart == '' || publishonrestart==false || publishonrestart=='false'){
          publishonrestart=false;

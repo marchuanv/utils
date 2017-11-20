@@ -1,69 +1,6 @@
 const http=require('http');
 const logging=require('./logging.js');
 
-function createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, messageSendRetryMax, autoRestart, restartTimer){
-    logging.write('');
-    logging.write(`/////////////////////////////////  CREATING CHILD PROCESS ${name} ///////////////////////////////`);
-    
-    if (!restartTimer){
-      restartTimer=module.exports.createTimer(false, 'child process restart');
-      restartTimer.setTime(10000);
-    }
-    
-    const childFile=`${__dirname}/messageBusProcess.js`;
-    const cp = require('child_process');
-    const childProcess=cp.fork(childFile, 
-        [name, fileName, thisServerAddress, messageSendRetryMax, googleDrivePrivateKey]
-        // { silent: true }
-    );
-    
-    var restartCount=0;
-    function handleEvent(reason, error){
-        childProcess.kill();
-        
-        logging.write(`reason: ${reason}, error: ${error}`);
-        if (autoRestart==true && restartTimer.started==false){
-            restartCount++;
-            if (restartCount < 10){
-              restartTimer.start(function(){
-                  createMessageBusProcess(name, fileName, thisServerAddress, googleDrivePrivateKey, messageSendRetryMax, autoRestart, restartTimer);
-                  restartTimer.stop();
-              });
-            }
-        }
-    };
-    
-    childProcess.on('exit', function(obj){
-      handleEvent("exit", obj);
-    });
-    childProcess.on('SIGINT',  function(obj){
-      handleEvent("SIGINT");
-    });
-    childProcess.on('SIGHUP', function(obj){
-      handleEvent("SIGHUP");
-    });
-    childProcess.on('SIGUSR1', function(obj){
-      handleEvent("SIGUSR1");
-    });
-    childProcess.on('SIGUSR2', function(obj){
-      handleEvent("SIGUSR2");
-    });
-    childProcess.on('close', function(obj){
-      handleEvent("close", obj);
-    });
-    childProcess.on( 'SIGTERM', function(obj){
-      handleEvent("SIGTERM");
-    });
-    childProcess.on('error', function(obj){
-      handleEvent("error", obj);
-    });
-    childProcess.on('uncaughtException', function(obj){
-      handleEvent("uncaughtException", obj);
-    });
-    logging.write('');
-    return childProcess;
-};
-
 module.exports={
   getRandomNumber: function(min, max){
     return Math.floor(Math.random()*(max-min+1)+min);
@@ -101,59 +38,6 @@ module.exports={
           return (c=='x' ? r : (r&0x3|0x8)).toString(16);
       });
       return uuid;
-  },
-  createMessageBusClient: function(publishAddresses){
-      const MessageBus=require('./messageBus.js');
-      const MessageBusService=require('./messageBusService.js');
-      const thisServerAddress=process.env.thisserveraddress;
-      const googleDrivePrivateKey=process.env.privatekey;
-      var publishonrestart=process.env.publishonrestart;
-      var autorestart=process.env.autorestart;
-
-      if ( (publishAddresses && publishAddresses.length==0 ) || !publishAddresses){
-          module.exports.readJsonFile('publishAddresses.json', function(_publishAddresses) {
-              publishAddresses=_publishAddresses;
-          });
-      }
-
-      if (publishonrestart == undefined || publishonrestart == null || publishonrestart == '' || publishonrestart==false || publishonrestart=='false'){
-         publishonrestart=false;
-      }else{
-         publishonrestart=true;
-      }
-
-      if (autorestart == undefined || autorestart == null || autorestart == '' || autorestart==false || autorestart=='false'){
-         autorestart=false;
-      }else{
-         autorestart=true;
-      }
-
-      if (!thisServerAddress || module.exports.isValidUrl(thisServerAddress)==false){
-        throw 'child process was provided with an invalid sender address';
-      }
-
-      if (!googleDrivePrivateKey){
-        throw 'no privatekey was provided for google drive';
-      }
-
-      var messageSendRetryMax=60;
-      var messageBusProcess=createMessageBusProcess(
-          'ChildMessageBus', 
-          './messageBus.js', 
-          thisServerAddress,
-          googleDrivePrivateKey,
-          messageSendRetryMax, 
-          autorestart,
-          publishAddresses
-      );
-      const messageBusService = new MessageBusService(
-          messageBusProcess,
-          messageSendRetryMax,
-          false,
-          publishonrestart,
-          publishAddresses
-      );
-      return messageBusService.messageBus;
   },
   consoleReset :function () {
     return process.stdout.write('\033c');

@@ -234,11 +234,19 @@ module.exports={
         });
       });
         
-      httpServer.listen(port, function(){
-          logging.write('');
-          logging.write(`http server started and listening on port ${port}`);
-          logging.write('');
-      });
+      try{
+        httpServer.listen(port, function(){
+            logging.write('');
+            logging.write(`http server started and listening on port ${port}`);
+            logging.write('');
+        });
+      }catch(err){
+        if (err.message.indexOf('EADDRINUSE')==-1){
+          throw err;
+        }else{
+          console.error(`port ${hostPort} already in use`);
+        }
+      }
     },
     isValidUrl: function(url){
         var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol

@@ -1,4 +1,5 @@
-function HttpService(http, utils){
+const http=require('http');
+function HttpService(utils){
 	this.sendHttpRequest=function (url, data, path, callback, callbackFail) {
 		console.log('creating an http request.');
 		const postData=utils.getJSONString(data);

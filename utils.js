@@ -58,7 +58,7 @@ module.exports={
     return new Cache(cacheJson);
   },
   createHttpService: function(){
-      const httpService=new require('HttpService').HttpService();
+      const httpService=new require('HttpService').HttpService(this);
       return httpService;
   },
   getHostAndPortFromUrl: function(url){

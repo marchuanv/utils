@@ -1,6 +1,18 @@
 const logging=require('./logging.js');
 
 module.exports={
+  getFunctionName: function(func) {
+    var ret = func.toString();
+    ret = ret.substr('function '.length);
+    ret = ret.substr(0, ret.indexOf('('));
+    return ret;
+  },
+  getFunctionArguments: function(func){
+    var args = func.toString().
+        replace(/[\r\n\s]+/g, ' ').
+        match(/function\s*\w*\s*\((.*?)\)/)[1].split (/\s*,\s*/);
+    return args;
+  },
   getRandomNumber: function(min, max){
     return Math.floor(Math.random()*(max-min+1)+min);
   },

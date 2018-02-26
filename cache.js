@@ -32,9 +32,6 @@ function Cache(cacheJsonString) {
 	};
 
 	this.set = function(key, instance, cbSet){
-		if (typeof instance === 'function'){
-			throw `instance passed for cache key ${key} can't be a function`;
-		}
 		if (cbSet && typeof cbSet !== 'function'){
 			throw `cbSet is not a function`;
 		}

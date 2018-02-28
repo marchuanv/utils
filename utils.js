@@ -1,6 +1,13 @@
 const logging=require('./logging.js');
 
 module.exports={
+  isEmptyObject: function(obj) {
+      for(var prop in obj) {
+          if(obj.hasOwnProperty(prop))
+              return false;
+      };
+      return JSON.stringify(obj) === JSON.stringify({});
+  },
   generateGUID: function(argument) {
       function S4() {
           return (((1 + Math.random()) * 0x10000) |0).toString(16).substring(1); 

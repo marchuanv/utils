@@ -58,7 +58,20 @@ module.exports={
   },
   getJSONObject: function(jsonString){
     try{
-      return JSON.parse(jsonString);
+      if (includeFunctions){
+        const parsedObj =JSON.parse(jsonString, function(key, value) {
+          if (typeof value === "string" &&
+              value.startsWith("/Function(") &&
+              value.endsWith(")/")) {
+            value = value.substring(10, value.length - 2);
+            return eval("(" + value + ")");
+          }
+          return value;
+        });
+        return parsedObj;
+      }else{
+        return JSON.parse(jsonString);
+      }
     }catch(err){
       return null;
     }

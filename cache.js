@@ -1,18 +1,7 @@
-function Cache(cacheJsonString) {
+function Cache() {
 	var cache = this;
 	this._keys=[]
-	if (cacheJsonString){
-		const parsedObj =JSON.parse(cacheJsonString, function(key, value) {
-		  if (typeof value === "string" &&
-		      value.startsWith("/Function(") &&
-		      value.endsWith(")/")) {
-		    value = value.substring(10, value.length - 2);
-		    return eval("(" + value + ")");
-		  }
-		  return value;
-		});
-		Object.assign(cache, parsedObj);
-	}
+	
 	this.getKeys=function(cbFound, cbNotFound, cbComplete){
 		if (cache._keys.length==0){
 			if (cbNotFound){

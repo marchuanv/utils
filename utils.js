@@ -56,7 +56,7 @@ module.exports={
         return null;
       }
   },
-  getJSONObject: function(jsonString){
+  getJSONObject: function(jsonString, includeFunctions){
     try{
       if (includeFunctions){
         const parsedObj =JSON.parse(jsonString, function(key, value) {

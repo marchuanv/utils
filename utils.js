@@ -34,35 +34,27 @@ module.exports={
     return new Timer(isInterval, name);
   },
   getJSONString: function(data, includeFunctions){
-       if (data){
-          if (typeof data !== 'string'){
-             try{
-              if (includeFunctions){
-                return JSON.stringify(data, function(key, value) {
-                  if (typeof value === "function") {
-                    return "/Function(" + value.toString() + ")/";
-                  }
-                  return value;
-                });
-              }else{
-                return JSON.stringify(data);
-              }
-             }catch(err){
-               return null;
-             }
+     try{
+      if (includeFunctions==true){
+        return JSON.stringify(data, function(key, value) {
+          if (typeof value === "function") {
+            return "/Function(" + value.toString() + ")/";
           }
-          return data;
+          return value;
+        });
       }else{
-        return null;
+        return JSON.stringify(data);
       }
+     }catch(err){
+       console.log("error creating json string",err);
+       return null;
+     }
   },
   getJSONObject: function(jsonString, includeFunctions){
     try{
-      if (includeFunctions){
+      if (includeFunctions==true){
         const parsedObj =JSON.parse(jsonString, function(key, value) {
-          if (typeof value === "string" &&
-              value.startsWith("/Function(") &&
-              value.endsWith(")/")) {
+          if (typeof value === "string" && value.startsWith("/Function(") && value.endsWith(")/")) {
             value = value.substring(10, value.length - 2);
             return eval("(" + value + ")");
           }
@@ -73,6 +65,7 @@ module.exports={
         return JSON.parse(jsonString);
       }
     }catch(err){
+      console.log("error parsing json",err);
       return null;
     }
   },

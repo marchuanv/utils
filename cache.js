@@ -69,13 +69,5 @@ function Cache(cacheJsonString) {
 		}]);
 	};
 
-	this.stringify=function(){
-		return JSON.stringify(this, function(key, value) {
-		  if (typeof value === "function") {
-		    return "/Function(" + value.toString() + ")/";
-		  }
-		  return value;
-		});
-	};
 };
 module.exports=Cache;

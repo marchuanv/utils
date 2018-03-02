@@ -2,7 +2,7 @@ const http=require('http');
 function HttpService(utils){
 	this.sendHttpRequest=function (url, data, path, callback, callbackFail) {
 		console.log('creating an http request.');
-		const postData=utils.stringify(data);
+		const postData=utils.getJSONString(data, true);
 		const info = utils.getHostAndPortFromUrl(url);
 		const host=info.host;
 		var port=info.port;
@@ -69,7 +69,7 @@ function HttpService(utils){
 			    } else if(req.method.toLowerCase()=="get"){
 			        responseCallback(function(resData){
 			            res.statusCode = 200;
-			            var resDataJson=utils.stringify(resData);
+			            var resDataJson=utils.getJSONString(resData, true);
 			            res.end(resDataJson);
 			        });
 			    }else{

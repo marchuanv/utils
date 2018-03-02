@@ -33,11 +33,20 @@ module.exports={
     const Timer = require('./timer.js');
     return new Timer(isInterval, name);
   },
-  getJSONString: function(data){
+  getJSONString: function(data, includeFunctions){
        if (data){
           if (typeof data !== 'string'){
              try{
+              if (includeFunctions){
+                return JSON.stringify(data, function(key, value) {
+                  if (typeof value === "function") {
+                    return "/Function(" + value.toString() + ")/";
+                  }
+                  return value;
+                });
+              }else{
                 return JSON.stringify(data);
+              }
              }catch(err){
                return null;
              }

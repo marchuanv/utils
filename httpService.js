@@ -60,6 +60,7 @@ function HttpService(utils){
 			});
 			req.on('end', function () {
 			    const requestBodyJson=Buffer.concat(body).toString();
+			    console.log("BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: ",requestBodyJson);
 			    const requestBody=utils.getJSONObject(requestBodyJson, true);
 			    console.log('http request data received.');
 			    if (requestBody) {

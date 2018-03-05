@@ -7,7 +7,6 @@ function Logging() {
     }
     var logTrack='';
     this.track=function(){
-        logTrack=generateGUID();
     },
     this.write = function(message, args) {
         if (message == undefined || message == null) {
@@ -17,7 +16,7 @@ function Logging() {
         if(typeof message!=='string'){
             console.error(' MESSAGE WAS NOT A STRING',message);
         }
-        var newMessage=`[${logTrack}]${message}`;
+        var newMessage=`${logTrack}${message}`;
         if (args) {
             console.log(newMessage, args);
         } else {

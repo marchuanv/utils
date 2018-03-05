@@ -3,6 +3,7 @@ function HttpService(utils){
 	this.sendHttpRequest=function (url, data, path, callback, callbackFail) {
 		console.log('creating an http request.');
 		const postData=utils.getJSONString(data, true);
+		console.log("POST DATA: ",postData);
 		const info = utils.getHostAndPortFromUrl(url);
 		const host=info.host;
 		var port=info.port;

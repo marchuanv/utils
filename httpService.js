@@ -2,9 +2,8 @@ const http=require('http');
 function HttpService(utils){
 	this.sendHttpRequest=function (url, data, path, callback, callbackFail) {
 		console.log('creating an http request.');
-		console.log("POST DATA BEFORE: ",data);
+		console.log("POST DATA: ",data);
 		const postData=utils.getJSONString(data, true);
-		console.log("POST DATA AFTER: ",postData);
 		const info = utils.getHostAndPortFromUrl(url);
 		const host=info.host;
 		var port=info.port;
@@ -62,8 +61,8 @@ function HttpService(utils){
 			});
 			req.on('end', function () {
 			    const receivedBodyJson=Buffer.concat(body).toString();
+			    console.log("RECEIVED DATA: ",receivedBodyJson);
 			    const receivedBody=utils.getJSONObject(receivedBodyJson, true);
-			    console.log("RECEIVED DATA: ",receivedBody);
 			    console.log('http request data received.');
 			    if (receivedBody) {
 			        res.statusCode = 200;

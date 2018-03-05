@@ -60,8 +60,9 @@ function HttpService(utils){
 				body.push(chunk);
 			});
 			req.on('end', function () {
-			    const requestBodyJson=Buffer.concat(body).toString();
-			    const requestBody=utils.getJSONObject(requestBodyJson, true);
+			    const receivedBodyJson=Buffer.concat(body).toString();
+			    console.log("RECEIVED DATA: ",receivedBodyJson);
+			    const requestBody=utils.getJSONObject(receivedBodyJson, true);
 			    console.log('http request data received.');
 			    if (requestBody) {
 			        res.statusCode = 200;

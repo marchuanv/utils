@@ -2,8 +2,9 @@ const http=require('http');
 function HttpService(utils){
 	this.sendHttpRequest=function (url, data, path, callback, callbackFail) {
 		console.log('creating an http request.');
+		console.log("POST DATA BEFORE: ",data);
 		const postData=utils.getJSONString(data, true);
-		console.log("POST DATA: ",postData);
+		console.log("POST DATA AFTER: ",postData);
 		const info = utils.getHostAndPortFromUrl(url);
 		const host=info.host;
 		var port=info.port;

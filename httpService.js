@@ -61,13 +61,13 @@ function HttpService(utils){
 			});
 			req.on('end', function () {
 			    const receivedBodyJson=Buffer.concat(body).toString();
-			    console.log("RECEIVED DATA: ",receivedBodyJson);
-			    const requestBody=utils.getJSONObject(receivedBodyJson, true);
+			    const receivedBody=utils.getJSONObject(receivedBodyJson, true);
+			    console.log("RECEIVED DATA: ",receivedBody);
 			    console.log('http request data received.');
-			    if (requestBody) {
+			    if (receivedBody) {
 			        res.statusCode = 200;
 			        res.end('success');
-			        responseCallback(requestBody);
+			        responseCallback(receivedBody);
 			    } else if(req.method.toLowerCase()=="get"){
 			        responseCallback(function(resData){
 			            res.statusCode = 200;

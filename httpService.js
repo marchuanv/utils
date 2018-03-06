@@ -61,7 +61,6 @@ function HttpService(utils){
 				console.log('http request received');
 			    const receivedBodyJson=Buffer.concat(body).toString();
 			    const receivedBody=utils.getJSONObject(receivedBodyJson, true);
-			    console.log('http request data received.', receivedBody);
 			    if (receivedBody) {
 			        res.statusCode = 200;
 			        res.end('success');

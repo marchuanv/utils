@@ -2,7 +2,6 @@ const http=require('http');
 function HttpService(utils){
 	this.sendHttpRequest=function (url, data, path, callback, callbackFail) {
 		const postData=utils.getJSONString(data, true);
-		console.log('creating an http request.', postData);
 		const info = utils.getHostAndPortFromUrl(url);
 		const host=info.host;
 		var port=info.port;
@@ -44,11 +43,11 @@ function HttpService(utils){
 		  }
 		});
 		request.end(postData);
+		console.log('http request made');
 	};
     this.receiveHttpRequest=function(hostPort, cbStarted, responseCallback, callbackError){
 		const port = process.env.PORT || hostPort;
 		const httpServer=http.createServer(function(req, res){
-			console.log('http request received');
 			const body = [];
 			res.on('error',function(err){
 			  const errMsg=`Http error occurred at ${location}: ${err}`;
@@ -59,6 +58,7 @@ function HttpService(utils){
 				body.push(chunk);
 			});
 			req.on('end', function () {
+				console.log('http request received');
 			    const receivedBodyJson=Buffer.concat(body).toString();
 			    const receivedBody=utils.getJSONObject(receivedBodyJson, true);
 			    console.log('http request data received.', receivedBody);

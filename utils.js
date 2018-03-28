@@ -152,6 +152,14 @@ module.exports={
                throw err;
             }
          });
-       });
-    }
+      });
+  },
+  getFunctions: function(obj){
+    for(const objName in obj){
+      const obj=obj[objName];
+      if (typeof obj === "function"){
+        callback(objName, obj);
+      }
+    };
+  }
 };

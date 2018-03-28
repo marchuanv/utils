@@ -155,10 +155,9 @@ module.exports={
       });
   },
   getFunctions: function(obj, callback){
-    for(const objName in obj){
-      const obj=obj[objName];
-      if (typeof obj === "function"){
-        callback(objName, obj);
+    for(const prop in obj){
+      if (typeof obj[prop] === "function"){
+        callback(prop, obj[prop]);
       }
     };
   }

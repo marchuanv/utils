@@ -121,19 +121,18 @@ module.exports={
   createLogging: function(){
     return require('./logging.js');
   },
-  readJsonFile: function(name, callback){
-      var filePath=`${__dirname}/${name}`;
+  readJsonFile: function(dirPath, name, callback){
+      var filePath=`${dirPath}/${name}`;
       filePath=filePath.replace('.json','');
       filePath=`${filePath}.json`;
-      filePath=filePath.replace('node_modules/utils/','');
       const fs=require('fs');
       fs.readFile(filePath, 'utf8', function(err, jsonStr){
           const data=module.exports.getJSONObject(jsonStr);
           callback(data);
       });
   },
-  replaceJsonFile: function(name, data){
-      var filePath=`${__dirname}/${name}`;
+  replaceJsonFile: function(dirPath, name, data){
+      var filePath=`${dirPath}/${name}`;
       filePath=filePath.replace('.json','');
       filePath=`${filePath}.json`;
       filePath=filePath.replace('node_modules/utils/','');

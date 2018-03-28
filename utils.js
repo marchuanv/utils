@@ -154,7 +154,7 @@ module.exports={
          });
       });
   },
-  getFunctions: function(obj){
+  getFunctions: function(obj, callback){
     for(const objName in obj){
       const obj=obj[objName];
       if (typeof obj === "function"){

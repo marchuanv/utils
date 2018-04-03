@@ -1,22 +1,27 @@
 function Cache() {
 	
-	this._keys=[]
-	this.items={};
+	var thisInstance;
+
+	this.initialise=function(){
+		thisInstance=this;
+		thisInstance.keys=[]
+		thisInstance.items={};
+	};
 	
 	this.getKeys=function(cbFound, cbNotFound, cbComplete){
-		if (this._keys.length==0){
+		if (thisInstance.keys.length==0){
 			if (cbNotFound){
-				cbNotFound.apply(this);
+				cbNotFound.apply(thisInstance);
 			}
 		}else{
 			for (var obj in his.items){
 				var key =obj.toString() 
-				if (key.startsWith("_") && !key.startsWith("_keys")){
-					cbFound.apply(this, [key.replace('_','')]); // this=calling context of the getKeys function
+				if (key.startsWith("_") && !key.startsWith("keys")){
+					cbFound.apply(thisInstance, [key.replace('_','')]); // this=calling context of the getKeys function
 				}
 			};
 			if (cbComplete){
-				cbComplete.apply(this);
+				cbComplete.apply(thisInstance);
 			}
 		}
 	};
@@ -26,14 +31,14 @@ function Cache() {
 			throw `cbSet is not a function`;
 		}
 		var newKey = "_"+key;
-		if (this._keys.indexOf(newKey) == -1){
-			this._keys.push(newKey);
+		if (thisInstance.keys.indexOf(newKey) == -1){
+			thisInstance.keys.push(newKey);
 		}
-		this.items[newKey] = {
+		thisInstance.items[newKey] = {
 			instance: instance
 		};
 		if (cbSet){
-			cbSet.apply(this, [instance]);
+			cbSet.apply(thisInstance, [instance]);
 		}
 	};
 
@@ -42,20 +47,20 @@ function Cache() {
 			throw `cbFound is not a function`;
 		}
 		var newKey = "_"+key;
-		var item = this.items[newKey];
+		var item = thisInstance.items[newKey];
 		if (item && item.instance){
-			cbFound.apply(this, [item.instance]);
+			cbFound.apply(thisInstance, [item.instance]);
 		}else{
 			if (cbNotFound){
-				cbNotFound.apply(this);
+				cbNotFound.apply(thisInstance);
 			}
 		}
 	};
 	
 	this.clear = function(){
-		this.getKeys.apply(this, [function(key){
-			delete this.items[key];
-			this._keys.splice(this._keys.indexOf(key),1);
+		thisInstance.getKeys.apply(thisInstance, [function(key){
+			delete thisInstance.items[key];
+			thisInstance.keys.splice(thisInstance.keys.indexOf(key),1);
 		}]);
 	};
 

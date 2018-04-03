@@ -1,14 +1,15 @@
 function Cache() {
-	var cache = this;
+	
 	this._keys=[]
+	this.items={};
 	
 	this.getKeys=function(cbFound, cbNotFound, cbComplete){
-		if (cache._keys.length==0){
+		if (this.items._keys.length==0){
 			if (cbNotFound){
 				cbNotFound.apply(this);
 			}
 		}else{
-			for (var obj in cache){
+			for (var obj in his.items){
 				var key =obj.toString() 
 				if (key.startsWith("_") && !key.startsWith("_keys")){
 					cbFound.apply(this, [key.replace('_','')]); // this=calling context of the getKeys function
@@ -25,10 +26,10 @@ function Cache() {
 			throw `cbSet is not a function`;
 		}
 		var newKey = "_"+key;
-		if (cache._keys.indexOf(newKey) == -1){
-			cache._keys.push(newKey);
+		if (this.items._keys.indexOf(newKey) == -1){
+			this.items._keys.push(newKey);
 		}
-		cache[newKey] = {
+		this.items[newKey] = {
 			instance: instance
 		};
 		if (cbSet){
@@ -41,7 +42,7 @@ function Cache() {
 			throw `cbFound is not a function`;
 		}
 		var newKey = "_"+key;
-		var item = cache[newKey];
+		var item = this.items[newKey];
 		if (item && item.instance){
 			cbFound.apply(this, [item.instance]);
 		}else{
@@ -53,8 +54,8 @@ function Cache() {
 	
 	this.clear = function(){
 		this.getKeys.apply(this, [function(key){
-			delete cache[key];
-			cache._keys.splice(cache._keys.indexOf(key),1);
+			delete this.items[key];
+			this.items._keys.splice(this.items._keys.indexOf(key),1);
 		}]);
 	};
 

@@ -4,7 +4,7 @@ function Cache() {
 	this.items={};
 	
 	this.getKeys=function(cbFound, cbNotFound, cbComplete){
-		if (this.items._keys.length==0){
+		if (this._keys.length==0){
 			if (cbNotFound){
 				cbNotFound.apply(this);
 			}
@@ -26,8 +26,8 @@ function Cache() {
 			throw `cbSet is not a function`;
 		}
 		var newKey = "_"+key;
-		if (this.items._keys.indexOf(newKey) == -1){
-			this.items._keys.push(newKey);
+		if (this._keys.indexOf(newKey) == -1){
+			this._keys.push(newKey);
 		}
 		this.items[newKey] = {
 			instance: instance
@@ -55,7 +55,7 @@ function Cache() {
 	this.clear = function(){
 		this.getKeys.apply(this, [function(key){
 			delete this.items[key];
-			this.items._keys.splice(this.items._keys.indexOf(key),1);
+			this._keys.splice(this._keys.indexOf(key),1);
 		}]);
 	};
 

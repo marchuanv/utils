@@ -1,6 +1,7 @@
 function Cache() {
 	
 	this.keys=[];
+	this.items=[];
 
 	this.getKeys=function(cbFound, cbNotFound, cbComplete){
 		if (this.keys.length==0) {

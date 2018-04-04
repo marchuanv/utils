@@ -1,27 +1,21 @@
 function Cache() {
 	
-	var thisInstance;
+	this.keys=[];
 
-	this.initialise=function(){
-		thisInstance=this;
-		thisInstance.keys=[]
-		thisInstance.items={};
-	};
-	
 	this.getKeys=function(cbFound, cbNotFound, cbComplete){
-		if (thisInstance.keys.length==0){
+		if (this.keys.length==0) {
 			if (cbNotFound){
-				cbNotFound.apply(thisInstance);
+				cbNotFound();
 			}
-		}else{
+		} else {
 			for (var obj in his.items){
 				var key =obj.toString() 
 				if (key.startsWith("_") && !key.startsWith("keys")){
-					cbFound.apply(thisInstance, [key.replace('_','')]); // this=calling context of the getKeys function
+					cbFound(key.replace('_','')); // this=calling context of the getKeys function
 				}
 			};
 			if (cbComplete){
-				cbComplete.apply(thisInstance);
+				cbComplete();
 			}
 		}
 	};
@@ -31,14 +25,14 @@ function Cache() {
 			throw `cbSet is not a function`;
 		}
 		var newKey = "_"+key;
-		if (thisInstance.keys.indexOf(newKey) == -1){
-			thisInstance.keys.push(newKey);
+		if (this.keys.indexOf(newKey) == -1){
+			this.keys.push(newKey);
 		}
-		thisInstance.items[newKey] = {
+		this.items[newKey] = {
 			instance: instance
 		};
 		if (cbSet){
-			cbSet.apply(thisInstance, [instance]);
+			cbSet(instance);
 		}
 	};
 
@@ -47,20 +41,20 @@ function Cache() {
 			throw `cbFound is not a function`;
 		}
 		var newKey = "_"+key;
-		var item = thisInstance.items[newKey];
+		var item = this.items[newKey];
 		if (item && item.instance){
-			cbFound.apply(thisInstance, [item.instance]);
+			cbFound(item.instance);
 		}else{
 			if (cbNotFound){
-				cbNotFound.apply(thisInstance);
+				cbNotFound();
 			}
 		}
 	};
 	
 	this.clear = function(){
-		thisInstance.getKeys.apply(thisInstance, [function(key){
-			delete thisInstance.items[key];
-			thisInstance.keys.splice(thisInstance.keys.indexOf(key),1);
+		this.getKeys.apply(this., [function(key){
+			delete this.items[key];
+			this.keys.splice(this.keys.indexOf(key),1);
 		}]);
 	};
 

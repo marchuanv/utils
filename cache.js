@@ -52,10 +52,10 @@ function Cache() {
 	};
 	
 	this.clear = function(){
-		this.getKeys.apply(this., [function(key){
+		this.getKeys(function(key){
 			delete this.items[key];
 			this.keys.splice(this.keys.indexOf(key),1);
-		}]);
+		});
 	};
 
 };

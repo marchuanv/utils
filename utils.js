@@ -81,7 +81,7 @@ function Utils(){
         return uuid;
     };
 
-    this.consoleReset :function () {
+    this.consoleReset=function () {
       return process.stdout.write('\033c');
     };
 

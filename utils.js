@@ -163,5 +163,5 @@ function Utils(){
 
 }
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports=new Utils;
+  module.exports=Utils;
 }

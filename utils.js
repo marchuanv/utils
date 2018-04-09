@@ -81,10 +81,6 @@ function Utils(){
         return uuid;
     };
 
-    this.consoleReset=function () {
-      return process.stdout.write('\033c');
-    };
-
     this.getHostAndPortFromUrl=function(url){
         var addressSplit=url.replace('http://','')
                                   .replace('https://','')

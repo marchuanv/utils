@@ -81,10 +81,6 @@ function Utils(){
         return uuid;
     };
 
-    this.consoleReset=function () {
-      return process.stdout.write('\033c');
-    };
-
     this.getHostAndPortFromUrl=function(url){
         var addressSplit=url.replace('http://','')
                                   .replace('https://','')
@@ -133,6 +129,26 @@ function Utils(){
         fs.readFile(filePath, 'utf8', function(err, jsonStr){
             const data=module.exports.getJSONObject(jsonStr);
             callback(data);
+        });
+    };
+    
+    this.readHtmlFile=function(dirPath, name, callback){
+        var filePath=`${dirPath}/${name}`;
+        filePath=filePath.replace('.html','');
+        filePath=`${filePath}.html`;
+        const fs=require('fs');
+        fs.readFile(filePath, 'utf8', function(err, html){
+            callback(html);
+        });
+    };
+    
+    this.readJavaScriptFile=function(dirPath, name, callback){
+        var filePath=`${dirPath}/${name}`;
+        filePath=filePath.replace('.js','');
+        filePath=`${filePath}.js`;
+        const fs=require('fs');
+        fs.readFile(filePath, 'utf8', function(err, javascript){
+            callback(javascript);
         });
     };
 

@@ -126,13 +126,13 @@ function Utils(){
         });
     };
     
-    this.readJavaScriptFile=function(dirPath, name, callback){
+    this.readHtmlFile=function(dirPath, name, callback){
         var filePath=`${dirPath}/${name}`;
-        filePath=filePath.replace('.js','');
-        filePath=`${filePath}.js`;
+        filePath=filePath.replace('.html','');
+        filePath=`${filePath}.html`;
         const fs=require('fs');
-        fs.readFile(filePath, 'utf8', function(err, javascript){
-            callback(javascript);
+        fs.readFile(filePath, 'utf8', function(err, html){
+            callback(html);
         });
     };
 

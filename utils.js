@@ -125,6 +125,16 @@ function Utils(){
             callback(data);
         });
     };
+    
+    this.readJavaScriptFile=function(dirPath, name, callback){
+        var filePath=`${dirPath}/${name}`;
+        filePath=filePath.replace('.js','');
+        filePath=`${filePath}.js`;
+        const fs=require('fs');
+        fs.readFile(filePath, 'utf8', function(err, javascript){
+            callback(javascript);
+        });
+    };
 
     this.replaceJsonFile=function(dirPath, name, data){
         var filePath=`${dirPath}/${name}`;

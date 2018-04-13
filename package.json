@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "libraryhost": "git+https://github.com/marchuanv/libraryhost.git"
   },
   "scripts": {
     "preinstall": "npm update",

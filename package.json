@@ -11,9 +11,6 @@
     "type": "git",
     "url": "git+https://github.com/marchuanv/utils.git"
   },
-  "scripts": {
-    "test": "node tests.js"
-  },
   "author": "marchuan van der merwe",
   "license": "ISC",
   "bugs": {
@@ -22,5 +19,9 @@
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
     "express": "^4.16.2"
+  },
+  "scripts": {
+    "preinstall": "npm update",
+    "start": "node ./node_modules/libraryhost/server.js $(realpath ./)"
   }
 }

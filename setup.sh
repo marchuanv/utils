@@ -1,7 +1,7 @@
 reset
-sudo fuser -k 3333/tcp
+sudo fuser -k 4444/tcp
 export PORT
-PORT=3333
+PORT=4444
 cd ./../libraryhost/
 ./setup.sh
 cd ./../utils/

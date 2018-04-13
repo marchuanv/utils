@@ -1,4 +1,5 @@
-function Utils(){
+const libraryhost=require('libraryhost');
+libraryhost.Utils=function (){
     
     this.isEmptyObject=function(obj) {
         for(var prop in obj) {
@@ -182,8 +183,4 @@ function Utils(){
         }
       };
     }
-
-}
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports=Utils;
 }

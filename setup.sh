@@ -1,7 +1,7 @@
 reset
-sudo fuser -k 4444/tcp
+sudo fuser -k 3333/tcp
 export PORT
-PORT=4444
+PORT=3333
 cd ./../libraryhost/
 ./setup.sh
 cd ./../utils/
@@ -16,4 +16,7 @@ else
 fi
 npm update
 reset
-npm start
+echo ""
+echo "////////////////////////	HOSTING TIMER LIBRARY	////////////////////////"
+(nohup nodemon --exec npm start /dev/null 2>&1 &)
+echo ""

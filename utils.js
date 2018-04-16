@@ -1,5 +1,4 @@
-const libraryhost=require('libraryhost');
-libraryhost.Utils=function (){
+function Utils(){
     
     this.isEmptyObject=function(obj) {
         for(var prop in obj) {

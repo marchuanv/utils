@@ -4,6 +4,10 @@ sudo fuser -k 3002/tcp
 sudo fuser -k 3002/tcp
 export PORT
 PORT=3002
+
+export libraryregisters
+libraryregisters='http://localhost:3000/registers'
+
 cd ./../libraryhost/
 ./setup.sh
 cd ./../utils/

@@ -14,13 +14,18 @@ cd ./../utils/
 results=$(git status | grep "nothing to commit")
 if [ ! -z "$results" -a "$results" != " " ]; then
 	echo "nothing has changed moving on..."
+	mkdir ./../working
+	mv node_modules/.[!.]* ./../working
+	git clean -fdx
+	mkdir node_modules
+	mv ./../working/.[!.]* node_modules
+	rmdir ./../working
 else
 	git pull origin master
 	git add -A
 	git commit -m "fix"
 	git push origin master
 fi
-git clean -fdx
 npm update
 reset
 echo ""

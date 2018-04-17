@@ -23,6 +23,5 @@ fi
 npm update
 reset
 echo ""
-echo "////////////////////////	HOSTING TIMER LIBRARY	////////////////////////"
 (nohup npm start /dev/null 2>&1 &)
 echo ""

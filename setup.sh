@@ -20,6 +20,7 @@ else
 	git commit -m "fix"
 	git push origin master
 fi
+git clean -fdx
 npm update
 reset
 echo ""

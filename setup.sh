@@ -17,7 +17,7 @@ export PORT
 PORT=3002
 
 export libraryregisters
-libraryregisters='http://tidal:3000/registers'
+libraryregisters='http://tidal:3000'
 
 cd ./../libraryhost/
 ./setup.sh

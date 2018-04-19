@@ -1,6 +1,10 @@
-[{
-	"name":"utils",
-	"scripts":[
-		"utils.js"
-	]
-}]
+[
+	{	
+		"name": "utils", 
+		"debug" : true,
+		"isnodejs": true,
+		"scripts":[
+			"utils.js"
+		]
+	}
+]

@@ -20,8 +20,8 @@
   "dependencies": {
     "libraryhost": "git+https://github.com/marchuanv/libraryhost.git"
   },
-  "scripts":{
-    "build": "npm install && npm update && (node node_modules/buildscripts/build.js libraryhost 3001 $(realpath ./) 'http://Tidal:3000/')",
-    "start": "(nohup node server.js /dev/null 2>&1 &)"
+  "scripts": {
+    "build": "npm install && npm update && node node_modules/buildscripts/build.js budget 3003 $(realpath ./) 'http://Tidal:3000/'",
+    "start": "(nohup node node_modules/libraryhost/server.js /dev/null 2>&1 &)"
   }
 }

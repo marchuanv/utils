@@ -21,7 +21,7 @@
     "libraryhost": "git+https://github.com/marchuanv/libraryhost.git"
   },
   "scripts":{
-    "build": "npm install && npm update && (node node_modules/buildscripts/build.js libraryhost 3000 $(realpath ./) 'http://Tidal:3000/')",
+    "build": "npm install && npm update && (node node_modules/buildscripts/build.js libraryhost 3001 $(realpath ./) 'http://Tidal:3000/')",
     "start": "(nohup node server.js /dev/null 2>&1 &)"
   }
 }

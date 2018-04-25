@@ -18,11 +18,10 @@
   },
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
-    "express": "^4.16.2",
     "libraryhost": "git+https://github.com/marchuanv/libraryhost.git"
   },
-  "scripts": {
-    "preinstall": "npm update",
-    "start": "node ./node_modules/libraryhost/server.js $(realpath ./)"
+  "scripts":{
+    "build": "npm install && npm update && (node node_modules/buildscripts/build.js libraryhost 3000 $(realpath ./) 'http://Tidal:3000/')",
+    "start": "(nohup node server.js /dev/null 2>&1 &)"
   }
 }

@@ -1,9 +1,0 @@
-[{
-	"name":"utils",
-	"scripts":[
-		"utils.js"
-	],
-	"isnodejs":false,
-	"isdebug": true,
-	"dependencies":[]
-}]

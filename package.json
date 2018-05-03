@@ -1,8 +1,11 @@
 {
   "name": "utils",
+  "host":"tidal",
+  "port": 3002,
+  "isdebug":true,
   "version": "1.0.0",
   "description": "",
-  "main": "utils.js",
+  "main": "",
   "engines": {
     "node": "6.8.1",
     "npm" : "3.10.8"
@@ -18,10 +21,16 @@
   },
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
-    "libraryhost": "git+https://github.com/marchuanv/libraryhost.git"
+    "buildscripts": "git+https://github.com/marchuanv/buildscripts.git",
+    "libraryclient": "git+https://github.com/marchuanv/libraryclient.git"
   },
   "scripts": {
-    "build": "npm install && npm update && node node_modules/buildscripts/build.js budget 3003 $(realpath ./) 'http://Tidal:3000/'",
-    "start": "(nohup node node_modules/libraryhost/server.js /dev/null 2>&1 &)"
-  }
+    "prestart": "npm install && npm update buildscripts && npm update libraryclient",
+    "start": "node node_modules/libraryclient/libraryclient.js"
+  },
+  "libraries":[
+    "utils.js"
+  ],
+  "isnodelibrary": false,
+  "registerurl": "http://tidal:3000/"
 }

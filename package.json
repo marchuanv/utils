@@ -29,7 +29,7 @@
     "start": "node node_modules/libraryclient/libraryclient.js"
   },
   "libraries":[
-    "utils.js"
+    { "name":"utils.js", "isexternal":false }
   ],
   "isnodelibrary": false,
   "registerurl": "http://tidal:3000/"

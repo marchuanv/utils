@@ -22,15 +22,13 @@
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
     "buildscripts": "git+https://github.com/marchuanv/buildscripts.git",
-    "libraryclient": "git+https://github.com/marchuanv/libraryclient.git"
+    "libraryclient": "git+https://github.com/marchuanv/libraryclient.git",
+    "utils": "libraryhost+https://github.com/marchuanv/utils.git"
   },
   "scripts": {
     "build": "npm install && npm update buildscripts && npm update libraryclient",
     "start": "node node_modules/libraryclient/libraryclient.js"
   },
-  "libraries":[
-    { "name":"utils", "isexternal":false, "extension":".js"}
-  ],
   "isnodelibrary": false,
   "registerurl": "http://localhost:3000/"
 }

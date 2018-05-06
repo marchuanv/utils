@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build": "npm install && npm update buildscripts && npm update libraryclient",
-    "start": "node node_modules/libraryclient/libraryclient.js"
+    "start": "node node_modules/libraryclient/server.js"
   },
   "isnodelibrary": false,
   "registerurl": "http://localhost:3000/"

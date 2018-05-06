@@ -1,6 +1,6 @@
 {
   "name": "utils",
-  "host":"tidal",
+  "host":"localhost",
   "port": 3002,
   "isdebug":true,
   "version": "1.0.0",
@@ -32,5 +32,5 @@
     { "name":"utils", "isexternal":false, "extension":".js"}
   ],
   "isnodelibrary": false,
-  "registerurl": "http://tidal:3000/"
+  "registerurl": "http://localhost:3000/"
 }

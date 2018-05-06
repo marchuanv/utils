@@ -26,7 +26,7 @@
   },
   "scripts": {
     "prestart": "npm install && npm update buildscripts && npm update libraryclient",
-    "start": "cross-var echo ${NODEAPPCMD}"
+    "start": "$NODEAPPCMD"
   },
   "libraries":[
     { "name":"utils", "isexternal":false, "extension":".js"}

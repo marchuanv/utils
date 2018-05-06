@@ -22,8 +22,7 @@
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
     "buildscripts": "git+https://github.com/marchuanv/buildscripts.git",
-    "libraryclient": "git+https://github.com/marchuanv/libraryclient.git",
-    "utils": "libraryhost+https://github.com/marchuanv/utils.git"
+    "libraryclient": "git+https://github.com/marchuanv/libraryclient.git"
   },
   "scripts": {
     "build": "npm install && npm update buildscripts && npm update libraryclient",

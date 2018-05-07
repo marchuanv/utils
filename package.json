@@ -1,14 +1,14 @@
 {
   "name": "utils",
-  "host":"localhost",
-  "port": 3002,
-  "isdebug":true,
+  "host": "tidal",
+  "port": 3003,
+  "isdebug": true,
   "version": "1.0.0",
   "description": "",
   "main": "",
   "engines": {
     "node": "6.8.1",
-    "npm" : "3.10.8"
+    "npm": "3.10.8"
   },
   "repository": {
     "type": "git",
@@ -26,9 +26,9 @@
   },
   "scripts": {
     "build": "npm install && npm update buildscripts && npm update libraryclient",
-    "start": "node node_modules/libraryclient/server.js", 
+    "start": "node node_modules/libraryclient/server.js",
     "stop": "node node_modules/libraryclient/server.stop.js"
   },
   "isnodelibrary": false,
-  "registerurl": "http://localhost:3000/"
+  "registerurl": "http://tidal:3004/"
 }

@@ -2,6 +2,7 @@
   "name": "utils",
   "host": "tidal",
   "port": 3003,
+  "priority":2,
   "isdebug": true,
   "version": "1.0.0",
   "description": "",

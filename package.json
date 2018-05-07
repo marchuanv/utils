@@ -3,6 +3,7 @@
   "host": "tidal",
   "port": 3003,
   "priority":2,
+  "isregister": false,
   "isdebug": true,
   "version": "1.0.0",
   "description": "",

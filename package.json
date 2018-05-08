@@ -27,7 +27,7 @@
     "libraryclient": "git+https://github.com/marchuanv/libraryclient.git"
   },
   "scripts": {
-    "build": "npm install && npm update buildscripts && npm update libraryclient",
+    "preinstall": "npm update",
     "start": "node node_modules/libraryclient/server.js",
     "stop": "node node_modules/libraryclient/server.stop.js"
   },

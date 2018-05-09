@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
-    "build": "git+https://github.com/marchuanv/build.git",
     "libraryclient": "git+https://github.com/marchuanv/libraryclient.git"
   },
   "scripts": {

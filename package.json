@@ -1,7 +1,15 @@
 {
   "name": "utils",
+  
   "host": "tidal",
-  "port": 3003,
+  "port": 3004,
+  
+  "eventhost": "tidal",
+  "eventport": 4000,
+  
+  "registerhost": "tidal",
+  "registerport": 3000,
+
   "priority":2,
   "isregister": false,
   "isdebug": true,

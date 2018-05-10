@@ -31,12 +31,12 @@
   },
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
-    "libraryclient": "git+https://github.com/marchuanv/libraryclient.git"
+    "hosting": "git+https://github.com/marchuanv/hosting.git"
   },
   "scripts": {
     "preinstall": "npm update",
-    "start": "node node_modules/libraryclient/server.js",
-    "stop": "node node_modules/libraryclient/server.stop.js"
+    "start": "node node_modules/hosting/server.js",
+    "stop": "node node_modules/hosting/server.stop.js"
   },
   "isnodelibrary": false,
   "registerurl": "http://tidal:3004/"

@@ -1,12 +1,12 @@
 {
   "name": "utils",
-  "host": "",
-  "port": "",
-  "eventhost": "",
-  "eventport": "",
-  "factoryhost": "",
-  "factoryport": "",
-  "isdebug": "",
+  "host": "Tidal",
+  "port": null,
+  "eventhost": "Tidal",
+  "eventport": 0,
+  "factoryhost": "Tidal",
+  "factoryport": null,
+  "isdebug": true,
   "version": "1.0.0",
   "description": "",
   "main": "",
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/marchuanv/utils.git"
   },
   "author": "marchuan van der merwe",
   "license": "ISC",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/marchuanv/utils/issues"
   },
-  "homepage": "",
+  "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
     "factory": "git+https://github.com/marchuanv/factory.git"
   },

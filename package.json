@@ -27,6 +27,9 @@
     "dependencies":  {
                          "eventpublisher":  "git+https://github.com/marchuanv/eventpublisher.git"
                      },
+    "discoverdependencies":  {
+
+                             },
     "scripts":  {
                     "preinstall":  "npm update",
                     "start":  "node node_modules/factory/server.js",

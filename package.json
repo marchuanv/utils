@@ -1,35 +1,35 @@
 {
-  "name": "utils",
-  "host": "Tidal",
-  "port": 3002,
-  "eventhost": "Tidal",
-  "eventport": 3005,
-  "factoryhost": "Tidal",
-  "factoryport": 3000,
-  "isdebug": true,
-  "version": "1.0.0",
-  "description": "",
-  "main": "",
-  "engines": {
-    "node": "6.8.1",
-    "npm": "3.10.8"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marchuanv/utils.git"
-  },
-  "author": "marchuan van der merwe",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/marchuanv/utils/issues"
-  },
-  "homepage": "https://github.com/marchuanv/utils#readme",
-  "dependencies": {
-    "eventpublisher": "git+https://github.com/marchuanv/eventpublisher.git"
-  },
-  "scripts": {
-    "preinstall": "npm update",
-    "start": "node node_modules/factory/server.js",
-    "stop": "node node_modules/factory/server.stop.js"
-  }
+    "name":  "utils",
+    "host":  "maelstrom",
+    "port":  3002,
+    "eventhost":  "maelstrom",
+    "eventport":  3005,
+    "factoryhost":  "maelstrom",
+    "factoryport":  3000,
+    "isdebug":  true,
+    "version":  "1.0.0",
+    "description":  "",
+    "main":  "",
+    "engines":  {
+                    "node":  "6.8.1",
+                    "npm":  "3.10.8"
+                },
+    "repository":  {
+                       "type":  "git",
+                       "url":  "https://github.com/marchuanv/utils.git"
+                   },
+    "author":  "marchuan van der merwe",
+    "license":  "ISC",
+    "bugs":  {
+                 "url":  "https://github.com/marchuanv/utils/issues"
+             },
+    "homepage":  "https://github.com/marchuanv/utils#readme",
+    "dependencies":  {
+                         "eventpublisher":  "git+https://github.com/marchuanv/eventpublisher.git"
+                     },
+    "scripts":  {
+                    "preinstall":  "npm update",
+                    "start":  "node node_modules/factory/server.js",
+                    "stop":  "node node_modules/factory/server.stop.js"
+                }
 }

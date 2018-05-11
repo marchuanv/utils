@@ -5,7 +5,7 @@
   "eventhost": "Tidal",
   "eventport": 0,
   "factoryhost": "Tidal",
-  "factoryport": null,
+  "factoryport": 3000,
   "isdebug": true,
   "version": "1.0.0",
   "description": "",

@@ -28,6 +28,8 @@
     "eventpublisher": "git+https://github.com/marchuanv/eventpublisher.git"
   },
   "scripts": {
-    "preinstall": "npm update"
+    "preinstall": "npm update",
+    "start": "node node_modules/factory/server.js",
+    "stop": "node node_modules/factory/server.stop.js"
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "utils",
   "host": "Tidal",
-  "port": null,
+  "port": 3002,
   "eventhost": "Tidal",
   "eventport": 0,
   "factoryhost": "Tidal",

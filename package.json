@@ -6,7 +6,7 @@
   "eventport": "",
   "factoryhost": "",
   "factoryport": "",
-  "priority": "factory",
+  "priority": null,
   "isdebug": "",
   "version": "1.0.0",
   "description": "",
@@ -25,8 +25,12 @@
     "url": ""
   },
   "homepage": "",
-  "dependencies": {},
+  "dependencies": {
+    "factory": "git+https://github.com/marchuanv/factory.git"
+  },
   "scripts": {
-    "preinstall": "npm update"
+    "preinstall": "npm update",
+    "start": "node node_modules/factory/server.js",
+    "stop": "node node_modules/factory/server.stop.js"
   }
 }

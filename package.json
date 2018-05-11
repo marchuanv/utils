@@ -3,7 +3,7 @@
   "host": "Tidal",
   "port": 3002,
   "eventhost": "Tidal",
-  "eventport": 0,
+  "eventport": 3005,
   "factoryhost": "Tidal",
   "factoryport": 3000,
   "isdebug": true,

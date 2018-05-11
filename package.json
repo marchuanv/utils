@@ -32,6 +32,7 @@
                              },
     "scripts":  {
                     "preinstall":  "npm update",
+                    "postinstall":  "",
                     "start":  "node node_modules/factory/server.js",
                     "stop":  "node node_modules/factory/server.stop.js"
                 }

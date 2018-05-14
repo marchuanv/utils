@@ -29,7 +29,7 @@
   },
   "scripts": {
     "postinstall": "",
-    "start": "node node_modules/factory/server.js",
-    "stop": "node node_modules/factory/server.stop.js"
+    "start": "node ",
+    "stop": "node "
   }
 }

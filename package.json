@@ -27,7 +27,7 @@
   "dependencies": {},
   "scripts": {
     "postinstall": "",
-    "start": "node node_modules/eventpublisher/server.js",
-    "stop": "node node_modules/eventpublisher/server.stop.js"
+    "start": "node node_modules/eventpublisher/eventpublisher.js",
+    "stop": "node node_modules/eventpublisher/eventpublisher.stop.js"
   }
 }

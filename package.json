@@ -29,7 +29,7 @@
   },
   "scripts": {
     "postinstall": "",
-    "start": "node ",
-    "stop": "node "
+    "start": "node node_modules/eventpublisher/server.js",
+    "stop": "node node_modules/eventpublisher/server.stop.js"
   }
 }

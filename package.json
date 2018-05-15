@@ -28,7 +28,7 @@
     "eventpublisher": "git+https://github.com/marchuanv/eventpublisher.git"
   },
   "scripts": {
-    "postinstall": "npm install --force https://github.com/marchuanv/eventpublisher.git",
+    "postinstall": "echo 'there are no submodules to install'",
     "start": "node node_modules/eventpublisher/eventpublisher.start.js",
     "stop": "node node_modules/eventpublisher/eventpublisher.stop.js"
   }

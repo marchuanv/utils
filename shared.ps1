@@ -65,7 +65,8 @@ Function Get-NodePackages {
     return $packages
 }
 
-Function Get-CurrentDirectory {
+Function Switch-ToCurrentDirectory {
+    cd $currentdirectory
     return $currentdirectory
 }
 
@@ -190,35 +191,30 @@ Function CommitAndPush-GitRepository {
     }
 }
 
-Function InstallPackage {
+Function Install-NodeApp {
     [cmdletbinding()]
     Param (
-        [string]$moduleName=""
+        [string]$moduleName
     )
-    $workingDir= "$currentdirectory\$moduleName"
-    cd $workingDir
-    npm install
-    cd $currentdirectory
+    npm install $moduleName
 }
 
-Function RunNodeApp {
+Function Start-NodeApp {
     [cmdletbinding()]
     Param (
         [string]$moduleName=""
     )
-    $workingDir= "$currentdirectory\$moduleName"
-    Write-Host "STARTING $moduleName at $workingDir"
-    Start-Process -FilePath "pwsh" -WorkingDirectory "$workingDir" -ArgumentList "/c npm start 2>&1 | Out-File nohup.out"
+    Write-Host "STARTING $moduleName"
+    Start-Process -FilePath "pwsh" -WorkingDirectory "$currentdirectory" -ArgumentList "/c npm start 2>&1 | Out-File nohup.out"
 }
 
-Function StopNodeApp {
+Function Stop-NodeApp {
     [cmdletbinding()]
     Param (
         [string]$moduleName=""
     )
-    $workingDir= "$currentdirectory\$moduleName"
-    Write-Host "STOPPING $moduleName at $workingDir"
-    Start-Process -FilePath "pwsh" -WorkingDirectory "$workingDir" -ArgumentList "/c npm stop 2>&1 | Out-File nohup.out"
+    Write-Host "STOPPING $moduleName"
+    Start-Process -FilePath "pwsh" -WorkingDirectory "$currentdirectory" -ArgumentList "/c npm stop 2>&1 | Out-File nohup.out"
 }
 
 Function Create-PackageDependencies ($appName, [array]$modules) {

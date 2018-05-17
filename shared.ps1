@@ -221,6 +221,20 @@ Function Get-ModuleDependencies ($moduleName, $modules) {
     return $dependantModules
 }
 
+Function Get-ModulesThatDependOnModule($moduleName, $modules) {
+    if ($modules -eq $null){
+        $modules=Load-Config
+    }
+    $modulesFound=New-Object System.Collections.ArrayList
+    foreach($module in $modules) {
+        [array]$depModuleNames=$module.modules | Select-Object -ExpandProperty name
+        if ($depModuleNames -contains $moduleName) {
+            $null=$modulesFound.Add($module)
+        }
+    }
+    return $modulesFound
+}
+
 Function Get-ModulesForModuleDependencies($moduleName, $modules) {
     if ($modules -eq $null){
         $modules=Load-Config

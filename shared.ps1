@@ -199,7 +199,7 @@ Function Start-NodeApp {
         [string]$moduleName=""
     )
     Write-Host "STARTING $moduleName"
-    Start-Process -FilePath "pwsh" -WorkingDirectory "$currentdirectory" -ArgumentList "/c npm start 2>&1 | Out-File nohup.out"
+    npm start
 }
 
 Function Stop-NodeApp {
@@ -208,7 +208,7 @@ Function Stop-NodeApp {
         [string]$moduleName=""
     )
     Write-Host "STOPPING $moduleName"
-    Start-Process -FilePath "pwsh" -WorkingDirectory "$currentdirectory" -ArgumentList "/c npm stop 2>&1 | Out-File nohup.out"
+    npm stop
 }
 
 Function Create-PackageDependencies ($appName, [array]$modules) {

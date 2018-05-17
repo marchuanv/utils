@@ -185,14 +185,6 @@ Function CommitAndPush-GitRepository {
     }
 }
 
-Function Install-NodeApp {
-    [cmdletbinding()]
-    Param (
-        [string]$moduleName
-    )
-    npm install $moduleName
-}
-
 Function Create-PackageDependencies ($appName, [array]$modules) {
 
     [string]$dependencies=""

@@ -193,24 +193,6 @@ Function Install-NodeApp {
     npm install $moduleName
 }
 
-Function Start-NodeApp {
-    [cmdletbinding()]
-    Param (
-        [string]$moduleName=""
-    )
-    Write-Host "STARTING $moduleName"
-    npm start
-}
-
-Function Stop-NodeApp {
-    [cmdletbinding()]
-    Param (
-        [string]$moduleName=""
-    )
-    Write-Host "STOPPING $moduleName"
-    npm stop
-}
-
 Function Create-PackageDependencies ($appName, [array]$modules) {
 
     [string]$dependencies=""

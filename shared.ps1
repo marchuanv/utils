@@ -225,6 +225,7 @@ Function Get-ModulesThatDependOnModule($moduleName, $modules) {
     if ($modules -eq $null){
         $modules=Load-Config
     }
+    Write-Host "finding all modules that depend on $moduleName"
     $modulesFound=New-Object System.Collections.ArrayList
     foreach($module in $modules) {
         [array]$depModuleNames=$module.modules | Select-Object -ExpandProperty name

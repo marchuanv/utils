@@ -36,14 +36,8 @@ Function Save-Config ($config) {
     $config | ConvertTo-Json -depth 100 | Set-Content $jsonconfigfile
 }
 
-Function Load-PackageTemplate () {
-    $packageJsonFile=Join-Path -Path $currentdirectory -ChildPath "package.tpl.json"
-    Write-Host "reading template package from $packageJsonFile"
-    return (Get-Content $packageJsonFile | Out-String | ConvertFrom-Json)
-}
-
-Function Load-NodePackage ($moduleName) {
-    $packageJsonFile=Join-Path -Path $currentdirectory -ChildPath $moduleName\package.json
+Function Load-NodePackage ($packageName) {
+    $packageJsonFile=Join-Path -Path $currentdirectory -ChildPath $packageName\package.json
     Write-Host "reading node package from $packageJsonFile"
     return (Get-Content $packageJsonFile | Out-String | ConvertFrom-Json)
 }
@@ -236,8 +230,22 @@ Function Create-PackageDependencies ($appName, [array]$modules) {
     return ( $json | ConvertFrom-Json).dependencies
 }
 
+Function Get-ModuleDependencies ($moduleName) {
+    $modules=Load-Config
+    $dependantModules=New-Object System.Collections.ArrayList
+    foreach($module in $modules) {
+        if ($module.name -eq $moduleName) {
+            foreach($modRef in $module.modules) {
+                $null=$dependantModules.Add($modRef)
+            }
+        }
+    }
+    $len=$dependantModules.Count
+    Write-Host "$moduleName has $len dependencies."
+    return $dependantModules
+}
 
-Function Get-ReferencedModules ($moduleName) {
+Function Get-ModulesForModuleDependencies($moduleName) {
     $modules=Load-Config
     $dependantModules=New-Object System.Collections.ArrayList
     foreach($module in $modules) {
@@ -249,21 +257,6 @@ Function Get-ReferencedModules ($moduleName) {
                         $null=$dependantModules.Add($module2)
                     }
                 }
-            }
-        }
-    }
-    $len=$dependantModules.Count
-    Write-Host "$moduleName has $len dependencies."
-    return $dependantModules
-}
-
-Function Get-ModuleDependencies ($moduleName) {
-    $modules=Load-Config
-    $dependantModules=New-Object System.Collections.ArrayList
-    foreach($module in $modules) {
-        if ($module.name -eq $moduleName) {
-            foreach($modRef in $module.modules) {
-                $null=$dependantModules.Add($modRef)
             }
         }
     }
@@ -292,7 +285,6 @@ Function Get-HardReferencedModules ($moduleName) {
     $hardreferencedModules=New-Object System.Collections.ArrayList
     foreach($referencedModule in $referencedModules){
         if ($referencedModule.ishardreference -eq $true){
-            Write-Host "Adding "
             $null=$hardreferencedModules.Add($referencedModule)
         }
     }
@@ -302,15 +294,24 @@ Function Get-HardReferencedModules ($moduleName) {
 }
 
 Function Get-ServerModule ($moduleName){
-    $depModules = Get-ReferencedModules $moduleName
-    [array]$serverDepModules= $depModules | Where-Object {$_.isserver -eq $true}
+    Write-Host ""
+    Write-Host "getting server modules for $moduleName"
+    
+    $hardModuleReferenceNames = Get-HardReferencedModules $moduleName | Select-Object -ExpandProperty name
+    $allModules = Get-ModulesForModuleDependencies $moduleName
+
+    [array]$serverDepModules= $allModules | Where-Object { $_.isserver -eq $true -and $hardModuleReferenceNames -contains $_.name }
     if ($serverDepModules.Length -eq 0){
         foreach($depModule in $depModules) {
             $depModuleName=$depModule.name
-            Get-ServerModule $depModuleName
+            $results=Get-ServerModule $depModuleName
+            if ($results.Length -gt 0){
+                return $results
+            }
         }
     } else {
-        return $serverDepModules[0]
+        [array]$modules=$serverDepModules | Select-Object -first 1
+        return $modules[0]
     }
 }
 

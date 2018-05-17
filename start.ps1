@@ -1,6 +1,5 @@
 Param(
-    [string]$moduleName,
-    [int]$port
+    [string]$moduleName
 )
 . .\shared.ps1
 Stop-NodeApp $moduleName

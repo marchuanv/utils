@@ -29,7 +29,7 @@
   },
   "scripts": {
     "postinstall": "echo 'there are no submodules to install'",
-    "start": "pwsh -File start.ps1 eventpublisher",
-    "stop": "pwsh -File stop.ps1 eventpublisher"
+    "start": "pwsh   -File start.ps1 eventpublisher",
+    "stop": "pwsh   -File stop.ps1  eventpublisher"
   }
 }

@@ -204,8 +204,10 @@ Function Create-PackageDependencies ($appName, [array]$modules) {
     return ( $json | ConvertFrom-Json).dependencies
 }
 
-Function Get-ModuleDependencies ($moduleName) {
-    $modules=Load-Config
+Function Get-ModuleDependencies ($moduleName, $modules) {
+    if ($modules -eq $null){
+        $modules=Load-Config
+    }
     $dependantModules=New-Object System.Collections.ArrayList
     foreach($module in $modules) {
         if ($module.name -eq $moduleName) {
@@ -219,8 +221,10 @@ Function Get-ModuleDependencies ($moduleName) {
     return $dependantModules
 }
 
-Function Get-ModulesForModuleDependencies($moduleName) {
-    $modules=Load-Config
+Function Get-ModulesForModuleDependencies($moduleName, $modules) {
+    if ($modules -eq $null){
+        $modules=Load-Config
+    }
     $dependantModules=New-Object System.Collections.ArrayList
     foreach($module in $modules) {
         if ($module.name -eq $moduleName) {
@@ -239,9 +243,11 @@ Function Get-ModulesForModuleDependencies($moduleName) {
     return $dependantModules
 }
 
-Function Get-SoftReferencedModules ($moduleName) {
-    $modules=Load-Config
-    [array]$referencedModules=Get-ModuleDependencies $moduleName
+Function Get-SoftReferencedModules ($moduleName, $modules) {
+    if ($modules -eq $null){
+        $modules=Load-Config
+    }
+    [array]$referencedModules=Get-ModuleDependencies $moduleName $modules
     $softreferencedModules=New-Object System.Collections.ArrayList
     foreach($referencedModule in $referencedModules){
         if ($referencedModule.ishardreference -eq $false){
@@ -253,9 +259,9 @@ Function Get-SoftReferencedModules ($moduleName) {
     return $softreferencedModules
 }
 
-Function Get-HardReferencedModules ($moduleName) {
+Function Get-HardReferencedModules ($moduleName, $modules) {
     
-    [array]$referencedModules=Get-ModuleDependencies $moduleName
+    [array]$referencedModules=Get-ModuleDependencies $moduleName $modules
     $hardreferencedModules=New-Object System.Collections.ArrayList
     foreach($referencedModule in $referencedModules){
         if ($referencedModule.ishardreference -eq $true){

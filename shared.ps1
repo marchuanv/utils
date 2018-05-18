@@ -130,13 +130,11 @@ Function CommitAndPush-GitRepository {
     [bool]$hasCommits=$false
     if ($results.Contains("nothing to commit"))
     {
-        Write-Host "NOTHING TO COMMIT FOR $moduleName"
         return $hasCommits
     }
     else
     {
         $Null= @(
-            Write-Host "COMMITING AND PUSHING CHANGES FOR $moduleName"
             $hasCommits=$true
             [array]$detachedHeads=@(git branch | select-string "HEAD detached at" | Foreach {$_.Line.Trim().Replace("* (HEAD detached at ","").Replace(")","").Replace(" ","")})
 

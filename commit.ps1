@@ -5,9 +5,7 @@ Write-Host ""
 if ($results -eq $true){
     Write-Host "COMMITTING $moduleName CHANGES"
     $LASTEXITCODE=$true
-    exit 0
 }else{
     Write-Host "NOTHING TO COMMITTING FOR $moduleName"
     $LASTEXITCODE=$false
-    exit 0
 }

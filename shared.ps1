@@ -1,21 +1,6 @@
 [string]$currentdirectory=(Get-Item -Path ".\").FullName
 Write-Host "script location: $currentdirectory"
 
-Function WaitForEvent($moduleName, $eventName) {
-    $eventFound=$false
-    do{
-        sleep 5
-        $filePath="$currentdirectory\$moduleName\node_modules\libraryhost\events.json"
-        $events=Get-Content "$filePath" | Out-String | ConvertFrom-Json
-        foreach($_event in $events){
-            if ($_event.name==$eventName){
-                $eventFound=$true
-            }
-        }
-    }
-    while ($eventFound -eq $false)
-}
-
 Function Get-PowershellAlias{
     if ($IsLinux -eq $true){
         return "pwsh"
@@ -132,12 +117,8 @@ Function Clone-GitRepository{
 Function CommitAndPush-GitRepository {
     [cmdletbinding()]
     Param (
-        [string]$moduleName=""
+        [string]$moduleName
     )
-    Write-Host "Switching to $currentdirectory\$moduleName" 
-    cd $currentdirectory\$moduleName
-    
-    Write-Host ""
     
     $Null= @(
         git checkout master
@@ -150,7 +131,6 @@ Function CommitAndPush-GitRepository {
     if ($results.Contains("nothing to commit"))
     {
         Write-Host "NOTHING TO COMMIT FOR $moduleName"
-        cd $currentdirectory
         return $hasCommits
     }
     else
@@ -163,23 +143,17 @@ Function CommitAndPush-GitRepository {
             foreach($head in $detachedHeads){
                 git merge "$head"
             }
-
             git branch temp
             git checkout temp
-
             git add -A
             git commit -m "automated commit"
             git fetch
             git rebase temp
-
             git checkout master
             git merge temp
             git push origin master
-            
             git branch -D temp
             git clean -fdx
-
-            cd $currentdirectory
         )
         return $hasCommits
     }

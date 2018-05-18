@@ -22,7 +22,10 @@ Function Save-Config ($config) {
 }
 
 Function Load-NodePackage ($packageName) {
-    $packageJsonFile=Join-Path -Path $currentdirectory -ChildPath $packageName\package.json
+    if ($packageName -eq "" -or $packageName -eq $null){
+        $packageName="."
+    }
+    $packageJsonFile=Convert-Path $packageName\package.json
     Write-Host "reading node package from $packageJsonFile"
     return (Get-Content $packageJsonFile | Out-String | ConvertFrom-Json)
 }

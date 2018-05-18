@@ -9,5 +9,5 @@ if ($results -eq $true){
 }else{
     Write-Host "NOTHING TO COMMITTING FOR $moduleName"
     $LASTEXITCODE=$false
-    exit 0
+    exit 1
 }

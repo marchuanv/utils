@@ -1,4 +1,8 @@
 Param (
     [string]$moduleName
 )
-node "node_modules\$moduleName\$moduleName.stop.js"
+
+
+$stopFilePath="node_modules\$moduleName\$moduleName.stop.js"
+$stopFilePath= Convert-Path $stopFilePath
+node $stopFilePath

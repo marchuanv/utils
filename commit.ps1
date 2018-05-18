@@ -1,7 +1,7 @@
 . .\shared.ps1
-$moduleName = Get-Location 
-Write-Host ""
-[bool]$results= CommitAndPush-GitRepository $moduleName
+$package= Load-NodePackage
+$moduleName=$package.name
+[bool]$results= CommitAndPush-GitRepository
 if ($results -eq $true){
     Write-Host "commited $moduleName changes."
     $LASTEXITCODE=$true

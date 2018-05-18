@@ -118,11 +118,6 @@ Function Clone-GitRepository{
 }
 
 Function CommitAndPush-GitRepository {
-    [cmdletbinding()]
-    Param (
-        [string]$moduleName
-    )
-    
     $Null= @(
         git checkout master
         git push origin master

@@ -3,8 +3,8 @@ $moduleName=$package.name
 cls
 Write-Host ""
 Write-Host "INSTALLING $moduleName"
-npm install .
+npm install
 cls
 Write-Host "UPDATING $moduleName"
-npm update .
+npm update
 $LASTEXITCODE=$true

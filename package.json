@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
     "name":  "utils",
     "host":  "maelstrom",
@@ -34,42 +33,3 @@
                     "stop":  "echo \u0027echo \u0027this service is an abstract service and can\u0027t be started directly\u0027"
                 }
 }
-=======
-{
-  "name": "utils",
-  "host": "maelstrom",
-  "port": 3002,
-  "eventhost": "maelstrom",
-  "eventport": 3005,
-  "factoryhost": "maelstrom",
-  "factoryport": 3000,
-  "isdebug": true,
-  "version": "1.0.0",
-  "description": "",
-  "main": "",
-  "engines": {
-    "node": "6.8.1",
-    "npm": "3.10.8"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marchuanv/utils.git"
-  },
-  "author": "marchuan van der merwe",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/marchuanv/utils/issues"
-  },
-  "homepage": "https://github.com/marchuanv/utils#readme",
-  "dependencies": {
-    "eventpublisher": "git+https://github.com/marchuanv/eventpublisher.git",
-    "factory": "git+https://github.com/marchuanv/factory.git",
-    "communication": "git+https://github.com/marchuanv/communication.git"
-  },
-  "scripts": {
-    "postinstall": "pwsh -File postinstall.ps1 -ArgumentList utils cache",
-    "start": "pwsh   -File start.ps1 eventpublisher",
-    "stop": "pwsh   -File stop.ps1  eventpublisher"
-  }
-}
->>>>>>> 42188a6f0052a1480f031d61005f5edaa75c18ac

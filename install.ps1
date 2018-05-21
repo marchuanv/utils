@@ -2,7 +2,8 @@ $package=Load-NodePackage
 $moduleName=$package.name
 cls
 Write-Host ""
-Write-Host "installing and updating $moduleName"
+Write-Host "INSTALLING $moduleName"
 npm install .
+Write-Host "UPDATING $moduleName"
 npm update .
 $LASTEXITCODE=$true

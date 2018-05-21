@@ -134,25 +134,7 @@ Function Create-PackageDependencies ($appName, [array]$modules) {
     return ( $json | ConvertFrom-Json).dependencies
 }
 
-Function Get-ModuleDependencies ($moduleName, $modules) {
-    if ($modules -eq $null){
-        $package=Load-NodePackage
-        $modules=$package.submodules 
-    }
-    $dependantModules=New-Object System.Collections.ArrayList
-    foreach($module in $modules) {
-        if ($module.name -eq $moduleName) {
-            foreach($modRef in $module.modules) {
-                $null=$dependantModules.Add($modRef)
-            }
-        }
-    }
-    $len=$dependantModules.Count
-    Write-Host "$moduleName has $len dependencies."
-    return $dependantModules
-}
-
-Function Get-ModulesThatDependOnModule($moduleName, $modules) {
+Function Get-ModuleDependencies($moduleName, [bool]$ishardreference, $modules) {
     if ($modules -eq $null){
         $package=Load-NodePackage
         $modules=$package.submodules 
@@ -161,90 +143,32 @@ Function Get-ModulesThatDependOnModule($moduleName, $modules) {
     $modulesFound=New-Object System.Collections.ArrayList
     foreach($module in $modules) {
         if ($module.name -eq $moduleName){
-            [array]$depModuleNames=$module.modules | Select-Object -ExpandProperty name
+            [array]$depModuleNames= ($module.modules | Where-Object {$_.ishardreference -eq $ishardreference}) | Select-Object -ExpandProperty name
             foreach($module2 in $modules) {
                 if ($depModuleNames -contains $module2.name) {
                     $null=$modulesFound.Add($module2)
-                }
-            }
-        }
-    }
-    return $modulesFound
-}
-
-Function Get-ModulesForModuleDependencies($moduleName, $modules) {
-    if ($modules -eq $null){
-        $package=Load-NodePackage
-        $modules=$package.submodules 
-    }
-    $dependantModules=New-Object System.Collections.ArrayList
-    foreach($module in $modules) {
-        if ($module.name -eq $moduleName) {
-            foreach($depModule in $module.modules) {
-                $depModuleName=$depModule.name
-                foreach($module2 in $modules) {
-                    if ($module2.name -eq $depModuleName){
-                        $null=$dependantModules.Add($module2)
+                    $depModules=Get-ModuleDependencies $module2.name $ishardreference $modules
+                    foreach($depModule in $depModules) {
+                        $null=$modulesFound.Add($depModule)
                     }
                 }
             }
         }
     }
-    $len=$dependantModules.Count
-    Write-Host "$moduleName has $len dependencies."
-    return $dependantModules
-}
-
-Function Get-SoftReferencedModules ($moduleName, $modules) {
-    if ($modules -eq $null){
-        $package=Load-NodePackage
-        $modules=$package.submodules
-    }
-    [array]$referencedModules=Get-ModuleDependencies $moduleName $modules
-    $softreferencedModules=New-Object System.Collections.ArrayList
-    foreach($referencedModule in $referencedModules){
-        if ($referencedModule.ishardreference -eq $false){
-            $null=$softreferencedModules.Add($referencedModule)
-        }
-    }
-    $len=$softreferencedModules.Count
-    Write-Host "$moduleName has $len soft dependencies."
-    return $softreferencedModules
-}
-
-Function Get-HardReferencedModules ($moduleName, $modules) {
-    
-    [array]$referencedModules=Get-ModuleDependencies $moduleName $modules
-    $hardreferencedModules=New-Object System.Collections.ArrayList
-    foreach($referencedModule in $referencedModules){
-        if ($referencedModule.ishardreference -eq $true){
-            $null=$hardreferencedModules.Add($referencedModule)
-        }
-    }
-    $len=$hardreferencedModules.Count
-    Write-Host "$moduleName has $len hard dependencies."
-    return $hardreferencedModules
+    [array]$foundModules = $modulesFound | Select-Object
+    return $foundModules
 }
 
 Function Get-ServerModule ($moduleName){
     Write-Host ""
     Write-Host "getting server modules for $moduleName"
-    
-    $hardModuleReferenceNames = Get-HardReferencedModules $moduleName | Select-Object -ExpandProperty name
-    $allModules = Get-ModulesForModuleDependencies $moduleName
-
-    [array]$serverDepModules= $allModules | Where-Object { $_.isserver -eq $true -and $hardModuleReferenceNames -contains $_.name }
-    if ($serverDepModules.Length -eq 0){
-        foreach($depModule in $depModules) {
-            $depModuleName=$depModule.name
-            $results=Get-ServerModule $depModuleName
-            if ($results.Length -gt 0){
-                return $results
-            }
-        }
-    } else {
+    $depModules = Get-ModuleDependencies $moduleName $true
+    [array]$serverDepModules= $depModules | Where-Object { $_.isserver -eq $true }
+    if ($serverDepModules.Length -gt 0){
         [array]$modules=$serverDepModules | Select-Object -first 1
         return $modules[0]
+    }else{
+        return $null
     }
 }
 

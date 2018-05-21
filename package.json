@@ -25,11 +25,13 @@
              },
     "homepage":  "https://github.com/marchuanv/utils#readme",
     "dependencies":  {
-                         "eventpublisher":  "git+https://github.com/marchuanv/eventpublisher.git"
+                         "eventpublisher":  "git+https://github.com/marchuanv/eventpublisher.git",
+                         "factory":  "git+https://github.com/marchuanv/factory.git",
+                         "communication":  "git+https://github.com/marchuanv/communication.git"
                      },
     "scripts":  {
                     "postinstall":  "echo \u0027there are no submodules to install\u0027",
-                    "start":  "echo \u0027this service is an abstract service and can\u0027t be started directly",
-                    "stop":  "echo \u0027echo \u0027this service is an abstract service and can\u0027t be started directly\u0027"
+                    "start":  "@powershell   -File start.ps1 eventpublisher",
+                    "stop":  "@powershell   -File stop.ps1  eventpublisher"
                 }
 }

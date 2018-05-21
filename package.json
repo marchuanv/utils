@@ -31,7 +31,7 @@
                      },
     "scripts":  {
                     "postinstall":  "echo \u0027there are no submodules to install\u0027",
-                    "start":  "@powershell  -File start.ps1 eventpublisher",
-                    "stop":  "@powershell  -File stop.ps1  eventpublisher"
+                    "start":  "node bootstrap.js start",
+                    "stop":  "node bootstrap.js stop"
                 }
 }

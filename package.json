@@ -28,8 +28,8 @@
                          "eventpublisher":  "git+https://github.com/marchuanv/eventpublisher.git"
                      },
     "scripts":  {
-                    "postinstall":  "",
-                    "start":  "node node_modules/factory/server.js",
-                    "stop":  "node node_modules/factory/server.stop.js"
+                    "postinstall":  "echo \u0027there are no submodules to install\u0027",
+                    "start":  "echo \u0027this service is an abstract service and can\u0027t be started directly",
+                    "stop":  "echo \u0027echo \u0027this service is an abstract service and can\u0027t be started directly\u0027"
                 }
 }

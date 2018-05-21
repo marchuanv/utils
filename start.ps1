@@ -3,6 +3,10 @@ Param(
 )
 . .\shared.ps1
 $startFilePath="node_modules\$serverModuleName\$serverModuleName.start.js"
-$startFilePath= Convert-Path $startFilePath
-node $startFilePath
-$LASTEXITCODE=$true
+[bool]$exists=Test-Path $startFilePath
+if ($exists -eq $true){
+    node $startFilePath
+    $LASTEXITCODE=$true
+}else{
+    $LASTEXITCODE=$false
+}

@@ -3,6 +3,10 @@ Param(
 )
 . .\shared.ps1
 $stopFilePath="node_modules\$serverModuleName\$serverModuleName.stop.js"
-$stopFilePath= Convert-Path $stopFilePath
-node $stopFilePath
-$LASTEXITCODE=$true
+[bool]$exists=Test-Path $stopFilePath
+if ($exists -eq $true){
+    node $stopFilePath
+    $LASTEXITCODE=$true
+}else{
+    $LASTEXITCODE=$false
+}

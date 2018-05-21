@@ -105,6 +105,7 @@ Function CommitAndPush-GitRepository {
             git fetch
             git rebase temp
             git checkout master
+            git pull origin master
             git merge temp
             git push origin master
             git branch -D temp

@@ -25,10 +25,12 @@
   },
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
-    "eventpublisher": "git+https://github.com/marchuanv/eventpublisher.git"
+    "eventpublisher": "git+https://github.com/marchuanv/eventpublisher.git",
+    "factory": "git+https://github.com/marchuanv/factory.git",
+    "communication": "git+https://github.com/marchuanv/communication.git"
   },
   "scripts": {
-    "postinstall": "echo 'there are no submodules to install'",
+    "postinstall": "pwsh -File postinstall.ps1 -ArgumentList utils cache",
     "start": "pwsh   -File start.ps1 eventpublisher",
     "stop": "pwsh   -File stop.ps1  eventpublisher"
   }

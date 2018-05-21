@@ -9,7 +9,7 @@
     "isdebug":  true,
     "version":  "1.0.0",
     "description":  "",
-    "main":  "",
+    "main":  null,
     "engines":  {
                     "node":  "6.8.1",
                     "npm":  "3.10.8"

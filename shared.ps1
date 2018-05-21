@@ -160,9 +160,13 @@ Function Get-ModulesThatDependOnModule($moduleName, $modules) {
     Write-Host "finding all modules that depend on $moduleName"
     $modulesFound=New-Object System.Collections.ArrayList
     foreach($module in $modules) {
-        [array]$depModuleNames=$module.modules | Select-Object -ExpandProperty name
-        if ($depModuleNames -contains $moduleName) {
-            $null=$modulesFound.Add($module)
+        if ($module.name -eq $moduleName){
+            [array]$depModuleNames=$module.modules | Select-Object -ExpandProperty name
+            foreach($module2 in $modules) {
+                if ($depModuleNames -contains $module2.name) {
+                    $null=$modulesFound.Add($module2)
+                }
+            }
         }
     }
     return $modulesFound

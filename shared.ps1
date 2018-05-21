@@ -273,3 +273,11 @@ Function Sort-Modules {
     $modules = $modules | Sort-Object -Property @{Expression={return [array]::indexof($orderedModulesNames,$_.name)}}
     Save-NodePackage $package
 }
+
+Function Get-ObjectProperties ($object) {
+    [array]$properties=$object.PSObject.Properties | ForEach-Object {
+        $_.Name
+        $_.Value
+    }
+    return $properties
+}

@@ -159,6 +159,18 @@ Function Get-ModuleDependencies($moduleName, [bool]$ishardreference, $modules) {
     return $foundModules
 }
 
+Function Get-ModulesThatDependOnModule ($moduleName, [bool]$ishardreference, $modules) {
+    $modulesFound=New-Object System.Collections.ArrayList
+    foreach($module in $modules) {
+        [array]$moduleNames= ($module.modules | Where-Object {$_.ishardreference -eq $ishardreference}) | Select-Object -ExpandProperty name
+        if ($moduleNames -contains $moduleName) {
+            $null=$modulesFound.Add($module)
+        }
+    }
+    [array]$foundModules = $modulesFound | Select-Object
+    return $foundModules
+}
+
 Function Get-ServerModule ($moduleName){
     Write-Host ""
     Write-Host "getting server modules for $moduleName"

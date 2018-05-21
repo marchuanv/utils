@@ -97,6 +97,7 @@ Function CommitAndPush-GitRepository {
             foreach($head in $detachedHeads){
                 git merge "$head"
             }
+            git branch -D temp
             git branch temp
             git checkout temp
             git add -A

@@ -1,24 +1,9 @@
-[string]$currentdirectory=(Get-Item -Path ".\").FullName
-Write-Host "script location: $currentdirectory"
-
 Function Get-PowershellAlias{
     if ($IsLinux -eq $true){
         return "pwsh"
     }else{
         return "@powershell"
     }
-}
-
-Function Load-Config {
-    $jsonconfigfile=Join-Path -Path $currentdirectory -ChildPath config.json
-    Write-Host "reading config from $jsonconfigfile"
-    return (Get-Content $jsonconfigfile | Out-String | ConvertFrom-Json)
-}
-
-Function Save-Config ($config) {
-    $jsonconfigfile=Join-Path -Path $currentdirectory -ChildPath config.json
-    Write-Host "saving config to $jsonconfigfile"
-    $config | ConvertTo-Json -depth 100 | Set-Content $jsonconfigfile
 }
 
 Function Load-NodePackage ($packageName) {
@@ -32,89 +17,62 @@ Function Load-NodePackage ($packageName) {
 
 Function Save-NodePackage($package) {
     $packageName=$package.name
-    $packageJsonFile=Join-Path -Path $currentdirectory -ChildPath "$packageName/package.json"
+    $packageJsonFile=""
+    if ($packageName -eq ""){
+        $packageJsonFile=Convert-Path package.json
+    }else{
+        $packageJsonFile=Convert-Path $packageName\package.json
+        
+    }
     Write-Host "saving node package to $packageJsonFile"
     $package | ConvertTo-Json -depth 100 | Set-Content $packageJsonFile
 }
 
-Function Get-NodePackages {
-    $packages=New-Object System.Collections.ArrayList
-    $allConfig=Load-Config
-    foreach($config in $allConfig){
-      $package=Load-NodePackage $config.name
-      $null=$packages.Add($package)
+Function Add-Submodules {
+    $package=Load-NodePackage
+    foreach($submodule in $package.submodules){
+        $submodulename=$submodule.name
+        $repoUrl=$submodule.repositoryurl
+        Write-Host "Adding submodule from $repoUrl"
+        git submodule add $repoUrl
+        git submodule init $submodulename
+        git submodule update $submodulename
     }
-    return $packages
 }
 
-Function Switch-ToCurrentDirectory {
-    cd $currentdirectory
-    return $currentdirectory
-}
-
-Function Add-Submodule {
-    [cmdletbinding()]
-    Param (
-        [string]$moduleName=""
-    )
-    $repoUrl="https://github.com/marchuanv/$moduleName.git"
-    git submodule add $repoUrl
-    git submodule init
-    git submodule update
-}
-
-
-Function Remove-Submodule {
-    [cmdletbinding()]
-    Param (
-        [string]$moduleName=""
-    )
-    $count=0
-    $gitmodulesFilePath="$currentdirectory\.gitmodules"
-    $lines= New-Object System.Collections.ArrayList
-    foreach($line in Get-Content $gitmodulesFilePath) {
-        $match="[submodule `"$moduleName`"]"
-        if($line -contains $match -or ($count -lt 3 -and $count -gt 0) ) {
-            $count++
-            $remove=$true
-        }else{
-            $count=0
-            $null=$lines.Add($line)
+Function Remove-Submodules {
+    $package=Load-NodePackage
+    foreach($submodule in $package.submodules){
+        $submodulename=$submodule.name
+        $count=0
+        $lines= New-Object System.Collections.ArrayList
+        $gitmodulesFilePath= Convert-Path .gitmodules
+        foreach($line in Get-Content $gitmodulesFilePath) {
+            $match="[submodule `"$submodulename`"]"
+            if($line -contains $match -or ($count -lt 3 -and $count -gt 0) ) {
+                $count++
+                $remove=$true
+            }else{
+                $count=0
+                $null=$lines.Add($line)
+            }
         }
+        $fileData=$lines -join "`r`n"
+        Set-Content $gitmodulesFilePath -Value $fileData
+        git add -A
+        git rm --cached "$submodulename"
+        $exists= Test-Path ".git/modules/$submodulename"
+        if ($exists -eq $true){
+            Remove-Item -Recurse -Force ".git/modules/$submodulename"
+        }
+        $exists= Test-Path $submodulename
+        if ($exists -eq $true){
+            Remove-Item -Recurse -Force $submodulename
+        }
+        git add -A
+        git commit -m "commiting before the removal of $submodulename"
+        git push origin master
     }
-    $fileData=$lines -join "`r`n"
-    Set-Content $gitmodulesFilePath -Value $fileData
-    git add -A
-    git rm --cached "$moduleName"
-    $exists= Test-Path ".git/modules/$moduleName"
-    if ($exists -eq $true){
-        Remove-Item -Recurse -Force ".git/modules/$moduleName"
-    }
-    $exists= Test-Path $moduleName
-    if ($exists -eq $true){
-        Remove-Item -Recurse -Force $moduleName
-    }
-    git add -A
-    git commit -m "commiting before the removal of $moduleName"
-    git push origin master
-}
-
-Function Clone-GitRepository{
-    [cmdletbinding()]
-    Param (
-        [string]$moduleName=""
-    )
-    $repoUrl="https://github.com/marchuanv/$moduleName.git"
-    [string]$results= (git clone $repoUrl 2>&1)
-    if ($results.Contains("'https://github.com/marchuanv/$moduleName.git/' not found"))
-    {
-        Write-Host ""
-        Write-Host $results
-        return $false
-    }
-    Write-Host ""
-    Write-Host $results
-    return $true
 }
 
 Function CommitAndPush-GitRepository {
@@ -176,7 +134,8 @@ Function Create-PackageDependencies ($appName, [array]$modules) {
 
 Function Get-ModuleDependencies ($moduleName, $modules) {
     if ($modules -eq $null){
-        $modules=Load-Config
+        $package=Load-NodePackage
+        $modules=$package.submodules 
     }
     $dependantModules=New-Object System.Collections.ArrayList
     foreach($module in $modules) {
@@ -193,7 +152,8 @@ Function Get-ModuleDependencies ($moduleName, $modules) {
 
 Function Get-ModulesThatDependOnModule($moduleName, $modules) {
     if ($modules -eq $null){
-        $modules=Load-Config
+        $package=Load-NodePackage
+        $modules=$package.submodules 
     }
     Write-Host "finding all modules that depend on $moduleName"
     $modulesFound=New-Object System.Collections.ArrayList
@@ -208,7 +168,8 @@ Function Get-ModulesThatDependOnModule($moduleName, $modules) {
 
 Function Get-ModulesForModuleDependencies($moduleName, $modules) {
     if ($modules -eq $null){
-        $modules=Load-Config
+        $package=Load-NodePackage
+        $modules=$package.submodules 
     }
     $dependantModules=New-Object System.Collections.ArrayList
     foreach($module in $modules) {
@@ -230,7 +191,8 @@ Function Get-ModulesForModuleDependencies($moduleName, $modules) {
 
 Function Get-SoftReferencedModules ($moduleName, $modules) {
     if ($modules -eq $null){
-        $modules=Load-Config
+        $package=Load-NodePackage
+        $modules=$package.submodules
     }
     [array]$referencedModules=Get-ModuleDependencies $moduleName $modules
     $softreferencedModules=New-Object System.Collections.ArrayList
@@ -282,7 +244,8 @@ Function Get-ServerModule ($moduleName){
 
 Function Sort-Modules {
 
-    $modules=Load-Config
+    $package=Load-NodePackage
+    $modules=$package.submodules
     $orderedModulesNames=New-Object System.Collections.ArrayList
 
     foreach($module in $modules){
@@ -308,5 +271,5 @@ Function Sort-Modules {
     }
     
     $modules = $modules | Sort-Object -Property @{Expression={return [array]::indexof($orderedModulesNames,$_.name)}}
-    Save-Config $modules
+    Save-NodePackage $package
 }

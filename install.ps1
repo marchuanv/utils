@@ -1,5 +1,5 @@
 param($depModuleName)
-$package= Load-NodePackage
+$package=Load-NodePackage
 $moduleName=$package.name
 $repoUrl=$package.dependencies."$depModuleName"
 Write-Host "installing and updating $moduleName with changes from $repoUrl"

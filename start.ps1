@@ -13,4 +13,4 @@ Write-Host $dependencies
 #     $startFilePath= Convert-Path $startFilePath
 # }
 # node $startFilePath
-# $LASTEXITCODE=$true
+$LASTEXITCODE=$true

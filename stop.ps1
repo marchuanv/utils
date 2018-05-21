@@ -5,6 +5,7 @@ Param(
 $stopFilePath="node_modules\$serverModuleName\$serverModuleName.stop.js"
 [bool]$exists=Test-Path $stopFilePath
 if ($exists -eq $true){
+    $stopFilePath = Convert-Path $stopFilePath
     node $stopFilePath
     $LASTEXITCODE=$true
 }else{

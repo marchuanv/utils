@@ -6,6 +6,24 @@ Function Get-PowershellAlias{
     }
 }
 
+Function Get-BootstrapJS ($packageName){
+    if ($packageName -eq "" -or $packageName -eq $null){
+        $packageName="."
+    }
+    $bootstrapFile=Convert-Path $packageName\bootstrap.js
+    Write-Host "reading $bootstrapFile"
+    return (Get-Content $bootstrapFile | Out-String )
+}
+
+Function Save-BootstrapJS ($packageName, $bootstrap){
+    if ($packageName -eq "" -or $packageName -eq $null){
+        $packageName="."
+    }
+    $bootstrapFile=Convert-Path $packageName\bootstrap.js
+    Write-Host "saving $bootstrapFile"
+    $bootstrap  | Set-Content $bootstrapFile
+}
+
 Function Load-NodePackage ($packageName) {
     if ($packageName -eq "" -or $packageName -eq $null){
         $packageName="."

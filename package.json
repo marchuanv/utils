@@ -9,7 +9,7 @@
     "isdebug":  true,
     "version":  "1.0.0",
     "description":  "",
-    "main":  null,
+    "main":  "bootstrap.js",
     "engines":  {
                     "node":  "6.8.1",
                     "npm":  "3.10.8"
@@ -31,7 +31,7 @@
                      },
     "scripts":  {
                     "postinstall":  "echo \u0027there are no submodules to install\u0027",
-                    "start":  "@powershell   -File start.ps1 eventpublisher",
-                    "stop":  "@powershell   -File stop.ps1  eventpublisher"
+                    "start":  "@powershell  -File start.ps1 eventpublisher",
+                    "stop":  "@powershell  -File stop.ps1  eventpublisher"
                 }
 }

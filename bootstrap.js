@@ -11,7 +11,8 @@ const modules={
 	path: path,
 	vm: vm,
 	process: process,
-	package: package
+	package: package,
+	console: console
 };
 
  
@@ -55,14 +56,17 @@ function factory(scriptFilePath, isExternalDep, modules, config) {
 
 		function waitForParams(callback){
 			setTimeout(function(){
+				var hasConfig=false;
 				config.forEach(function(item){
-					console.log("waiting for ", item.name);
 					if (item.name==name){
+						hasConfig=true;
 						const params=[];
 						item.parameters.forEach(function(param){
 							const instance=modules[param];
 							if (instance){
 								params.push(instance);
+							}else{
+								console.log(`the ${param} parameter for ${item.name} has not been resolved yet`);
 							}
 						});
 						if (params.length == item.parameters.length){
@@ -70,17 +74,21 @@ function factory(scriptFilePath, isExternalDep, modules, config) {
 						}else{
 							waitForParams(callback);
 						}
-					}else{
-						waitForParams(callback);
 					}
+				});
+				if (hasConfig==false){
+					console.log(`there is no config for ${name}`);
+					waitForParams(callback);
 				}
 			},1000);
 		}
 		waitForParams(function(params){
 			modules[name]=Reflect.construct(_class, params);
+			console.log(`loaded ${name}`);
 		});
 	}else {
 		modules[name]=module.require(scriptFilePath);
+		console.log(`loaded ${name}`);
 	}
 }
 

@@ -116,7 +116,10 @@ Function CommitAndPush-GitRepository {
                 git merge "$head"
             }
             git rebase --abort
-            Remove-Item "/.git/rebase-apply" -Force -Recurse
+            $rebaseFileExists=Test-Path "/.git/rebase-apply"
+            if ($rebaseFileExists -eq $true){
+                Remove-Item "/.git/rebase-apply" -Force -Recurse
+            }
             git branch -D temp
             git branch temp
             git checkout temp

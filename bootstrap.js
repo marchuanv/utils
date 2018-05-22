@@ -15,25 +15,29 @@ const modules={
 };
 
  
- factory("./lib/utils.js",false, modules); 
- factory("eventpublisher",false, modules); 
- factory("factory",false, modules); 
- factory("communication",false, modules);
+ factory("./lib/utils.js",false, modules, bootstrapConfig); 
+ factory("eventpublisher",false, modules, bootstrapConfig); 
+ factory("factory",false, modules, bootstrapConfig); 
+ factory("communication",false, modules, bootstrapConfig);
 
 const section = process.argv.slice(2);
-if (section=="start"){
-	modules.app.start();
-}else if (section=="stop"){
-	modules.app.stop();
-}else{
-	module.exports=modules;
-}
+setTimeout(function(){
+	if (section=="start"){
+		console.log(modules);
+		modules.app.start();
+	}else if (section=="stop"){
+		modules.app.stop();
+	}else{
+		module.exports=modules;
+	}
+},50000);
 
-function factory(scriptFilePath, isExternalDep, modules) {
+function factory(scriptFilePath, isExternalDep, modules, config) {
 	console.log("");
-	console.log(`loading ${scriptFilePath}`);
-	const name=modules.path.basename(scriptFilePath);
-
+	const filePathSplit=scriptFilePath.split('/');
+	const fileName=filePathSplit[filePathSplit.length-1];
+	const name=fileName.replace(" ","").replace(".json","").replace(".js","").replace(".","").replace("-","");
+	console.log(`loading ${name}`);
 	if (scriptFilePath.indexOf(".js")>=0 && isExternalDep==false && scriptFilePath.indexOf(".json")==-1){
 		var _class = new Object();
 		const filePath =modules.path.join(__dirname, scriptFilePath)
@@ -51,18 +55,24 @@ function factory(scriptFilePath, isExternalDep, modules) {
 
 		function waitForParams(callback){
 			setTimeout(function(){
-				const len=bootstrapConfig[name].length;
-				const params=[];
-				bootstrapConfig[name].forEach(function(entry){
-					const param = modules[entry];
-					if (param){
-						params.push(param);
+				config.forEach(function(item){
+					console.log("waiting for ", item.name);
+					if (item.name==name){
+						const params=[];
+						item.parameters.forEach(function(param){
+							const instance=modules[param];
+							if (instance){
+								params.push(instance);
+							}
+						});
+						if (params.length == item.parameters.length){
+							callback(params);
+						}else{
+							waitForParams(callback);
+						}
+					}else{
+						waitForParams(callback);
 					}
-				});
-				if (params.length==len){
-					callback(params);
-				}else{
-					waitForParams(callback);
 				}
 			},1000);
 		}

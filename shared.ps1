@@ -115,6 +115,8 @@ Function CommitAndPush-GitRepository {
             foreach($head in $detachedHeads){
                 git merge "$head"
             }
+            git rebase --abort
+            Remove-Item "/.git/rebase-apply" -Force -Recurse
             git branch -D temp
             git branch temp
             git checkout temp

@@ -10,7 +10,7 @@ const section = process.argv.slice(2);
 const modules=[];
 
 //LOAD ALL THE MODULES THAT ARE NOT HARD REFERENCED
-package.softDependencies.forEach(function(dep){
+package.submodules.forEach(function(dep){
 	for(var propName in dep){
 		const submodulePath=path.join(__dirname, propName);
 		console.log("Reading submodule code files at ",submodulePath);

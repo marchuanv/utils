@@ -1,3 +1,4 @@
+. .\shared.ps1
 $package=Load-NodePackage
 $moduleName=$package.name
 cls
@@ -8,11 +9,8 @@ cls
 Write-Host "UPDATING $moduleName"
 npm update .
 
-. .\shared.ps1
-$subModuleNames=$package.softDependencies | Select-Object -Property name
-foreach($subModuleName in $subModuleNames){
-    Remove-Submodules $subModuleName  
-    Add-Submodules $subModuleName
-}
+Write-Host "INSTALLING SUBMODULES FOR $moduleName"
+Remove-Submodules
+Add-Submodules
 
 $LASTEXITCODE=$true

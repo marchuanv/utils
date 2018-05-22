@@ -160,6 +160,27 @@ Function Create-PackageDependencies ($appName, [array]$modules) {
     return ( $json | ConvertFrom-Json).dependencies
 }
 
+Function Create-Submodules ($appName, [array]$modules) {
+    [string]$dependencies=""
+    [int]$noDep=$modules.Length
+    for($i = 0; $i -lt $noDep; $i++)
+    { 
+        $module=$modules[$i]
+        [string]$moduleName=$module.name
+        Write-Host "adding $moduleName as a package dependency to the $appName package.json"
+        [string]$dependency = "{`"$moduleName`":`"git+https://github.com/marchuanv/$moduleName.git`"},"
+        if ($module.isexternal -eq $true){
+            $dependency = "`"$moduleName`":`"`","
+        }
+        if ($i -eq ($noDep-1)){
+            $dependency=$dependency.Replace(",","")
+        }
+        $dependencies="$dependencies$dependency"
+    }
+    $json="{`"dependencies`":[$dependencies]}"
+    return ( $json | ConvertFrom-Json).dependencies
+}
+
 Function Get-ModuleDependencies($moduleName, [bool]$ishardreference, $modules) {
     if ($modules -eq $null){
         $package=Load-NodePackage

@@ -143,6 +143,9 @@ Function Create-PackageDependencies ($appName, [array]$modules) {
         [string]$moduleName=$module.name
         Write-Host "adding $moduleName as a package dependency to the $appName package.json"
         [string]$dependency = "`"$moduleName`":`"git+https://github.com/marchuanv/$moduleName.git`","
+        if ($module.isexternal -eq $true){
+            $dependency = "`"$moduleName`":`"`","
+        }
         if ($i -eq ($noDep-1)){
             $dependency=$dependency.Replace(",","")
         }
@@ -167,7 +170,9 @@ Function Get-ModuleDependencies($moduleName, [bool]$ishardreference, $modules) {
                     $null=$modulesFound.Add($module2)
                     $depModules=Get-ModuleDependencies $module2.name $ishardreference $modules
                     foreach($depModule in $depModules) {
-                        $null=$modulesFound.Add($depModule)
+                        if ($depModule.isexternal -eq $false){ #Only immediate external references gets added
+                            $null=$modulesFound.Add($depModule)
+                        }
                     }
                 }
             }

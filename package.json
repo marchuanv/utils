@@ -29,8 +29,8 @@
     "factory": "git+https://github.com/marchuanv/factory.git",
     "communication": "git+https://github.com/marchuanv/communication.git"
   },
+  "softDependencies": {},
   "scripts": {
-    "postinstall": "echo 'there are no submodules to install'",
     "start": "node bootstrap.js start",
     "stop": "node bootstrap.js stop"
   }

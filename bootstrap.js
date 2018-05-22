@@ -8,7 +8,7 @@ const vm = require('vm');
 const bootstrapConfig=module.require('./bootstrap.json');
 const appFilePath=path.join(__dirname,"./lib/app.js");
 
-modules[utils]=[]; 
+modules["utils"]=[]; 
  modules["utils"].push("./lib/utils.js"); 
  modules["utils"].push("eventpublisher"); 
  modules["utils"].push("factory"); 

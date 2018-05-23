@@ -28,27 +28,65 @@ Function Load-NodePackage ($packageName) {
     if ($packageName -eq "" -or $packageName -eq $null){
         $packageName="."
     }
-    $packageJsonFile=Convert-Path $packageName\package.json
-    Write-Host "reading node package from $packageJsonFile"
-    return (Get-Content $packageJsonFile | Out-String | ConvertFrom-Json)
+    try {
+        $packageJsonFile=Convert-Path "$packageName\package.json"
+        Write-Host "reading node package from $packageJsonFile"
+        return (Get-Content $packageJsonFile | Out-String | ConvertFrom-Json)
+    } catch {
+        Resolve-Error
+        throw "failed to read the package.json file at: $packageJsonFile"
+    }
 }
 
 Function Save-NodePackage($package) {
     $packageName=$package.name
     $packageJsonFile=""
     if ($packageName -eq ""){
-        $packageJsonFile=Convert-Path package.json
+        $packageJsonFile=Convert-Path "package.json"
     }else{
-        $packageJsonFile=Convert-Path $packageName\package.json
-        
+        $packageJsonFile=Convert-Path "$packageName\package.json"
     }
     Write-Host "saving node package to $packageJsonFile"
-    $package | ConvertTo-Json -depth 100 | Set-Content $packageJsonFile
+    try {
+        $package | ConvertTo-Json -depth 100 | Set-Content $packageJsonFile
+    } catch {
+        Resolve-Error
+        throw "failed to save the package.json file to: $packageJsonFile"
+    }
 }
 
-Function Add-Submodules {
+Function Get-Submodules($filter) {
+    $submodules=New-Object System.Collections.ArrayList
+    $currentDir=Get-Location
     $package=Load-NodePackage
     foreach($submodule in $package.submodules){
+        $moduleName=$submodule.name
+        if ($moduleName -eq $filter -or ($filter -eq "" -or $filter -eq $null)){
+            try{
+                $moduleDirectory=Convert-Path "$currentDir\$moduleName" -ErrorAction SilentlyContinue
+                if ($moduleDirectory -eq "" -or $moduleDirectory -eq $null){
+                    Write-Host "module directory for $moduleName does not exist"
+                }else{
+                    $null=$submodules.Add($submodule)
+                }
+            } catch {
+                $msg=$_.Exception.Message
+                $response=Read-Host $msg
+            }
+        }
+    }
+    return $submodules
+}
+
+Function Save-Submodules ($submodules){
+    $package=Load-NodePackage
+    $package.submodules=$submodules
+    Save-NodePackage $package
+} 
+
+Function Add-Submodules {
+    $submodules=Get-Submodules
+    foreach($submodule in $submodules){
         $submodulename=$submodule.name
         $repoUrl=$submodule.repositoryurl
         Write-Host "Adding submodule from $repoUrl"
@@ -59,8 +97,8 @@ Function Add-Submodules {
 }
 
 Function Remove-Submodules {
-    $package=Load-NodePackage
-    foreach($submodule in $package.submodules){
+    $submodules=Get-Submodules
+    foreach($submodule in $submodules){
         $submodulename=$submodule.name
         $count=0
         $lines= New-Object System.Collections.ArrayList
@@ -271,4 +309,14 @@ Function Get-ObjectProperties ($object) {
         $_.Value
     }
     return $properties
+}
+function Resolve-Error ($ErrorRecord=$Error[0])
+{
+   $ErrorRecord | Format-List * -Force
+   $ErrorRecord.InvocationInfo |Format-List *
+   $Exception = $ErrorRecord.Exception
+   for ($i = 0; $Exception; $i++, ($Exception = $Exception.InnerException))
+   {   "$i" * 80
+       $Exception |Format-List * -Force
+   }
 }

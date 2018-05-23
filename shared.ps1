@@ -55,13 +55,13 @@ Function Save-NodePackage($package) {
     }
 }
 
-Function Get-Submodules($filter) {
+Function Get-Submodules($filter="", $isexternal=$false) {
     $submodules=New-Object System.Collections.ArrayList
     $currentDir=Get-Location
     $package=Load-NodePackage
     foreach($submodule in $package.submodules){
         $moduleName=$submodule.name
-        if ($moduleName -eq $filter -or ($filter -eq "" -or $filter -eq $null)){
+        if ($submodule.isexternal -eq $isexternal -and ($moduleName -eq $filter -or $filter -eq "") ){
             try{
                 $moduleDirectory=Convert-Path "$currentDir\$moduleName" -ErrorAction SilentlyContinue
                 if ($moduleDirectory -eq "" -or $moduleDirectory -eq $null){

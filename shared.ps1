@@ -80,7 +80,16 @@ Function Get-Submodules($filter) {
 
 Function Save-Submodules ($submodules){
     $package=Load-NodePackage
-    $package.submodules=$submodules
+    [int]$submodulesCount=$package.submodules.Length
+    for($i = 0; $i -lt $submodulesCount; $i++)
+    { 
+        $submoduleName=$package.submodules[$i].name
+        foreach($submodule2 in $submodules){
+            if ($submoduleName -eq $submodule2.name){
+                $package.submodules[$i]=$submodule2
+            }
+        }
+    }
     Save-NodePackage $package
 } 
 

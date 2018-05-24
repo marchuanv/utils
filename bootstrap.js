@@ -40,4 +40,3 @@ compress.minify({
 		module.exports=modules;
 	}
 });
-

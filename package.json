@@ -29,7 +29,7 @@
     "factory": "git+https://github.com/marchuanv/factory.git",
     "communication": "git+https://github.com/marchuanv/communication.git"
   },
-  "submodules": null,
+  "submodules": [],
   "scripts": {
     "start": "node bootstrap.js start",
     "stop": "node bootstrap.js stop"

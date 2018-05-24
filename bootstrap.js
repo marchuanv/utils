@@ -11,7 +11,7 @@ const section = process.argv.slice(2);
 const libraries=[];
 const librariesPath=path.join(__dirname,"lib");
 const files=fs.readdirSync(librariesPath).sort();
-const moduleLibrary=path.join(__dirname, `${package.name.min.js}`);
+const moduleLibrary=path.join(__dirname, `${package.name}.min.js`);
 files.forEach(fileName => {
 	const fullPath=path.join(__dirname, 'lib', fileName);
 	libraries.push(fullPath);

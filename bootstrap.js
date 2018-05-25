@@ -5,6 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const package=require(path.join(__dirname, 'package.json'));
 const vm = require('vm');
+const isWindows = (process.platform === "win32");
+const shell = require('shelljs');
+const Powershell=require('node-powershell');
 const compress=require('node-minify');
 const appFilePath=path.join(__dirname,"./lib/app.js");
 const startStop = process.argv.slice(2);
@@ -16,6 +19,7 @@ files.forEach(fileName => {
 	const fullPath=path.join(__dirname, 'lib', fileName);
 	libraries.push(fullPath);
 });
+
 compress.minify({
 	compressor: 'no-compress',
 	input: libraries,
@@ -44,6 +48,22 @@ compress.minify({
 
 		package.submodules.forEach(function(dep){
 			const submoduleName=dep["name"];
+			if (isWindows==true) {
+			  let shell = new Powershell({
+			    executionPolicy: 'Bypass',
+			    noProfile: true
+			  });
+			  shell.addCommand(`git pull origin master`);
+			  shell.invoke().then(output => {
+			    console.log(output);
+			    shell.dispose();
+			  }).catch(err => {
+			    console.log(err);
+			    shell.dispose();
+			  });
+			}else{
+			  shell.exec(`git pull origin master`);
+			}
 			const submoduleBootstrapPath=path.join(__dirname, submoduleName, "bootstrap.js");
 			const bootstrapSubmodule = require(submoduleBootstrapPath);
 			modules[submoduleName]=bootstrapSubmodule

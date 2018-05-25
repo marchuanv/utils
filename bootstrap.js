@@ -47,10 +47,15 @@ compress.minify({
 			const submoduleBootstrapPath=path.join(__dirname, submoduleName, "bootstrap.js");
 			const bootstrapSubmodule = require(submoduleBootstrapPath);
 			modules[submoduleName]=bootstrapSubmodule
-			console.log(bootstrapSubmodule);
 		});
 
+		for(var propName in package.dependencies){
+			var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
+			modules[friendlyPropName]=require(propName);		
+		}
+
 		module.exports=modules;
+		
 		if (modules.App){
 			const app=new modules.App();
 			app[startStop]();

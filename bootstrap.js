@@ -79,7 +79,7 @@ compress.minify({
 			    executionPolicy: 'Bypass',
 			    noProfile: true
 			  });
-			  shell.addCommand(`git update ${propName}`);
+			  shell.addCommand(`npm update ${propName}`);
 			  shell.invoke().then(output => {
 			    console.log(output);
 			    shell.dispose();
@@ -88,7 +88,7 @@ compress.minify({
 			    shell.dispose();
 			  });
 			}else{
-				shell.exec(`git update ${propName}`);
+				shell.exec(`npm update ${propName}`);
 			}
 			var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
 			modules[friendlyPropName]=require(propName);	

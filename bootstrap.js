@@ -53,7 +53,9 @@ compress.minify({
 			    executionPolicy: 'Bypass',
 			    noProfile: true
 			  });
+			  shell.addCommand(`cd ${submoduleName}`);
 			  shell.addCommand(`git pull origin master`);
+			  shell.addCommand(`cd ..`);
 			  shell.invoke().then(output => {
 			    console.log(output);
 			    shell.dispose();
@@ -62,7 +64,9 @@ compress.minify({
 			    shell.dispose();
 			  });
 			}else{
-			  shell.exec(`git pull origin master`);
+				shell.exec(`cd ${submoduleName}`);
+			  	shell.exec(`git pull origin master`);
+			  	shell.exec(`cd ..`);
 			}
 			const submoduleBootstrapPath=path.join(__dirname, submoduleName, "bootstrap.js");
 			const bootstrapSubmodule = require(submoduleBootstrapPath);
@@ -70,8 +74,24 @@ compress.minify({
 		});
 
 		for(var propName in package.dependencies){
+			if (isWindows==true) {
+			  let shell = new Powershell({
+			    executionPolicy: 'Bypass',
+			    noProfile: true
+			  });
+			  shell.addCommand(`git update ${propName}`);
+			  shell.invoke().then(output => {
+			    console.log(output);
+			    shell.dispose();
+			  }).catch(err => {
+			    console.log(err);
+			    shell.dispose();
+			  });
+			}else{
+				shell.exec(`git update ${propName}`);
+			}
 			var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
-			modules[friendlyPropName]=require(propName);		
+			modules[friendlyPropName]=require(propName);	
 		}
 
 		module.exports=modules;

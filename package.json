@@ -1,9 +1,9 @@
 {
     "name":  "utils",
     "host":  "maelstrom",
-    "port":  3002,
+    "port":  3003,
     "eventhost":  "maelstrom",
-    "eventport":  3005,
+    "eventport":  0,
     "factoryhost":  "maelstrom",
     "factoryport":  3000,
     "isdebug":  true,
@@ -25,11 +25,9 @@
              },
     "homepage":  "https://github.com/marchuanv/utils#readme",
     "dependencies":  {
-                         "eventpublisher":  "git+https://github.com/marchuanv/eventpublisher.git",
-                         "factory":  "git+https://github.com/marchuanv/factory.git",
-                         "communication":  "git+https://github.com/marchuanv/communication.git"
+
                      },
-    "submodules":  null,
+    "submodules":  [],
     "scripts":  {
                     "start":  "node bootstrap.js start",
                     "stop":  "node bootstrap.js stop"

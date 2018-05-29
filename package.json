@@ -25,7 +25,7 @@
              },
     "homepage":  "https://github.com/marchuanv/utils#readme",
     "dependencies":  null,
-    "submodules":  null,
+    "submodules":  [],
     "scripts":  {
                     "start":  "node bootstrap.js start",
                     "stop":  "node bootstrap.js stop"

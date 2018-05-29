@@ -20,6 +20,12 @@ files.forEach(fileName => {
 	libraries.push(fullPath);
 });
 
+const modules={
+  require: require,
+  console: console,
+  package: package
+};
+
 compress.minify({
 	compressor: 'no-compress',
 	input: libraries,
@@ -32,16 +38,8 @@ compress.minify({
 			console.log(stack);	
 			return;
 		}
-
 		console.log(`${moduleLibrary} created.`);
-		const modules={
-		  require: require,
-		  console: console,
-		  package: package
-		};
-		
 		vm.createContext(modules);
-		
 		var javascript=fs.readFileSync(moduleLibrary, "utf8");
 		var script = new vm.Script(javascript);
 		script.runInNewContext(modules);
@@ -93,12 +91,14 @@ compress.minify({
 			var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
 			modules[friendlyPropName]=require(propName);	
 		}
-
-		module.exports=modules;
-		
-		if (modules.App){
-			const app=new modules.App();
-			app[startStop]();
-		}
 	}
 });
+module.exports=modules;
+if (modules.Server){
+	const server=new modules.Server();
+	server.start();
+}
+if (modules.Client){
+	const client=new modules.Client();
+	client.start();
+}

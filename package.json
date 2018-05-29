@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/marchuanv/utils#readme",
   "dependencies": {
+    "communication": "git+https://github.com/marchuanv/communication.git",
     "eventpublisher": "git+https://github.com/marchuanv/eventpublisher.git",
-    "factory": "git+https://github.com/marchuanv/factory.git",
-    "communication": "git+https://github.com/marchuanv/communication.git"
+    "factory": "git+https://github.com/marchuanv/factory.git"
   },
   "submodules":  [],
   "scripts": {

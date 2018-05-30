@@ -10,6 +10,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "bootstrap.js",
+  "isserver": false,
   "engines": {
     "node": "6.8.1",
     "npm": "3.10.8"

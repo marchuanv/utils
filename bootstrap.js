@@ -64,6 +64,28 @@ compress.minify({
 			var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
 			modules[friendlyPropName]=require(propName);	
 		}
+
+		for(var submodule in package.submodules){
+			if (isWindows==true) {
+			  let shell = new Powershell({
+			    executionPolicy: 'Bypass',
+			    noProfile: true
+			  });
+			  shell.addCommand(`npm update ${propName}`);
+			  shell.invoke().then(output => {
+			    console.log(output);
+			    shell.dispose();
+			  }).catch(err => {
+			    console.log(err);
+			    shell.dispose();
+			  });
+			}else{
+				shell.exec(`npm update ${propName}`);
+			}
+			var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
+			modules[friendlyPropName]=require(propName);	
+		}
+
 		if (modules.Server){
 			const server=new modules.Server();
 			server.start();

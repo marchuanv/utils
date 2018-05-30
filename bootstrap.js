@@ -78,7 +78,6 @@ dependencies.forEach(function(dep){
 	}
 	const friendlyname=dep.friendlyname;
 	const name=dep.name;
-	console.log("requiring module for: ",dep);
 	modules[friendlyname]=require(name);	
 });
 
@@ -169,4 +168,11 @@ if (package.name != "communication"){
 		});
 	}
 }
+console.log("");
+console.log(`-------------------------------< LOADED ALL MODULES FOR ${package.name} >-----------------------------------`);
+dependencies.forEach(function(dep){
+	console.log(dep);
+});
+console.log(`------------------------------------------------------------------------------------------------------------`);
+console.log("");
 module.exports=modules;

@@ -29,16 +29,6 @@ const modules={
   package: package
 };
 
-function newGuid(){
-    var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (d + Math.random()*16)%16 | 0;
-        d = Math.floor(d/16);
-        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-    });
-    return uuid;
-};
-
 compress.minify({
 	compressor: 'no-compress',
 	input: libraries,
@@ -57,122 +47,123 @@ compress.minify({
 		var script = new vm.Script(javascript);
 		script.runInNewContext(modules);
 
-		var dependencies=[];
-		for(var propName in package.dependencies){
-			var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
-			dependencies.push({
-				name: propName,
-				friendlyname: friendlyPropName
-			});
-		};
+	}
+});
 
-		for(var dep in dependencies){
-			if (isWindows==true) {
-			  let shell = new Powershell({
-			    executionPolicy: 'Bypass',
-			    noProfile: true
-			  });
-			  shell.addCommand(`npm update ${dep.name}`);
-			  shell.invoke().then(output => {
-			    console.log(output);
-			    shell.dispose();
-			  }).catch(err => {
-			    console.log(err);
-			    shell.dispose();
-			  });
+var dependencies=[];
+for(var propName in package.dependencies){
+	var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
+	dependencies.push({
+		name: propName,
+		friendlyname: friendlyPropName
+	});
+};
+
+for(var dep in dependencies){
+	if (isWindows==true) {
+	  let shell = new Powershell({
+	    executionPolicy: 'Bypass',
+	    noProfile: true
+	  });
+	  shell.addCommand(`npm update ${dep.name}`);
+	  shell.invoke().then(output => {
+	    console.log(output);
+	    shell.dispose();
+	  }).catch(err => {
+	    console.log(err);
+	    shell.dispose();
+	  });
+	}else{
+		shell.exec(`npm update ${dep.name}`);
+	}
+	modules[dep.friendlyname]=require(dep.name);	
+};
+
+if (package.name != "communication"){
+	var communication=require('communication');
+	const factorycommunication= new communication.WebSocket(package.factoryhost, package.factoryport);
+	const eventpublishercommunication= new communication.WebSocket(package.eventhost, package.eventport);
+	const client= new communication.WebSocket(package.host, package.port);
+	
+	const factoryChannelName="factory";
+	const getInstanceEventName="getinstance";
+	const registerTypesEventName="registerclass";
+	const factoryInstruction= {ref: null, class: null, instance: null};
+	
+	if (package.factoryhost==host && package.factoryport==port) {
+		const factory = new modules.Factory();
+		factorycommunication.receive(function response(instruction, cbRespond){
+			if (instruction.ref){
+				factory.getInstance(instruction.ref, function(instance){
+					instruction.instance=instance;
+					cbRespond(instruction);
+				});
+			}else if (instruction.class){
+				factory.registerFunction(instruction.class, function(ref){
+					instruction.ref=ref;
+					cbRespond(instruction);
+				});
 			}else{
-				shell.exec(`npm update ${dep.name}`);
+				cbRespond(null);
 			}
-			modules[dep.friendlyname]=require(dep.name);	
-		};
+		});
+	} else if (package.eventhost==host && package.eventport==port) {
+		eventpublishercommunication.receive(function response(event){
+			if (event.channel==factoryChannelName && event.name == getInstanceEventName){
 
-		if (package.name != "communication"){
-			var communication=require('communication');
-			const factorycommunication= new communication.WebSocket(package.factoryhost, package.factoryport);
-			const eventpublishercommunication= new communication.WebSocket(package.eventhost, package.eventport);
-			const client= new communication.WebSocket(package.host, package.port);
-			
-			const factoryChannelName="factory";
-			const getInstanceEventName="getinstance";
-			const registerTypesEventName="registerclass";
-			const factoryInstruction= {ref: null, class: null, instance: null};
-			
-			if (package.factoryhost==host && package.factoryport==port) {
-				const factory = new modules.Factory();
-				factorycommunication.receive(function response(instruction, cbRespond){
-					if (instruction.ref){
-						factory.getInstance(instruction.ref, function(instance){
-							instruction.instance=instance;
-							cbRespond(instruction);
-						});
-					}else if (instruction.class){
-						factory.registerFunction(instruction.class, function(ref){
-							instruction.ref=ref;
-							cbRespond(instruction);
+				factoryInstruction.ref=event.data.ref;
+				factoryInstruction.class = null;
+				factoryInstruction.instance = null;
+
+				factorycommunication.send(factoryInstruction, function received(res) {
+					if (res && res.instance){
+						const objFoundEvent={ name:"objectfound", channel: factoryChannelName, data: res.instance };
+						eventpublishercommunication.send(objFoundEvent, function received() {
+						},function(err){
+							throw "failed to send event, infrastructure is not working"
 						});
 					}else{
-						cbRespond(null);
-					}
-				});
-			} else if (package.eventhost==host && package.eventport==port) {
-				eventpublishercommunication.receive(function response(event){
-					if (event.channel==factoryChannelName && event.name == getInstanceEventName){
-
-						factoryInstruction.ref=event.data.ref;
-						factoryInstruction.class = null;
-						factoryInstruction.instance = null;
-
-						factorycommunication.send(factoryInstruction, function received(res) {
-							if (res && res.instance){
-								const objFoundEvent={ name:"objectfound", channel: factoryChannelName, data: res.instance };
-								eventpublishercommunication.send(objFoundEvent, function received() {
-								},function(err){
-									throw "failed to send event, infrastructure is not working"
-								});
-							}else{
-								const objNotFoundEvent={ name:"objectnotfound", channel: factoryChannelName, data: {} };
-								eventpublishercommunication.send(objNotFoundEvent, function received() {
-								},function(err){
-									throw "failed to send event, infrastructure is not working"
-								});
-							}
-						},function failed(){
+						const objNotFoundEvent={ name:"objectnotfound", channel: factoryChannelName, data: {} };
+						eventpublishercommunication.send(objNotFoundEvent, function received() {
+						},function(err){
 							throw "failed to send event, infrastructure is not working"
 						});
 					}
-					if (event.channel==factoryChannelName && event.name == registerTypesEventName){
-						
-						factoryInstruction.ref = null;
-						factoryInstruction.class=event.data.function;
-						factoryInstruction.instance = null;
-
-						factorycommunication.send(factoryInstruction, function received(res) {
-							if (res && res.ref){
-								const registeredEvent={ name:"registered", channel: factoryChannelName, data: {} };
-								eventpublishercommunication.send(registeredEvent, function received() {
-								},function(){
-									throw "failed to send event, infrastructure is not working"
-								});
-							}else{
-								const notRegisteredEvent={ name:"notregistered", channel: factoryChannelName, data: {} };
-								eventpublishercommunication.send(notRegisteredEvent, function received() {
-								},function(){
-									throw "failed to send event, infrastructure is not working"
-								});
-							}
-						},function failed(){
-							throw "failed to send event, infrastructure is not working"
-						});
-					}
-				});
-			} else {
-				var event={ name:"initialise", channel:package.name, data: null };
-				eventpublishercommunication.send(event, function received(remoteMessage) {
 				},function failed(){
 					throw "failed to send event, infrastructure is not working"
 				});
 			}
-		}
+			if (event.channel==factoryChannelName && event.name == registerTypesEventName){
+				
+				factoryInstruction.ref = null;
+				factoryInstruction.class=event.data.function;
+				factoryInstruction.instance = null;
+
+				factorycommunication.send(factoryInstruction, function received(res) {
+					if (res && res.ref){
+						const registeredEvent={ name:"registered", channel: factoryChannelName, data: {} };
+						eventpublishercommunication.send(registeredEvent, function received() {
+						},function(){
+							throw "failed to send event, infrastructure is not working"
+						});
+					}else{
+						const notRegisteredEvent={ name:"notregistered", channel: factoryChannelName, data: {} };
+						eventpublishercommunication.send(notRegisteredEvent, function received() {
+						},function(){
+							throw "failed to send event, infrastructure is not working"
+						});
+					}
+				},function failed(){
+					throw "failed to send event, infrastructure is not working"
+				});
+			}
+		});
+	} else {
+		var event={ name:"initialise", channel:package.name, data: null };
+		eventpublishercommunication.send(event, function received(remoteMessage) {
+		},function failed(){
+			throw "failed to send event, infrastructure is not working"
+		});
 	}
-});
+}
 module.exports=modules;

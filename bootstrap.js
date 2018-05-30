@@ -59,7 +59,7 @@ for(var propName in package.dependencies){
 	});
 };
 
-for(var dep in dependencies){
+dependencies.forEach(function(dep){
 	if (isWindows==true) {
 	  let shell = new Powershell({
 	    executionPolicy: 'Bypass',
@@ -76,8 +76,11 @@ for(var dep in dependencies){
 	}else{
 		shell.exec(`npm update ${dep.name}`);
 	}
-	modules[dep.friendlyname]=require(dep.name);	
-};
+	const friendlyname=dep.friendlyname;
+	const name=dep.name;
+	console.log("requiring module for: ",dep);
+	modules[friendlyname]=require(name);	
+});
 
 if (package.name != "communication"){
 	var communication=require('communication');

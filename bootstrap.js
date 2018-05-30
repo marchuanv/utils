@@ -123,7 +123,7 @@ compress.minify({
 						factoryInstruction.instance = null;
 
 						factorycommunication.send(factoryInstruction, function received(res) {
-							if (res.instance){
+							if (res && res.instance){
 								const objFoundEvent={ name:"objectfound", channel: factoryChannelName, data: res.instance };
 								eventpublishercommunication.send(objFoundEvent, function received() {
 								},function(err){
@@ -147,7 +147,7 @@ compress.minify({
 						factoryInstruction.instance = null;
 
 						factorycommunication.send(factoryInstruction, function received(res) {
-							if (res.ref){
+							if (res && res.ref){
 								const registeredEvent={ name:"registered", channel: factoryChannelName, data: {} };
 								eventpublishercommunication.send(registeredEvent, function received() {
 								},function(){
@@ -166,9 +166,10 @@ compress.minify({
 					}
 				});
 			} else {
-				var event={ name:"initialise${}", data:  };
-				eventpublishercommunication.send(message, function received(remoteMessage) {
+				var event={ name:"initialise", channel:package.name, data: null };
+				eventpublishercommunication.send(event, function received(remoteMessage) {
 				},function failed(){
+					throw "failed to send event, infrastructure is not working"
 				});
 			}
 		}

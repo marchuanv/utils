@@ -33,6 +33,7 @@
     "submodules":  [],
     "scripts":  {
                     "start":  "node bootstrap.js start",
-                    "stop":  "node bootstrap.js stop"
+                    "stop":  "node bootstrap.js stop",
+                    "test":  "node bootstrap.tests.js"
                 }
 }

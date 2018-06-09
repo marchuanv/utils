@@ -50,7 +50,7 @@ compress.minify({
 
 for(var propName in package.dependencies){
 	var friendlyname=propName.replace("-","").replace(".","").replace(" ","");
-	modules[friendlyPropName]=require(propName);	
+	modules[friendlyname]=require(propName);	
 };
 
 setTimeout(function(){

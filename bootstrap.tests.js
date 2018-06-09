@@ -48,36 +48,10 @@ compress.minify({
 	}
 });
 
-var dependencies=[];
 for(var propName in package.dependencies){
-	var friendlyPropName=propName.replace("-","").replace(".","").replace(" ","");
-	dependencies.push({
-		name: propName,
-		friendlyname: friendlyPropName
-	});
+	var friendlyname=propName.replace("-","").replace(".","").replace(" ","");
+	modules[friendlyPropName]=require(propName);	
 };
-
-dependencies.forEach(function(dep){
-	if (isWindows==true) {
-	  let shell = new Powershell({
-	    executionPolicy: 'Bypass',
-	    noProfile: true
-	  });
-	  shell.addCommand(`npm update ${dep.name}`);
-	  shell.invoke().then(output => {
-	    console.log(output);
-	    shell.dispose();
-	  }).catch(err => {
-	    console.log(err);
-	    shell.dispose();
-	  });
-	}else{
-		shell.exec(`npm update ${dep.name}`);
-	}
-	const friendlyname=dep.friendlyname;
-	const name=dep.name;
-	modules[friendlyname]=require(name);	
-});
 
 setTimeout(function(){
 	

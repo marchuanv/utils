@@ -5,16 +5,15 @@ const fs = require('fs');
 const path = require('path');
 const package=require(path.join(__dirname, 'package.json'));
 const vm = require('vm');
-const isWindows = (process.platform === "win32");
-const shell = require('shelljs');
-const Powershell=require('node-powershell');
-const compress=require('node-minify');
 const appFilePath=path.join(__dirname,"./lib/app.js");
 const startStop = process.argv.slice(2);
 const libraries=[];
 const librariesPath=path.join(__dirname,"lib");
 const files=fs.readdirSync(librariesPath).sort();
-const moduleLibrary=path.join(__dirname, `${package.name}.min.js`);
+const specsDir=path.join(__dirname, `specs`);
+const websocket=require('websocket');
+const http=require('http');
+
 const port=process.env.PORT;
 const host= process.env.IP || os.hostname();
 
@@ -26,41 +25,37 @@ files.forEach(fileName => {
 const modules={
   require: require,
   console: console,
-  package: package
+  package: package,
+  websocket: websocket,
+  http: http
 };
-
-compress.minify({
-	compressor: 'no-compress',
-	input: libraries,
-	output: moduleLibrary,
-	callback: function (err) {
-		if (err){
-			var stack = new Error().stack
-			console.error(err);
-			console.log(stack);	
-			return;
-		}
-		console.log(`${moduleLibrary} created.`);
-		vm.createContext(modules);
-		var javascript=fs.readFileSync(moduleLibrary, "utf8");
-		var script = new vm.Script(javascript);
-		script.runInNewContext(modules);
-	}
-});
 
 for(var propName in package.dependencies){
 	var friendlyname=propName.replace("-","").replace(".","").replace(" ","");
 	modules[friendlyname]=require(propName);	
 };
 
+libraries.forEach(function(lib){
+	vm.createContext(modules);
+	var javascript=fs.readFileSync(lib, "utf8");
+	var script = new vm.Script(javascript);
+	script.runInNewContext(modules);
+});
+
 setTimeout(function(){
 	
 	const specifications=[];
-	fs.readdirSync(testFolder).forEach(file => {
-		specifications.push(require(`./specs/${file}`));
+	fs.readdirSync(specsDir).forEach(file => {
+		const specFile=path.join(specsDir, file);
+		specifications.push( {name: file, file:require(specFile)});
 	});
 	specifications.forEach(spec=>{
-		spec.run();
+		spec.file.run(modules,function pass(msg){
+			console.log(`${spec.name} passed!.`);
+		},function fail(err){
+			console.log(`${spec.name} failed!.`);
+			throw err;
+		});
 	});
 
 },5000);

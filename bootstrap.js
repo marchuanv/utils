@@ -89,6 +89,7 @@ setTimeout(function(){
 	console.log(`------------------------------------------------------------------------------------------------------------`);
 	console.log("");
 	if (fs.existsSync(bootstrapExtPath)) {
+		console.log("loading ", bootstrapExtPath);
 	  	const modulesExt=require(bootstrapExtPath);
 	  	for(const propname in modulesExt){
 	  		modules[propname]=modulesExt[propname]

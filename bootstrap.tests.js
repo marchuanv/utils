@@ -13,9 +13,7 @@ const files=fs.readdirSync(librariesPath).sort();
 const specsDir=path.join(__dirname, `specs`);
 const websocket=require('websocket');
 const http=require('http');
-
-const port=process.env.PORT;
-const host= process.env.IP || os.hostname();
+const specToRun=process.argv[2];
 
 files.forEach(fileName => {
 	const fullPath=path.join(__dirname, 'lib', fileName);
@@ -50,12 +48,17 @@ setTimeout(function(){
 		specifications.push( {name: file, file:require(specFile)});
 	});
 	specifications.forEach(spec=>{
-		spec.file.run(modules,function pass(msg){
-			console.log(`${spec.name} passed!.`);
-		},function fail(err){
-			console.log(`${spec.name} failed!.`);
-			throw err;
-		});
+		if (spec.name == specToRun || !specToRun){
+			console.log("----------------------------------------------------------------");
+			console.log(`running ${spec.name}`);
+			spec.file.run(modules,function pass(msg){
+				console.log(`${spec.name} passed!.`);
+			},function fail(err){
+				console.log(`${spec.name} failed!.`);
+				throw err;
+			});
+			console.log("----------------------------------------------------------------");
+		}
 	});
 
 },5000);

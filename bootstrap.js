@@ -18,6 +18,13 @@ const moduleLibrary=path.join(__dirname, `${package.name}.min.js`);
 const port=process.env.PORT;
 const host= process.env.IP || os.hostname();
 
+var readyCallback;
+module.exports={
+	ready: function(callback){
+		readyCallback=callback;
+	}
+};
+
 const libraries=[];
 files.forEach(fileName => {
 	const fullPath=path.join(__dirname, 'lib', fileName);
@@ -54,18 +61,22 @@ compress.minify({
 			console.log(stack);	
 			return;
 		}
-		process.mainModule.libraries={};
+		process.libraries={};
 		console.log(`${moduleLibrary} created.`);
-		vm.createContext(process.mainModule.libraries);
+		vm.createContext(process.libraries);
 		var javascript=fs.readFileSync(moduleLibrary, "utf8");
 		var script = new vm.Script(javascript);
-		script.runInNewContext(process.mainModule.libraries);
+		script.runInNewContext(process.libraries);
+		
+		if (fs.existsSync(bootstrapExtPath)) {
+			console.log("loading ", bootstrapExtPath);
+		  	var exp=require(bootstrapExtPath);
+		  	console.log(exp);
+			process.libraries=undefined;
+			if (readyCallback){
+		  		readyCallback();
+			}
+		  	module.exports=exp;
+		}
 	}
 });
-
-if (fs.existsSync(bootstrapExtPath)) {
-	console.log("loading ", bootstrapExtPath);
-  	module.exports=require(bootstrapExtPath);
-}else{
-	module.exports={};
-}

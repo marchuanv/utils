@@ -24,11 +24,7 @@ files.forEach(fileName => {
 	libraries.push(fullPath);
 });
 
-const modules={
-  require: require,
-  console: console,
-  package: package
-};
+const modules=new Object();
 
 compress.minify({
 	compressor: 'no-compress',
@@ -77,7 +73,10 @@ dependencies.forEach(function(dep){
 	}
 	const friendlyname=dep.friendlyname;
 	const name=dep.name;
-	modules[friendlyname]=require(name);	
+	const depModules=require(name);
+	for(var propName in depModules){
+		modules[propName]=depModules[propName];	
+	};
 });
 
 setTimeout(function(){

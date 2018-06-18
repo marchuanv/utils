@@ -16,7 +16,7 @@ const port=process.env.PORT;
 const host= process.env.IP || os.hostname();
 
 process.libraries={};
-process.dependencies=[];
+process.dependencies={};
 process.package=package;
 
 var readyCallback;
@@ -48,7 +48,7 @@ for(var propName in package.dependencies){
 	}else{
 		shell.exec(`npm update ${propName}`);
 	}
-	process.dependencies.push(propName);
+	process.dependencies[propName]=require(propName);
 };
 
 compress.minify({

@@ -68,26 +68,44 @@ for(var propName in package.dependencies){
 	process.dependencies[propName]=require(propName);
 };
 
-const bootstraplib=libraries[0].bootstraplib;
-minifyScripts(libraries, function(){
-	minifyScripts(submoduleLibraries, function(){
-		
-		loadMinifiedScripts(submoduleLibraries);
+if (libraries.length>0){
+	const bootstraplib=libraries[0].bootstraplib;
+	minifyScripts(libraries, function(){
 
-	  	if (fs.existsSync(bootstraplib)) {
-			
-			loadMinifiedScripts(libraries);
+		if (submoduleLibraries.length>0){
+			minifyScripts(submoduleLibraries, function(){
+				
+				loadMinifiedScripts(submoduleLibraries);
 
-		  	var extLib=require(bootstraplib);
-			process.libraries=undefined;
-			process.dependencies=undefined;
-			if (readyCallback){
-		  		readyCallback();
+			  	if (fs.existsSync(bootstraplib)) {
+					
+					loadMinifiedScripts(libraries);
+
+				  	var extLib=require(bootstraplib);
+					process.libraries=undefined;
+					process.dependencies=undefined;
+					if (readyCallback){
+				  		readyCallback();
+					}
+				  	module.exports=extLib;
+				}
+			});
+		}else{
+			if (fs.existsSync(bootstraplib)) {
+					
+				loadMinifiedScripts(libraries);
+
+			  	var extLib=require(bootstraplib);
+				process.libraries=undefined;
+				process.dependencies=undefined;
+				if (readyCallback){
+			  		readyCallback();
+				}
+			  	module.exports=extLib;
 			}
-		  	module.exports=extLib;
 		}
 	});
-});
+}
 
 function loadMinifiedScripts(scripts){
 	const outputScript = scripts[0].outputpath;

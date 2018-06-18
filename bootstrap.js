@@ -29,14 +29,15 @@ const libraries=[];
 const scripts=fs.readdirSync(path.join(__dirname,"lib")).sort();
 scripts.forEach(fileName => {
 	libraries.push({
-		inputpath: path.join(__dirname, 'lib', subfileName),
+		inputpath: path.join(__dirname, 'lib', fileName),
 		outputpath: path.join(__dirname, `${package.name}.min.js`),
 		bootstraplib: path.join(__dirname,"bootstrap.lib.js")
 	});
 });
 
 const submoduleLibraries=[];
-process.package.submodules.forEach(function(submodulename){
+process.package.submodules.forEach(function(submodule){
+	const submodulename= submodule.name;
 	const subfiles=fs.readdirSync(path.join(__dirname, submodulename, "lib")).sort();
 	subfiles.forEach(subfileName => {
 		submoduleLibraries.push({

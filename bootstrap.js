@@ -9,14 +9,15 @@ const isWindows = (process.platform === "win32");
 const shell = require('shelljs');
 const Powershell=require('node-powershell');
 const compress=require('node-minify');
-const appFilePath=path.join(__dirname,"./lib/app.js");
-const startStop = process.argv.slice(2);
-const librariesPath=path.join(__dirname,"lib");
-const bootstrapExtPath=path.join(__dirname,"bootstrap.ext.js");
-const files=fs.readdirSync(librariesPath).sort();
+const files=fs.readdirSync(path.join(__dirname,"lib")).sort();
+const bootstrapExtPath=path.join(__dirname,"bootstrap.lib.js");
 const moduleLibrary=path.join(__dirname, `${package.name}.min.js`);
 const port=process.env.PORT;
 const host= process.env.IP || os.hostname();
+
+process.libraries={};
+process.dependencies=[];
+process.package=package;
 
 var readyCallback;
 module.exports={
@@ -27,8 +28,7 @@ module.exports={
 
 const libraries=[];
 files.forEach(fileName => {
-	const fullPath=path.join(__dirname, 'lib', fileName);
-	libraries.push(fullPath);
+	libraries.push(path.join(__dirname, 'lib', fileName));
 });
 
 for(var propName in package.dependencies){
@@ -48,6 +48,7 @@ for(var propName in package.dependencies){
 	}else{
 		shell.exec(`npm update ${propName}`);
 	}
+	process.dependencies.push(propName);
 };
 
 compress.minify({
@@ -59,24 +60,22 @@ compress.minify({
 			var stack = new Error().stack
 			console.error(err);
 			console.log(stack);	
-			return;
-		}
-		process.libraries={};
-		console.log(`${moduleLibrary} created.`);
-		vm.createContext(process.libraries);
-		var javascript=fs.readFileSync(moduleLibrary, "utf8");
-		var script = new vm.Script(javascript);
-		script.runInNewContext(process.libraries);
-		
-		if (fs.existsSync(bootstrapExtPath)) {
-			console.log("loading ", bootstrapExtPath);
-		  	var exp=require(bootstrapExtPath);
-		  	console.log(exp);
-			process.libraries=undefined;
-			if (readyCallback){
-		  		readyCallback();
+		} else {
+			console.log(`${moduleLibrary} created.`);
+			vm.createContext(process.libraries);
+			var javascript=fs.readFileSync(moduleLibrary, "utf8");
+			var script = new vm.Script(javascript);
+			script.runInNewContext(process.libraries);
+			if (fs.existsSync(bootstrapExtPath)) {
+				console.log("loading ", bootstrapExtPath);
+			  	var exp=require(bootstrapExtPath);
+				process.libraries=undefined;
+				process.dependencies=undefined;
+				if (readyCallback){
+			  		readyCallback();
+				}
+			  	module.exports=exp;
 			}
-		  	module.exports=exp;
 		}
 	}
 });

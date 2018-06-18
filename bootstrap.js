@@ -9,13 +9,12 @@ const isWindows = (process.platform === "win32");
 const shell = require('shelljs');
 const Powershell=require('node-powershell');
 const compress=require('node-minify');
-const files=fs.readdirSync(path.join(__dirname,"lib")).sort();
 const bootstrapExtPath=path.join(__dirname,"bootstrap.lib.js");
-const moduleLibrary=path.join(__dirname, `${package.name}.min.js`);
 const port=process.env.PORT;
 const host= process.env.IP || os.hostname();
 
 process.libraries={};
+process.submodules={};
 process.dependencies={};
 process.package=package;
 
@@ -27,8 +26,25 @@ module.exports={
 };
 
 const libraries=[];
-files.forEach(fileName => {
-	libraries.push(path.join(__dirname, 'lib', fileName));
+const scripts=fs.readdirSync(path.join(__dirname,"lib")).sort();
+scripts.forEach(fileName => {
+	libraries.push({
+		inputpath: path.join(__dirname, 'lib', subfileName),
+		outputpath: path.join(__dirname, `${package.name}.min.js`),
+		bootstraplib: path.join(__dirname,"bootstrap.lib.js")
+	});
+});
+
+const submoduleLibraries=[];
+process.package.submodules.forEach(function(submodulename){
+	const subfiles=fs.readdirSync(path.join(__dirname, submodulename, "lib")).sort();
+	subfiles.forEach(subfileName => {
+		submoduleLibraries.push({
+			inputpath: path.join(__dirname, submodulename,'lib', subfileName),
+			outputpath: path.join(__dirname, submodulename,`${submodulename}.min.js`),
+			bootstraplib: path.join(__dirname, submodulename, "bootstrap.lib.js")
+		});
+	});
 });
 
 for(var propName in package.dependencies){
@@ -51,31 +67,54 @@ for(var propName in package.dependencies){
 	process.dependencies[propName]=require(propName);
 };
 
-compress.minify({
-	compressor: 'no-compress',
-	input: libraries,
-	output: moduleLibrary,
-	callback: function (err) {
-		if (err){
-			var stack = new Error().stack
-			console.error(err);
-			console.log(stack);	
-		} else {
-			console.log(`${moduleLibrary} created.`);
-			vm.createContext(process.libraries);
-			var javascript=fs.readFileSync(moduleLibrary, "utf8");
-			var script = new vm.Script(javascript);
-			script.runInNewContext(process.libraries);
-			if (fs.existsSync(bootstrapExtPath)) {
-				console.log("loading ", bootstrapExtPath);
-			  	var exp=require(bootstrapExtPath);
-				process.libraries=undefined;
-				process.dependencies=undefined;
-				if (readyCallback){
-			  		readyCallback();
-				}
-			  	module.exports=exp;
+const bootstraplib=libraries[0].bootstraplib;
+minifyScripts(libraries, function(){
+	minifyScripts(submoduleLibraries, function(){
+		
+		loadMinifiedScripts(submoduleLibraries);
+
+	  	if (fs.existsSync(bootstraplib)) {
+			
+			loadMinifiedScripts(libraries);
+
+		  	var extLib=require(bootstraplib);
+			process.libraries=undefined;
+			process.dependencies=undefined;
+			if (readyCallback){
+		  		readyCallback();
+			}
+		  	module.exports=extLib;
+		}
+	});
+});
+
+function loadMinifiedScripts(scripts){
+	const outputScript = scripts[0].outputpath;
+	vm.createContext(process.libraries);
+	var javascript=fs.readFileSync(outputScript, "utf8");
+	var script = new vm.Script(javascript);
+	script.runInNewContext(process.libraries);
+}
+
+function minifyScripts(scripts, cbMinified){
+	const outputScript = scripts[0].outputpath;
+	const inputScripts = [];
+	scripts.forEach(function(script){
+		inputScripts.push(script.inputpath);
+	});
+	compress.minify({
+		compressor: 'no-compress',
+		input: inputScripts,
+		output: outputScript,
+		callback: function (err) {
+			if (err){
+				var stack = new Error().stack
+				console.error(err);
+				console.log(stack);	
+			} else {
+				console.log(`${outputScript} created.`);
+				cbMinified();
 			}
 		}
-	}
-});
+	});
+}

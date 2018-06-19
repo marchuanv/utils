@@ -64,7 +64,7 @@ for(var propName in package.dependencies){
 	    shell.dispose();
 	  });
 	}else{
-		shell.exec(`npm update ${propName}`);
+		const { stdout, stderr, code } = shell.exec(`npm update ${propName}`, { silent: true });
 	}
 
 	const mod = require(propName);

@@ -13,7 +13,9 @@ const bootstrapExtPath=path.join(__dirname,"bootstrap.lib.js");
 const port=process.env.PORT;
 const host= process.env.IP || os.hostname();
 
-process.argv[2]={};
+process.argv[2]={
+	console: console
+};
 process.argv[3]=package;
 
 module.exports={

@@ -13,10 +13,8 @@ const bootstrapExtPath=path.join(__dirname,"bootstrap.lib.js");
 const port=process.env.PORT;
 const host= process.env.IP || os.hostname();
 
-process.libraries={};
-process.submodules={};
-process.dependencies={};
-process.package=package;
+process.argv[2]={};
+process.argv[3]=package;
 
 var readyCallback;
 module.exports={
@@ -36,7 +34,7 @@ scripts.forEach(fileName => {
 });
 
 const submoduleLibraries=[];
-process.package.submodules.forEach(function(submodule){
+package.submodules.forEach(function(submodule){
 	const submodulename= submodule.name;
 	const subfiles=fs.readdirSync(path.join(__dirname, submodulename, "lib")).sort();
 	subfiles.forEach(subfileName => {
@@ -69,52 +67,48 @@ for(var propName in package.dependencies){
 	const mod = require(propName);
 	if (mod.ready){
 		mod.ready(function(lib){
-			process.dependencies[propName]=lib;
+			process.argv[2][propName]=lib;
 		});
 	}else{
-		process.dependencies[propName]=mod;
+		process.argv[2][propName]=mod;
 	}
 };
 
 if (libraries.length>0){
 	const bootstraplib=libraries[0].bootstraplib;
 	minifyScripts(libraries, function(){
-
+		const minLibraries={};
 		if (submoduleLibraries.length>0){
 			minifyScripts(submoduleLibraries, function(){
-				
-				loadMinifiedScripts(submoduleLibraries);
-
 			  	if (fs.existsSync(bootstraplib)) {
 					
-					loadMinifiedScripts(libraries);
+					loadMinifiedScripts(libraries, process.argv[2]);
+					loadMinifiedScripts(submoduleLibraries, process.argv[2]);
 
 				  	var extLib=require(bootstraplib);
 			  		readyCallback(extLib);
-					process.libraries=undefined;
 					process.dependencies=undefined;
 				}
 			});
 		}else{
 			if (fs.existsSync(bootstraplib)) {
 					
-				loadMinifiedScripts(libraries);
+				loadMinifiedScripts(libraries, process.argv[2]);
 
 			  	var extLib=require(bootstraplib);
 				readyCallback(extLib);
-				process.libraries=undefined;
 				process.dependencies=undefined;
 			}
 		}
 	});
 }
 
-function loadMinifiedScripts(scripts){
+function loadMinifiedScripts(scripts, context){
 	const outputScript = scripts[0].outputpath;
-	vm.createContext(process.libraries);
+	vm.createContext(context);
 	var javascript=fs.readFileSync(outputScript, "utf8");
 	var script = new vm.Script(javascript);
-	script.runInNewContext(process.libraries);
+	script.runInNewContext(context);
 }
 
 function minifyScripts(scripts, cbMinified){

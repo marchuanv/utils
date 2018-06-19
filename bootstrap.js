@@ -69,6 +69,7 @@ for(var propName in package.dependencies){
 	const mod = require(propName);
 	if (mod.ready){
 		mod.ready=function(lib){
+			console.log("LIB",lib);
 			process.argv[2][propName]=lib;
 			depLoadedCount++;
 		};
@@ -93,8 +94,11 @@ waitUntil(function condition(){
 						loadMinifiedScripts(submoduleLibraries, process.argv[2]);
 
 					  	var extLib=require(bootstraplib);
-				  		module.exports.ready(extLib);
-						process.dependencies=undefined;
+					  	if (extLib){
+							module.exports.ready(extLib);
+					  	}else{
+					  		throw `${bootstraplib} failed to return a module`;
+					  	}
 					}
 				});
 			}else{
@@ -103,8 +107,11 @@ waitUntil(function condition(){
 					loadMinifiedScripts(libraries, process.argv[2]);
 
 				  	var extLib=require(bootstraplib);
-					module.exports.ready(extLib);
-					process.dependencies=undefined;
+				  	if (extLib){
+						module.exports.ready(extLib);
+				  	}else{
+				  		throw `${bootstraplib} failed to return a module`;
+				  	}
 				}
 			}
 		});

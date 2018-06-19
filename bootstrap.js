@@ -16,7 +16,7 @@ const host= process.env.IP || os.hostname();
 process.argv[2]={};
 process.argv[3]=package;
 
-var readyCallback;
+var readyCallback=function(){console.log("ready callback not set moving on...");};
 module.exports={
 	ready: function(callback){
 		readyCallback=callback;

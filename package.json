@@ -32,7 +32,7 @@
   },
   "submodules": [],
   "scripts": {
-    "postinstall": "npm update",
+    "prestart": "npm update",
     "start": "node bootstrap.js start",
     "stop": "node bootstrap.js stop",
     "test": "node bootstrap.tests.js"

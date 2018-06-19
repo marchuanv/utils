@@ -40,7 +40,7 @@ package.submodules.forEach(function(submodule){
 	subfiles.forEach(subfileName => {
 		submoduleLibraries.push({
 			inputpath: path.join(__dirname, submodulename,'lib', subfileName),
-			outputpath: path.join(__dirname, `${submodulename}.min.js`),
+			outputpath: path.join(__dirname, submodulename, `${submodulename}.min.js`),
 			bootstraplib: path.join(__dirname, submodulename, "bootstrap.lib.js")
 		});
 	});

@@ -90,11 +90,9 @@ if (libraries.length>0){
 					loadMinifiedScripts(libraries);
 
 				  	var extLib=require(bootstraplib);
+			  		readyCallback(extLib);
 					process.libraries=undefined;
 					process.dependencies=undefined;
-					if (readyCallback){
-				  		readyCallback(extLib);
-					}
 				}
 			});
 		}else{
@@ -103,11 +101,9 @@ if (libraries.length>0){
 				loadMinifiedScripts(libraries);
 
 			  	var extLib=require(bootstraplib);
+				readyCallback(extLib);
 				process.libraries=undefined;
 				process.dependencies=undefined;
-				if (readyCallback){
-			  		readyCallback(extLib);
-				}
 			}
 		}
 	});

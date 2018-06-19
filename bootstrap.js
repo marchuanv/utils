@@ -65,7 +65,15 @@ for(var propName in package.dependencies){
 	}else{
 		shell.exec(`npm update ${propName}`);
 	}
-	process.dependencies[propName]=require(propName);
+
+	const mod = require(propName);
+	if (mod.ready){
+		mod.ready(function(lib){
+			process.dependencies[propName]=lib;
+		});
+	}else{
+		process.dependencies[propName]=mod;
+	}
 };
 
 if (libraries.length>0){
@@ -85,9 +93,8 @@ if (libraries.length>0){
 					process.libraries=undefined;
 					process.dependencies=undefined;
 					if (readyCallback){
-				  		readyCallback();
+				  		readyCallback(extLib);
 					}
-				  	module.exports=extLib;
 				}
 			});
 		}else{
@@ -99,9 +106,8 @@ if (libraries.length>0){
 				process.libraries=undefined;
 				process.dependencies=undefined;
 				if (readyCallback){
-			  		readyCallback();
+			  		readyCallback(extLib);
 				}
-			  	module.exports=extLib;
 			}
 		}
 	});

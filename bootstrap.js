@@ -16,10 +16,9 @@ const host= process.env.IP || os.hostname();
 process.argv[2]={};
 process.argv[3]=package;
 
-var readyCallback=function(){console.log("ready callback not set moving on...");};
 module.exports={
-	ready: function(callback){
-		readyCallback=callback;
+	ready: function(){
+		console.log("ready callback not set moving on...");
 	}
 };
 
@@ -46,7 +45,10 @@ package.submodules.forEach(function(submodule){
 	});
 });
 
+var depLoadCount=0;
+var depLoadedCount=0;
 for(var propName in package.dependencies){
+	depLoadCount++;
 	if (isWindows==true) {
 	  let shell = new Powershell({
 	    executionPolicy: 'Bypass',
@@ -68,40 +70,46 @@ for(var propName in package.dependencies){
 	if (mod.ready){
 		mod.ready(function(lib){
 			process.argv[2][propName]=lib;
+			depLoadedCount++;
 		});
 	}else{
 		process.argv[2][propName]=mod;
+		depLoadedCount++;
 	}
 };
 
-if (libraries.length>0){
-	const bootstraplib=libraries[0].bootstraplib;
-	minifyScripts(libraries, function(){
-		const minLibraries={};
-		if (submoduleLibraries.length>0){
-			minifyScripts(submoduleLibraries, function(){
-			  	if (fs.existsSync(bootstraplib)) {
-					
+waitUntil(function condition(){
+	return depLoadCount == depLoadedCount;
+},function done(){
+	if (libraries.length>0){
+		const bootstraplib=libraries[0].bootstraplib;
+		minifyScripts(libraries, function(){
+			const minLibraries={};
+			if (submoduleLibraries.length>0){
+				minifyScripts(submoduleLibraries, function(){
+				  	if (fs.existsSync(bootstraplib)) {
+						
+						loadMinifiedScripts(libraries, process.argv[2]);
+						loadMinifiedScripts(submoduleLibraries, process.argv[2]);
+
+					  	var extLib=require(bootstraplib);
+				  		module.exports.ready(extLib);
+						process.dependencies=undefined;
+					}
+				});
+			}else{
+				if (fs.existsSync(bootstraplib)) {
+						
 					loadMinifiedScripts(libraries, process.argv[2]);
-					loadMinifiedScripts(submoduleLibraries, process.argv[2]);
 
 				  	var extLib=require(bootstraplib);
-			  		readyCallback(extLib);
+					module.exports.ready(extLib);
 					process.dependencies=undefined;
 				}
-			});
-		}else{
-			if (fs.existsSync(bootstraplib)) {
-					
-				loadMinifiedScripts(libraries, process.argv[2]);
-
-			  	var extLib=require(bootstraplib);
-				readyCallback(extLib);
-				process.dependencies=undefined;
 			}
-		}
-	});
-}
+		});
+	}
+});
 
 function loadMinifiedScripts(scripts, context){
 	const outputScript = scripts[0].outputpath;
@@ -132,4 +140,14 @@ function minifyScripts(scripts, cbMinified){
 			}
 		}
 	});
+}
+
+function waitUntil(cbCondition, cbExpired){
+	if (cbCondition()){
+		cbExpired();
+	}else{
+		setTimeout(function(){
+			waitUntil(cbCondition, cbExpired);
+		}, 1000);
+	}
 }

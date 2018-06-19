@@ -5,9 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const package=require(path.join(__dirname, 'package.json'));
 const vm = require('vm');
-const isWindows = (process.platform === "win32");
-const shell = require('shelljs');
-const Powershell=require('node-powershell');
 const compress=require('node-minify');
 const bootstrapExtPath=path.join(__dirname,"bootstrap.lib.js");
 const port=process.env.PORT;
@@ -108,6 +105,7 @@ function loadMinifiedScripts(scripts, context){
 	var javascript=fs.readFileSync(outputScript, "utf8");
 	var script = new vm.Script(javascript);
 	script.runInNewContext(context);
+	console.log(`libraries from ${outputScript} was loaded.`);
 }
 
 function minifyScripts(scripts, cbMinified){

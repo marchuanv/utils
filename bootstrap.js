@@ -50,23 +50,6 @@ var depLoadCount=0;
 var depLoadedCount=0;
 for(var propName in package.dependencies){
 	depLoadCount++;
-	if (isWindows==true) {
-	  let shell = new Powershell({
-	    executionPolicy: 'Bypass',
-	    noProfile: true
-	  });
-	  shell.addCommand(`npm update ${propName}`);
-	  shell.invoke().then(output => {
-	    console.log(output);
-	    shell.dispose();
-	  }).catch(err => {
-	    console.log(err);
-	    shell.dispose();
-	  });
-	}else{
-		const { stdout, stderr, code } = shell.exec(`npm update ${propName}`, { silent: true });
-	}
-
 	const mod = require(propName);
 	if (mod.ready){
 		mod.ready=function(lib){

@@ -68,10 +68,10 @@ for(var propName in package.dependencies){
 
 	const mod = require(propName);
 	if (mod.ready){
-		mod.ready(function(lib){
+		mod.ready=function(lib){
 			process.argv[2][propName]=lib;
 			depLoadedCount++;
-		});
+		};
 	}else{
 		process.argv[2][propName]=mod;
 		depLoadedCount++;

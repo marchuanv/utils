@@ -16,7 +16,6 @@ const host= process.env.IP || os.hostname();
 process.argv[2]={
 	console: console
 };
-process.argv[3]=package;
 
 module.exports={
 	ready: function(){
@@ -84,6 +83,7 @@ for(var propName in package.dependencies){
 waitUntil(function condition(){
 	return depLoadCount == depLoadedCount;
 },function done(){
+	process.argv[3]=package;
 	if (libraries.length>0){
 		const bootstraplib=libraries[0].bootstraplib;
 		minifyScripts(libraries, function(){

@@ -77,7 +77,7 @@ waitUntil(function condition(){
 					  	var extLib=require(bootstraplib);
 					  	if (extLib){
 							module.exports.ready(extLib);
-					  		console.log(`${bootstraplib} successfull`);
+					  		console.log(`${bootstraplib} was successfull`);
 					  	}else{
 					  		throw `${bootstraplib} failed to return a module`;
 					  	}

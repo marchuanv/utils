@@ -73,10 +73,10 @@ waitUntil(function condition(){
 	process.argv[3]=package;
 	if (libraries.length>0){
 		const bootstraplib=libraries[0].bootstraplib;
-		console.log("minifying scripts for node_modules libraries");
+		console.log(`minifying node_module scripts for ${package.name}.`);
 		minifyScripts(libraries, function(){
 			if (submoduleLibraries.length>0){
-				console.log("minifying scripts for submodule libraries.");
+				console.log(`minifying submodule scripts for ${package.name}.`);
 				minifyScripts(submoduleLibraries, function(){
 				  	if (fs.existsSync(bootstraplib)) {
 						

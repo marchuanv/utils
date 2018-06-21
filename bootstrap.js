@@ -57,6 +57,7 @@ moduleDependencies.forEach(function(depMod){
 		mod.ready=function(lib){
 			console.log(`${package.name}: ${depMod.name} was loaded.`);
 			depMod.library=lib;
+			mod.ready=null;
 		};
 	}else{
 		console.log(`${package.name}: ${depMod.name} was loaded.`);

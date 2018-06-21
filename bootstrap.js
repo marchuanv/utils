@@ -16,7 +16,7 @@ process.argv[2]={
 
 module.exports={
 	ready: function(){
-		console.log("ready callback not set moving on...");
+		console.log(`${package.name}: ready was not set by the caller.`);
 	}
 };
 
@@ -46,37 +46,48 @@ package.submodules.forEach(function(submodule){
 
 var moduleDependencies=[];
 for(var propName in package.dependencies){
-	moduleDependencies.push(propName);
+	moduleDependencies.push({ 
+		name: propName, 
+		library: null
+	});
 };
 
-var depLoadedCount=0;
-moduleDependencies.forEach(function(modulename){
-	const mod = require(modulename);
+moduleDependencies.forEach(function(depMod){
+	const mod = require(depMod.name);
 	if (mod.ready){
 		mod.ready=function(lib){
-			console.log(`${modulename} loaded for ${package.name}.`);
-			process.argv[2][modulename]=lib;
-			depLoadedCount++;
+			console.log(`${package.name}: ${depMod.name} was loaded.`);
+			depMod.library=lib;
 		};
 	}else{
-		console.log(`${modulename} loaded for ${package.name}.`);
-		process.argv[2][modulename]=mod;
-		depLoadedCount++;
+		console.log(`${package.name}: ${depMod.name} was loaded.`);
+		depMod.library=lib;
 	}
 });
 
 waitUntil(function condition(){
-	console.log(`waiting for ${package.name} dependencies to load before continuing.`);
-	return (moduleDependencies.length == depLoadedCount);
+
+	var isLoaded=true;
+	moduleDependencies.forEach(function(depMod){
+		if (depMod.library == null){
+			isLoaded=false;
+			console.log(`${package.name}: waiting for the ${depMod.name} dependency to load before continuing.`);
+		}
+	});
+	return isLoaded;
+
 },function done(){
-	console.log(`dependencies loaded for ${package.name}.`);
+	moduleDependencies.forEach(function(depMod){
+		process.argv[2][depMod.name]=depMod.library;
+	});
+	console.log(`${package.name}: dependencies loaded.`);
 	process.argv[3]=package;
 	if (libraries.length>0){
 		const bootstraplib=libraries[0].bootstraplib;
-		console.log(`minifying node_module scripts for ${package.name}.`);
+		console.log(`${package.name}: minifying node module scripts.`);
 		minifyScripts(libraries, function(){
 			if (submoduleLibraries.length>0){
-				console.log(`minifying submodule scripts for ${package.name}.`);
+				console.log(`${package.name}: minifying submodule scripts.`);
 				minifyScripts(submoduleLibraries, function(){
 				  	if (fs.existsSync(bootstraplib)) {
 						
@@ -90,7 +101,7 @@ waitUntil(function condition(){
 					  		throw `${package.name}: ${bootstraplib} failed to return a module`;
 					  	}
 					}else{
-						console.log(`${bootstraplib} does not exist.`);
+						console.log(`${package.name}: ${bootstraplib} does not exist.`);
 					}
 				});
 			}else{
@@ -105,7 +116,7 @@ waitUntil(function condition(){
 				  		throw `${package.name}: ${bootstraplib} failed to return a module`;
 				  	}
 				}else{
-					console.log(`${bootstraplib} does not exist.`);
+					console.log(`${package.name}: ${bootstraplib} does not exist.`);
 				}
 			}
 		});

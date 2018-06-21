@@ -52,6 +52,7 @@ for(var propName in package.dependencies){
 };
 
 moduleDependencies.forEach(function(depMod){
+	console.log(`${package.name}: attempting to require ${depMod.name}.`);
 	const mod = require(depMod.name);
 	if (mod.ready){
 		mod.ready=function(lib){

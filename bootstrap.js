@@ -54,12 +54,12 @@ moduleDependencies.forEach(function(modulename){
 	const mod = require(modulename);
 	if (mod.ready){
 		mod.ready=function(lib){
-			console.log(`${modulename} loaded.`);
+			console.log(`${modulename} loaded for the ${package.name}.`);
 			process.argv[2][modulename]=lib;
 			depLoadedCount++;
 		};
 	}else{
-		console.log(`${modulename} loaded.`);
+		console.log(`${modulename} loaded for the ${package.name}.`);
 		process.argv[2][modulename]=mod;
 		depLoadedCount++;
 	}

@@ -53,12 +53,12 @@ for(var propName in package.dependencies){
 
 moduleDependencies.forEach(function(depMod){
 	console.log(`${package.name}: attempting to require ${depMod.name}.`);
+	delete require.cache[require.resolve(depMod.name)];
 	const mod = require(depMod.name);
 	if (mod.ready){
 		mod.ready=function(lib){
 			console.log(`${package.name}: ${depMod.name} was loaded.`);
 			depMod.library=lib;
-			mod.ready=null;
 		};
 	}else{
 		console.log(`${package.name}: ${depMod.name} was loaded.`);

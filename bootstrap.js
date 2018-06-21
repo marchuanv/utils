@@ -61,7 +61,7 @@ moduleDependencies.forEach(function(depMod){
 		};
 	}else{
 		console.log(`${package.name}: ${depMod.name} was loaded.`);
-		depMod.library=lib;
+		depMod.library=mod;
 	}
 });
 

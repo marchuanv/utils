@@ -54,12 +54,12 @@ moduleDependencies.forEach(function(modulename){
 	const mod = require(modulename);
 	if (mod.ready){
 		mod.ready=function(lib){
-			console.log(`${modulename} loaded for the ${package.name}.`);
+			console.log(`${modulename} loaded for ${package.name}.`);
 			process.argv[2][modulename]=lib;
 			depLoadedCount++;
 		};
 	}else{
-		console.log(`${modulename} loaded for the ${package.name}.`);
+		console.log(`${modulename} loaded for ${package.name}.`);
 		process.argv[2][modulename]=mod;
 		depLoadedCount++;
 	}
@@ -73,8 +73,10 @@ waitUntil(function condition(){
 	process.argv[3]=package;
 	if (libraries.length>0){
 		const bootstraplib=libraries[0].bootstraplib;
+		console.log("minifying scripts for node_modules libraries");
 		minifyScripts(libraries, function(){
 			if (submoduleLibraries.length>0){
+				console.log("minifying scripts for submodule libraries.");
 				minifyScripts(submoduleLibraries, function(){
 				  	if (fs.existsSync(bootstraplib)) {
 						
@@ -107,6 +109,8 @@ waitUntil(function condition(){
 				}
 			}
 		});
+	}else{
+		console.log(`${package.name} does not have libraries.`);
 	}
 });
 

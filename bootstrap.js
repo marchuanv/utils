@@ -138,7 +138,11 @@ function minifyScripts(scripts, cbMinified){
 	const outputScript = scripts[0].outputpath;
 	const inputScripts = [];
 	scripts.forEach(function(script){
-		inputScripts.push(script.inputpath);
+		if (fs.existsSync(script.inputpath)) {
+			inputScripts.push(script.inputpath);
+		}else{
+			throw `${script.inputpath} does not exist!`;
+		}
 	});
 	compress.minify({
 		compressor: 'no-compress',

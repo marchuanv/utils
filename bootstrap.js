@@ -52,13 +52,14 @@ for(var propName in package.dependencies){
 var depLoadedCount=0;
 moduleDependencies.forEach(function(modulename){
 	const mod = require(modulename);
-	console.log("required: ",modulename);
 	if (mod.ready){
 		mod.ready=function(lib){
+			console.log(`${modulename} loaded.`);
 			process.argv[2][modulename]=lib;
 			depLoadedCount++;
 		};
 	}else{
+		console.log(`${modulename} loaded.`);
 		process.argv[2][modulename]=mod;
 		depLoadedCount++;
 	}
@@ -83,7 +84,6 @@ waitUntil(function condition(){
 					  	var extLib=require(bootstraplib);
 					  	if (extLib){
 							module.exports.ready(extLib);
-					  		console.log(`${package.name}: ${bootstraplib} was successfull`);
 					  	}else{
 					  		throw `${package.name}: ${bootstraplib} failed to return a module`;
 					  	}
@@ -99,7 +99,6 @@ waitUntil(function condition(){
 				  	var extLib=require(bootstraplib);
 				  	if (extLib){
 						module.exports.ready(extLib);
-						console.log(`${package.name}: ${bootstraplib} was successfull`);
 				  	}else{
 				  		throw `${package.name}: ${bootstraplib} failed to return a module`;
 				  	}

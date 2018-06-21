@@ -20,8 +20,8 @@ module.exports={
 	}
 };
 
-const libraries=[];
 const scripts=fs.readdirSync(path.join(__dirname,"lib")).sort();
+const libraries=[];
 scripts.forEach(fileName => {
 	libraries.push({
 		inputpath: path.join(__dirname, 'lib', fileName),
@@ -42,7 +42,6 @@ package.submodules.forEach(function(submodule){
 		});
 	});
 });
-
 
 var moduleDependencies=[];
 for(var propName in package.dependencies){
@@ -84,10 +83,8 @@ waitUntil(function condition(){
 	process.argv[3]=package;
 	if (libraries.length>0){
 		const bootstraplib=libraries[0].bootstraplib;
-		console.log(`${package.name}: minifying node module scripts.`);
 		minifyScripts(libraries, function(){
 			if (submoduleLibraries.length>0){
-				console.log(`${package.name}: minifying submodule scripts.`);
 				minifyScripts(submoduleLibraries, function(){
 				  	if (fs.existsSync(bootstraplib)) {
 						
@@ -100,6 +97,7 @@ waitUntil(function condition(){
 					  	}else{
 					  		throw `${package.name}: ${bootstraplib} failed to return a module`;
 					  	}
+
 					}else{
 						console.log(`${package.name}: ${bootstraplib} does not exist.`);
 					}
@@ -115,6 +113,7 @@ waitUntil(function condition(){
 				  	}else{
 				  		throw `${package.name}: ${bootstraplib} failed to return a module`;
 				  	}
+
 				}else{
 					console.log(`${package.name}: ${bootstraplib} does not exist.`);
 				}
@@ -136,6 +135,8 @@ function loadMinifiedScripts(scripts, context){
 
 function minifyScripts(scripts, cbMinified){
 	const outputScript = scripts[0].outputpath;
+	console.log(`${package.name}: minifying lib scripts to ${outputScript}.`);
+
 	const inputScripts = [];
 	scripts.forEach(function(script){
 		if (fs.existsSync(script.inputpath)) {
@@ -144,6 +145,7 @@ function minifyScripts(scripts, cbMinified){
 			throw `${script.inputpath} does not exist!`;
 		}
 	});
+
 	compress.minify({
 		compressor: 'no-compress',
 		input: inputScripts,
@@ -152,9 +154,9 @@ function minifyScripts(scripts, cbMinified){
 			if (err){
 				var stack = new Error().stack
 				console.error(err);
-				console.log(stack);	
+				console.log(stack);
 			} else {
-				console.log(`${outputScript} created.`);
+				console.log(`${package.name}: ${outputScript} created.`);
 				cbMinified();
 			}
 		}

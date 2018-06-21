@@ -45,16 +45,18 @@ package.submodules.forEach(function(submodule){
 
 var depLoadCount=0;
 var depLoadedCount=0;
+console.log("requiring: ",package.dependencies);
 for(var propName in package.dependencies){
 	depLoadCount++;
 	const mod = require(propName);
 	if (mod.ready){
 		mod.ready=function(lib){
-			console.log(`${package.name}: adding ${propName} to libraries.`);
+			console.log(`${package.name}: adding libraries from ${propName}.`);
 			process.argv[2][propName]=lib;
 			depLoadedCount++;
 		};
 	}else{
+		console.log(`${package.name}: adding libraries from ${propName}.`);
 		process.argv[2][propName]=mod;
 		depLoadedCount++;
 	}
@@ -67,7 +69,6 @@ waitUntil(function condition(){
 	if (libraries.length>0){
 		const bootstraplib=libraries[0].bootstraplib;
 		minifyScripts(libraries, function(){
-			const minLibraries={};
 			if (submoduleLibraries.length>0){
 				minifyScripts(submoduleLibraries, function(){
 				  	if (fs.existsSync(bootstraplib)) {

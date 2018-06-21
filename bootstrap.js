@@ -43,27 +43,32 @@ package.submodules.forEach(function(submodule){
 	});
 });
 
-var depLoadCount=0;
-var depLoadedCount=0;
-console.log("requiring: ",package.dependencies);
+
+var moduleDependencies=[];
 for(var propName in package.dependencies){
-	depLoadCount++;
-	const mod = require(propName);
+	moduleDependencies.push(propName);
+};
+
+var depLoadedCount=0;
+moduleDependencies.forEach(function(modulename){
+	const mod = require(modulename);
+	console.log("required: ",modulename);
 	if (mod.ready){
 		mod.ready=function(lib){
-			console.log(`${package.name}: adding libraries from ${propName}.`);
-			process.argv[2][propName]=lib;
+			console.log(`${package.name}: adding libraries from ${modulename}.`);
+			process.argv[2][modulename]=lib;
 			depLoadedCount++;
 		};
 	}else{
-		console.log(`${package.name}: adding libraries from ${propName}.`);
-		process.argv[2][propName]=mod;
+		console.log(`${package.name}: adding libraries from ${modulename}.`);
+		process.argv[2][modulename]=mod;
 		depLoadedCount++;
 	}
-};
+});
 
 waitUntil(function condition(){
-	return depLoadCount == depLoadedCount;
+	console.log(`waiting for ${package.name} dependencies to load before continuing.`);
+	return moduleDependencies.length == depLoadedCount;
 },function done(){
 	process.argv[3]=package;
 	if (libraries.length>0){

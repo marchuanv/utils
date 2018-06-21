@@ -55,12 +55,10 @@ moduleDependencies.forEach(function(modulename){
 	console.log("required: ",modulename);
 	if (mod.ready){
 		mod.ready=function(lib){
-			console.log(`${package.name}: adding libraries from ${modulename}.`);
 			process.argv[2][modulename]=lib;
 			depLoadedCount++;
 		};
 	}else{
-		console.log(`${package.name}: adding libraries from ${modulename}.`);
 		process.argv[2][modulename]=mod;
 		depLoadedCount++;
 	}
@@ -68,8 +66,9 @@ moduleDependencies.forEach(function(modulename){
 
 waitUntil(function condition(){
 	console.log(`waiting for ${package.name} dependencies to load before continuing.`);
-	return moduleDependencies.length == depLoadedCount;
+	return (moduleDependencies.length == depLoadedCount);
 },function done(){
+	console.log(`dependencies loaded for ${package.name}.`);
 	process.argv[3]=package;
 	if (libraries.length>0){
 		const bootstraplib=libraries[0].bootstraplib;
@@ -88,6 +87,8 @@ waitUntil(function condition(){
 					  	}else{
 					  		throw `${package.name}: ${bootstraplib} failed to return a module`;
 					  	}
+					}else{
+						console.log(`${bootstraplib} does not exist.`);
 					}
 				});
 			}else{
@@ -102,6 +103,8 @@ waitUntil(function condition(){
 				  	}else{
 				  		throw `${package.name}: ${bootstraplib} failed to return a module`;
 				  	}
+				}else{
+					console.log(`${bootstraplib} does not exist.`);
 				}
 			}
 		});

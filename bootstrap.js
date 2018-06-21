@@ -130,7 +130,7 @@ function loadMinifiedScripts(scripts, context){
 	var javascript=fs.readFileSync(outputScript, "utf8");
 	var script = new vm.Script(javascript);
 	script.runInNewContext(context);
-	console.log(`libraries from ${outputScript} was loaded.`);
+	console.log(`${package.name}: ${outputScript} was loaded.`);
 }
 
 function minifyScripts(scripts, cbMinified){

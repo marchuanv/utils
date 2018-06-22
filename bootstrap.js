@@ -1,14 +1,11 @@
 console.log("");
 
-const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const package=require(path.join(__dirname, 'package.json'));
 const vm = require('vm');
 const compress=require('node-minify');
 const bootstrapExtPath=path.join(__dirname,"bootstrap.lib.js");
-const port=process.env.PORT;
-const host= process.env.IP || os.hostname();
 
 process.argv[2]={
 	console: console

@@ -1,7 +1,6 @@
 console.log("");
 const fs = require('fs');
 const specsDir=path.join(__dirname, `specs`);
-const bootstrapModule=
 const specToRun=process.argv[2];
 	
 const specifications=[];
@@ -18,7 +17,7 @@ require("./bootstrap.js").ready=function(instanceUnderTest){
 		if (spec.name == specToRun || !specToRun){
 			console.log("----------------------------------------------------------------");
 			console.log(`running ${spec.name}`);
-			spec.file.run(instanceUnderTest, function pass(msg){
+			spec.file.run(instanceUnderTest, function pass(){
 				console.log(`${spec.name} passed!.`);
 			},function fail(err){
 				console.log(`${spec.name} failed!.`);

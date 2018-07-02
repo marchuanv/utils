@@ -1,127 +1,34 @@
 console.log("");
-
+console.log("BOOTSTRAP.JS");
 const fs = require('fs');
 const path = require('path');
-const package=require(path.join(__dirname, 'package.json'));
 const vm = require('vm');
 const compress=require('node-minify');
-const bootstrapExtPath=path.join(__dirname,"bootstrap.lib.js");
-
-process.argv[2]={
-	console: console
+const package=require(path.join(__dirname, 'package.json'));
+const context={
+	console: console,
+	require: require
 };
-
-module.exports={
-	ready: function(){
-		console.log(`${package.name}: ready was not set by the caller.`);
-	}
-};
+process.argv[2]=context;
+process.argv[3]=package;
+process.argv[4]=__dirname;
 
 const scripts=fs.readdirSync(path.join(__dirname,"lib")).sort();
 const libraries=[];
 scripts.forEach(fileName => {
 	libraries.push({
 		inputpath: path.join(__dirname, 'lib', fileName),
-		outputpath: path.join(__dirname, `${package.name}.min.js`),
-		bootstraplib: path.join(__dirname,"bootstrap.lib.js")
+		outputpath: path.join(__dirname, `${package.name}.min.js`)
 	});
 });
 
-const submoduleLibraries=[];
-package.submodules.forEach(function(submodule){
-	const submodulename= submodule.name;
-	const subfiles=fs.readdirSync(path.join(__dirname, submodulename, "lib")).sort();
-	subfiles.forEach(subfileName => {
-		submoduleLibraries.push({
-			inputpath: path.join(__dirname, submodulename,'lib', subfileName),
-			outputpath: path.join(__dirname, submodulename, `${submodulename}.min.js`),
-			bootstraplib: path.join(__dirname, submodulename, "bootstrap.lib.js")
-		});
-	});
-});
+minifyScripts(libraries);
+loadMinifiedScripts(libraries, context);
 
-var moduleDependencies=[];
-for(var propName in package.dependencies){
-	moduleDependencies.push({ 
-		name: propName, 
-		library: null
-	});
-};
-
-moduleDependencies.forEach(function(depMod){
-	console.log(`${package.name}: attempting to require ${depMod.name}.`);
-	delete require.cache[require.resolve(depMod.name)];
-	const mod = require(depMod.name);
-	if (mod.ready){
-		mod.ready=function(lib){
-			console.log(`${package.name}: ${depMod.name} was loaded.`);
-			depMod.library=lib;
-		};
-	}else{
-		console.log(`${package.name}: ${depMod.name} was loaded.`);
-		depMod.library=mod;
-	}
-});
-
-waitUntil(function condition(){
-
-	var isLoaded=true;
-	moduleDependencies.forEach(function(depMod){
-		if (depMod.library == null){
-			isLoaded=false;
-			console.log(`${package.name}: waiting for the ${depMod.name} dependency to load before continuing.`);
-		}
-	});
-	return isLoaded;
-
-},function done(){
-	moduleDependencies.forEach(function(depMod){
-		process.argv[2][depMod.name]=depMod.library;
-	});
-	console.log(`${package.name}: dependencies loaded.`);
-	process.argv[3]=package;
-	if (libraries.length>0){
-		const bootstraplib=libraries[0].bootstraplib;
-		minifyScripts(libraries, function(){
-			if (submoduleLibraries.length>0){
-				minifyScripts(submoduleLibraries, function(){
-				  	if (fs.existsSync(bootstraplib)) {
-						
-						loadMinifiedScripts(libraries, process.argv[2]);
-						loadMinifiedScripts(submoduleLibraries, process.argv[2]);
-
-					  	var extLib=require(bootstraplib);
-					  	if (extLib){
-							module.exports.ready(extLib);
-					  	}else{
-					  		throw `${package.name}: ${bootstraplib} failed to return a module`;
-					  	}
-
-					}else{
-						console.log(`${package.name}: ${bootstraplib} does not exist.`);
-					}
-				});
-			}else{
-				if (fs.existsSync(bootstraplib)) {
-						
-					loadMinifiedScripts(libraries, process.argv[2]);
-
-				  	var extLib=require(bootstraplib);
-				  	if (extLib){
-						module.exports.ready(extLib);
-				  	}else{
-				  		throw `${package.name}: ${bootstraplib} failed to return a module`;
-				  	}
-
-				}else{
-					console.log(`${package.name}: ${bootstraplib} does not exist.`);
-				}
-			}
-		});
-	}else{
-		console.log(`${package.name} does not have libraries.`);
-	}
-});
+const bootStrapLibPath=path.join(__dirname,"bootstrap.lib.js")
+if (fs.existsSync(bootStrapLibPath)) {
+	module.exports=require(bootStrapLibPath);
+}
 
 function loadMinifiedScripts(scripts, context){
 	const outputScript = scripts[0].outputpath;
@@ -132,10 +39,9 @@ function loadMinifiedScripts(scripts, context){
 	console.log(`${package.name}: ${outputScript} was loaded.`);
 }
 
-function minifyScripts(scripts, cbMinified){
+async function minifyScripts(scripts){
 	const outputScript = scripts[0].outputpath;
 	console.log(`${package.name}: minifying lib scripts to ${outputScript}.`);
-
 	const inputScripts = [];
 	scripts.forEach(function(script){
 		if (fs.existsSync(script.inputpath)) {
@@ -144,30 +50,9 @@ function minifyScripts(scripts, cbMinified){
 			throw `${script.inputpath} does not exist!`;
 		}
 	});
-
-	compress.minify({
+	await compress.minify({
 		compressor: 'no-compress',
 		input: inputScripts,
-		output: outputScript,
-		callback: function (err) {
-			if (err){
-				var stack = new Error().stack
-				console.error(err);
-				console.log(stack);
-			} else {
-				console.log(`${package.name}: ${outputScript} created.`);
-				cbMinified();
-			}
-		}
+		output: outputScript
 	});
-}
-
-function waitUntil(cbCondition, cbExpired){
-	if (cbCondition()){
-		cbExpired();
-	}else{
-		setTimeout(function(){
-			waitUntil(cbCondition, cbExpired);
-		}, 1000);
-	}
 }

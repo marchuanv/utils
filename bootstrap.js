@@ -35,7 +35,7 @@ scripts.forEach(fileName => {
 	libraries.push(inputpath);
 });
 
-minifyScripts(libraries, outputpath).then(function(){
+module.exports=minifyScripts(libraries, outputpath).then(async function(){
 	vm.createContext(context);
 	console.log(`reading ${outputpath}.`);
 	var javascript=fs.readFileSync(outputpath, "utf8");
@@ -44,7 +44,7 @@ minifyScripts(libraries, outputpath).then(function(){
 	console.log(`${package.name}: ${outputpath} was loaded.`);
 	const bootStrapLibPath=path.join(__dirname,"bootstrap.lib.js")
 	if (fs.existsSync(bootStrapLibPath)) {
-		module.exports=require(bootStrapLibPath);
+		return require(bootStrapLibPath);
 	}
 }).catch(function(err){
 	console.log(err);

@@ -4,6 +4,5 @@
     "host": "utils-api.herokuapp.com",
     "port": "443",
     "username": "marchuanv",
-    "dependencies": [],
-    "schedules": []
+    "dependencies": []
 }

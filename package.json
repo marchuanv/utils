@@ -3,7 +3,7 @@
     "host": "utils-api.herokuapp.com",
     "port": "443",
     "username": "marchuanv",
-    "name": "utils",
+    "name": "utils-api",
     "version": "1.0.0",
     "description": "",
     "main": "",

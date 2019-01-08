@@ -1,11 +1,13 @@
 {
+    "protocol": "https",
+    "host": "utils-api.herokuapp.com",
+    "port": "443",
+    "username": "marchuanv",
+    "dependencies": []
     "name": "utils",
-    "host": "localhost",
-    "port": 6000,
     "version": "1.0.0",
     "description": "",
     "main": "bootstrap.js",
-    "isdebug": true,
     "author": "marchuan van der merwe",
     "license": "ISC",
     "bugs": {
@@ -27,5 +29,5 @@
         "test": "bash test.sh",
         "prestart": "npm update"
     },
-    "dependencies": {}
+    "dependencies": []
 }

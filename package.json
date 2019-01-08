@@ -28,5 +28,5 @@
         "test": "bash test.sh",
         "prestart": "npm update"
     },
-    "dependencies": []
+    "remotemodules": []
 }

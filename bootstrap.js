@@ -1,3 +1,5 @@
-function initialise(references){
-	return new references.Utils(references);
+function Bootstrap(){
+	this.create=function(args){
+		return new Utils(args);
+	}
 }

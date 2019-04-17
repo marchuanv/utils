@@ -1,12 +1,10 @@
 {
-    "protocol": "https",
-    "host": "utils-api.herokuapp.com",
-    "port": "443",
+    "name": "utils",
     "username": "marchuanv",
-    "name": "utils-api",
+    "host": "utils.herokuapp.com",
+    "port": "443",
     "version": "1.0.0",
     "description": "",
-    "main": "",
     "author": "marchuan van der merwe",
     "license": "ISC",
     "bugs": {
@@ -28,5 +26,7 @@
         "test": "bash test.sh",
         "prestart": "npm update"
     },
-    "remotemodules": []
+    "files":{
+      "utils": "utils.js"
+    }
 }

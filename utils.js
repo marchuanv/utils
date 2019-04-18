@@ -21,9 +21,9 @@ function Utils(){
          return Buffer.byteLength(str, 'utf8');
     }
     
-    this.syncObject=function(obj, sourceObj){
+    this.syncObject=function(obj, sourceObj, replace){
         for(const propName in obj){
-            if (sourceObj[propName]) {
+            if (sourceObj[propName] || replace===true) {
                 obj[propName] = sourceObj[propName];
             }
         };

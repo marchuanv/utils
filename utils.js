@@ -23,7 +23,7 @@ function Utils(){
     
     this.syncObject=function(obj, sourceObj, replace){
         for(const propName in obj){
-            if (sourceObj[propName] || replace===true) {
+            if (sourceObj[propName]) {
                 obj[propName] = sourceObj[propName];
             }
         };

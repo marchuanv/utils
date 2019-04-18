@@ -29,7 +29,7 @@ function Utils(){
         };
     };
 
-    this.extendObject=function(obj, sourceObj){
+    this.mergeObject=function(obj, sourceObj){
         for(const propName in sourceObj){
             if (sourceObj[propName]) {
                 obj[propName] = sourceObj[propName];

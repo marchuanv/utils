@@ -56,11 +56,11 @@ function Utils(){
         }
     };
     
-    this.log=(message, params)=>{
-        if (message && params){
-            console.log(message, params);
+    this.log=(source, message, obj)=>{
+        if (message && obj){
+            console.log(`${JSON.stringify(new Date())} ${source}: ${message}`, obj);
         } else if(message){
-            console.log(message);
+            console.log(`${JSON.stringify(new Date())} ${source}: ${message}`);
         }
     };
     

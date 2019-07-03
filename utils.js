@@ -4,7 +4,6 @@ function Utils(){
           return Object.keys(obj)[0];
     };
 
-    
     this.toArrayBuffer=function(str) {
         var ab = new ArrayBuffer(str.length);
         var view = new Uint8Array(ab);

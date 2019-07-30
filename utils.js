@@ -58,8 +58,7 @@ function Utils(){
     };
     
     this.log=(source, message, obj)=>{
-        console.log("OBJECT: ",obj);
-        if (message && obj){
+        if (message && obj !== undefined && obj !== null){
             console.log(`${JSON.stringify(new Date())} ${source}: ${message}`, obj);
         } else if(message){
             console.log(`${JSON.stringify(new Date())} ${source}: ${message}`);

@@ -64,6 +64,10 @@ function Utils(){
             console.log(`${JSON.stringify(new Date())} ${source}: ${message}`);
         }
     };
+
+    this.error=(source, message)=>{
+        throw new Error(`${JSON.stringify(new Date())} ${source}: ${message}`);
+    };
     
     this.isEmptyObject=function(obj) {
         for(var prop in obj) {

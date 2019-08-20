@@ -3,6 +3,7 @@ function Utils(){
     Object.prototype.nameof = function(obj) {
           return Object.keys(obj)[0];
     };
+
     
     this.toArrayBuffer=function(str) {
         var ab = new ArrayBuffer(str.length);
@@ -57,11 +58,15 @@ function Utils(){
     };
     
     this.log=(source, message, obj)=>{
-        if (message && obj){
+        if (message && obj !== undefined && obj !== null){
             console.log(`${JSON.stringify(new Date())} ${source}: ${message}`, obj);
         } else if(message){
             console.log(`${JSON.stringify(new Date())} ${source}: ${message}`);
         }
+    };
+
+    this.error=(source, message)=>{
+        throw new Error(`${JSON.stringify(new Date())} ${source}: ${message}`);
     };
     
     this.isEmptyObject=function(obj) {

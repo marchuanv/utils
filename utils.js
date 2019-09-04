@@ -262,22 +262,4 @@ function Utils({https}){
     const currentDate = new Date();
     return currentDate.getMonth()+1;
   }
-  
-  this.httpRequest = async (options) => {
-    return new Promise(( resolve, reject) => {
-      let req = https.request(options, (resp) => {
-        let data = "";
-        resp.on("data", (chunk) => {
-          data += chunk;
-        });
-        resp.on("end", () => {
-          resolve(JSON.parse(data));
-        });
-      });
-      req.on('error', (e) => {
-          reject(e);
-      });
-      req.end();
-    });
-  }
 }

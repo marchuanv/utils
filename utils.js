@@ -1,4 +1,4 @@
-function Utils(){
+function Utils({https}){
 
     Object.prototype.nameof = function(obj) {
           return Object.keys(obj)[0];
@@ -257,9 +257,27 @@ function Utils(){
 
     return Math.round(Math.abs((newDate.getTime() - currentDate.getTime())/(oneDay)));
   }
-
+  
   this.getCurrentMonth = () =>{
     const currentDate = new Date();
     return currentDate.getMonth()+1;
+  }
+  
+  this.httpRequest = async (options) => {
+    return new Promise(( resolve, reject) => {
+      let req = https.request(options, (resp) => {
+        let data = "";
+        resp.on("data", (chunk) => {
+          data += chunk;
+        });
+        resp.on("end", () => {
+          resolve(JSON.parse(data));
+        });
+      });
+      req.on('error', (e) => {
+          reject(e);
+      });
+      req.end();
+    });
   }
 }

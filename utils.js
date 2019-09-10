@@ -263,9 +263,9 @@ function Utils({ fs, vm, path }){
     return currentDate.getMonth()+1;
   }
   
-  this.createObjectFromScript = (name, objectDependencies) => {
+  this.createObjectFromScript = (dirPath, objectName, objectDependencies) => {
     const fileName = `${name}.js`;
-    const content = fs.readFileSync(path.join(__dirname, fileName), "utf8");
+    const content = fs.readFileSync(path.join(dirPath, fileName), "utf8");
     const context = {};
     for (const key of Object.keys(objectDependencies)){
         context[key] = objectDependencies[key];

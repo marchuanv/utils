@@ -264,7 +264,7 @@ function Utils({ fs, vm, path }){
   }
   
   this.createObjectFromScript = (dirPath, objectName, objectDependencies) => {
-    const fileName = `${name}.js`;
+    const fileName = `${objectName}.js`;
     const content = fs.readFileSync(path.join(dirPath, fileName), "utf8");
     const context = {};
     for (const key of Object.keys(objectDependencies)){
@@ -272,7 +272,7 @@ function Utils({ fs, vm, path }){
     };
     const script = new vm.Script(content);
 	script.runInNewContext(context);
-    const objectCtor = context[name];
+    const objectCtor = context[objectName];
     return new objectCtor(objectDependencies);
   }
 }

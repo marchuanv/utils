@@ -1,4 +1,4 @@
-function Utils(){
+function Utils({fs, vm}){
 
     Object.prototype.nameof = function(obj) {
           return Object.keys(obj)[0];
@@ -261,5 +261,18 @@ function Utils(){
   this.getCurrentMonth = () =>{
     const currentDate = new Date();
     return currentDate.getMonth()+1;
+  }
+  
+  this.createObjectFromScript(name, objectDependencies) {
+    const fileName = `${name}.js`;
+    const content = fs.readFileSync(path.join(__dirname, fileName), "utf8");
+    const context = {};
+    for (const key of Object.keys(objectDependencies)){
+        context[key] = objectDependencies[key];
+    };
+    const script = new vm.Script(content);
+	script.runInNewContext(context);
+    const objectCtor = context[name];
+    return new objectCtor(objectDependencies);
   }
 }

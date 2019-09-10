@@ -277,7 +277,7 @@ function Utils({ fs, vm, path }){
     	const jsScript = new vm.Script(scriptContent);
 	jsScript.runInNewContext(context);
     	const objectCtor = context[objectName];
-    	return new objectCtor(objectDependencies);
+    	return new objectCtor();
   }
 }
 if (module !== undefined){

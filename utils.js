@@ -276,3 +276,6 @@ function Utils({fs, vm}){
     return new objectCtor(objectDependencies);
   }
 }
+if (module !== undefined){
+	module.exports = Utils;
+}

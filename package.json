@@ -1,10 +1,9 @@
 {
     "name": "utils",
     "username": "marchuanv",
-    "host": "utils.herokuapp.com",
-    "port": "443",
     "version": "1.0.0",
     "description": "",
+    "main": "utils.js",
     "author": "marchuan van der merwe",
     "license": "ISC",
     "bugs": {

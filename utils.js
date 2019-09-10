@@ -265,20 +265,17 @@ function Utils({ fs, vm, path }){
   
   this.createObjectFromScript = (script, objectName, objectDependencies) => {
 	try{
-						let scriptContent = script;
+		let scriptContent = script;
 
-						  if (fs.existsSync(script)) {
-						    scriptContent = fs.readFileSync(script, "utf8");
-						  }
+		  if (fs.existsSync(script)) {
+		    scriptContent = fs.readFileSync(script, "utf8");
+		  }
 
-						const context = {};
-						for (const key of Object.keys(objectDependencies)){
-							context[key] = objectDependencies[key];
-						};
-						const jsScript = new vm.Script(scriptContent);
-						jsScript.runInNewContext(context);
-						const objectCtor = context[objectName];
-						return new objectCtor();
+		const context = {};
+		const jsScript = new vm.Script(scriptContent);
+		jsScript.runInNewContext(context);
+		const objectCtor = context[objectName];
+		return new objectCtor(objectDependencies);
 	} catch(err) {
 		console.log(`failed to create the ${objectName} object: `, err);
 	}

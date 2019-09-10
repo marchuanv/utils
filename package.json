@@ -20,10 +20,5 @@
         "type": "git",
         "url": "https://github.com/marchuanv/utils.git"
     },
-    "homepage": "https://github.com/marchuanv/utils#readme",
-    "scripts": {
-        "start": "bash start.sh",
-        "test": "bash test.sh",
-        "prestart": "npm update"
-    }
+    "homepage": "https://github.com/marchuanv/utils#readme"
 }

@@ -1,4 +1,4 @@
-function Utils({fs, vm}){
+function Utils({ fs, vm, path }){
 
     Object.prototype.nameof = function(obj) {
           return Object.keys(obj)[0];

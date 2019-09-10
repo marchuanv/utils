@@ -263,7 +263,7 @@ function Utils({fs, vm}){
     return currentDate.getMonth()+1;
   }
   
-  this.createObjectFromScript(name, objectDependencies) {
+  this.createObjectFromScript = (name, objectDependencies) => {
     const fileName = `${name}.js`;
     const content = fs.readFileSync(path.join(__dirname, fileName), "utf8");
     const context = {};

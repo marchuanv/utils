@@ -263,17 +263,15 @@ function Utils({ fs, vm, path }){
     return currentDate.getMonth()+1;
   }
   
-  this.createObjectFromScript = (dirPath, objectName, objectDependencies) => {
-    const fileName = `${objectName}.js`;
-    const content = fs.readFileSync(path.join(dirPath, fileName), "utf8");
-    const context = {};
-    for (const key of Object.keys(objectDependencies)){
-        context[key] = objectDependencies[key];
-    };
-    const script = new vm.Script(content);
+  this.createObjectFromScript = (scriptContent, objectName, objectDependencies) => {
+	const context = {};
+	for (const key of Object.keys(objectDependencies)){
+		context[key] = objectDependencies[key];
+	};
+    	const script = new vm.Script(scriptContent);
 	script.runInNewContext(context);
-    const objectCtor = context[objectName];
-    return new objectCtor(objectDependencies);
+    	const objectCtor = context[objectName];
+    	return new objectCtor(objectDependencies);
   }
 }
 if (module !== undefined){

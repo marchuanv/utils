@@ -263,13 +263,19 @@ function Utils({ fs, vm, path }){
     return currentDate.getMonth()+1;
   }
   
-  this.createObjectFromScript = (scriptContent, objectName, objectDependencies) => {
+  this.createObjectFromScript = (script, objectName, objectDependencies) => {
+	let scriptContent = script;
+	try {
+	  if (fs.existsSync(script)) {
+	    scriptContent = fs.readFileSync(script, "utf8");
+	  }
+	} catch(err) {}
 	const context = {};
 	for (const key of Object.keys(objectDependencies)){
 		context[key] = objectDependencies[key];
 	};
-    	const script = new vm.Script(scriptContent);
-	script.runInNewContext(context);
+    	const jsScript = new vm.Script(scriptContent);
+	jsScript.runInNewContext(context);
     	const objectCtor = context[objectName];
     	return new objectCtor(objectDependencies);
   }

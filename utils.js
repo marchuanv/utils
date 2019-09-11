@@ -281,6 +281,3 @@ function Utils({ fs, vm, path }){
 	}
   }
 }
-if (module !== undefined){
-	module.exports = Utils;
-}

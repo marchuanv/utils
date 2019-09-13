@@ -93,7 +93,7 @@ function Utils({ fs, vm, path }){
 
     this.getFunctionParams=function(func){
         
-        let functionParams = func.toString().split(\s*function ([a-zA-Z]+)\s*\(\s*\{\s*);
+        let functionParams = func.toString().split(/\s*function ([a-zA-Z]+)\s*\(\s*\{\s*/);
 		if (functionParams.length > 1){
 			functionParams = functionParams[1].split(/\s*\}\s*\)/);
 			if (functionParams.length > 0){

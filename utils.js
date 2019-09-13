@@ -92,7 +92,16 @@ function Utils({ fs, vm, path }){
     };
 
     this.getFunctionParams=function(func){
-      return func.toString ().replace (/[\r\n\s]+/g, ' ').
+        
+        let functionParams = func.toString().split(\s*function ([a-zA-Z]+)\s*\(\s*\{\s*);
+		if (functionParams.length > 1){
+			functionParams = functionParams[1].split(/\s*\}\s*\)/);
+			if (functionParams.length > 0){
+				functionParams = functionParams[0].replace(/\s*/g,"").split(',');
+                return functionParams;
+			}
+		} 
+        return func.toString ().replace (/[\r\n\s]+/g, ' ').
               match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).
               slice (1,3).
               join ('').
@@ -169,60 +178,6 @@ function Utils({ fs, vm, path }){
     this.getUrlPath=function(url){
         var url_parts = require('url').parse(url);
         return url_parts.pathname;
-    };
-
-    this.readJsonFile=function(dirPath, name, callback){
-        var filePath=`${dirPath}/${name}`;
-        filePath=filePath.replace('.json','');
-        filePath=`${filePath}.json`;
-        const fs=require('fs');
-        fs.readFile(filePath, 'utf8', function(err, jsonStr){
-            const data=module.exports.getJSONObject(jsonStr);
-            callback(data);
-        });
-    };
-    
-    this.readHtmlFile=function(dirPath, name, callback){
-        var filePath=`${dirPath}/${name}`;
-        filePath=filePath.replace('.html','');
-        filePath=`${filePath}.html`;
-        const fs=require('fs');
-        fs.readFile(filePath, 'utf8', function(err, html){
-            callback(html);
-        });
-    };
-    
-    this.readJavaScriptFile=function(dirPath, name, callback){
-        var filePath=`${dirPath}/${name}`;
-        filePath=filePath.replace('.js','');
-        filePath=`${filePath}.js`;
-        const fs=require('fs');
-        fs.readFile(filePath, 'utf8', function(err, javascript){
-            callback(javascript);
-        });
-    };
-
-    this.replaceJsonFile=function(dirPath, name, data){
-        var filePath=`${dirPath}/${name}`;
-        filePath=filePath.replace('.json','');
-        filePath=`${filePath}.json`;
-        filePath=filePath.replace('node_modules/utils/','');
-        const fs=require('fs');
-        fs.unlink(filePath, function(err) {
-           // Ignore error if no file already exists   
-           if (err && err.code !== 'ENOENT') {
-              throw err;
-           }
-           const dataStr = module.exports.getJSONString(data);
-           var options = {
-              flag: 'w'
-           };
-           fs.writeFile(filePath, dataStr, options, function(err) {
-              if (err) {
-                 throw err;
-              }
-           });
-        });
     };
 
     this.getFunctions=function(obj, callback){

@@ -92,20 +92,14 @@ function Utils({ fs, vm, path }){
     };
 
     this.getFunctionParams=function(func){
-        
-        let functionParams = func.toString().split(/\s*function ([a-zA-Z]+)\s*\(\s*\{\s*/);
-		if (functionParams.length > 1){
-			functionParams = functionParams[1].split(/\s*\}\s*\)/);
-			if (functionParams.length > 0){
-				functionParams = functionParams[0].replace(/\s*/g,"").split(',');
-                return functionParams;
-			}
-		} 
-        return func.toString ().replace (/[\r\n\s]+/g, ' ').
-              match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).
-              slice (1,3).
-              join ('').
-              split (/\s*,\s*/);
+      let functionParams = /\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/.exec(func.toString());
+      if (functionParams && functionParams.length > 0){
+        functionParams = functionParams[0].replace(/\s*/,"").replace("({","").replace("}){","").split(",");
+        if (functionParams.length > 0){
+          return functionParams;
+        }
+      } 
+      return func.toString ().replace (/[\r\n\s]+/g, ' ').match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).slice (1,3).join ('').split (/\s*,\s*/);
     };
 
     this.getRandomNumber=function(min, max){
@@ -217,5 +211,5 @@ function Utils({ fs, vm, path }){
     const currentDate = new Date();
     return currentDate.getMonth()+1;
   }
-  
+ 
 }

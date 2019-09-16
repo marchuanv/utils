@@ -95,6 +95,8 @@ function Utils({ fs, vm, path }){
     };
 
     this.getFunctionParams=function(func){
+      parameterMatchRegEx.lastIndex = 0;
+       whiteSpaceRegEx.lastIndex = 0;
       let functionParams = parameterMatchRegEx.exec(func.toString());
       if (functionParams && functionParams.length > 0){
         functionParams = functionParams[0].replace(whiteSpaceRegEx,"").replace("({","").replace("}){","").split(",");

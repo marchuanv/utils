@@ -92,14 +92,14 @@ function Utils({ fs, vm, path }){
     };
 
     this.getFunctionParams=function(func){
-      let functionParams = /\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/.exec(func.toString());
+      let functionParams = /\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/g.exec(func.toString());
       if (functionParams && functionParams.length > 0){
-        functionParams = functionParams[0].replace(/\s*/,"").replace("({","").replace("}){","").split(",");
+        functionParams = functionParams[0].replace(/\s*/g,"").replace("({","").replace("}){","").split(",");
         if (functionParams.length > 0){
           return functionParams;
         }
       } 
-      return func.toString ().replace (/[\r\n\s]+/g, ' ').match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).slice (1,3).join ('').split (/\s*,\s*/);
+      return func.toString ().replace(/[\r\n\s]+/g,' ').match(/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/g).slice(1,3).join('').split(/\s*,\s*/);
     };
 
     this.getRandomNumber=function(min, max){

@@ -1,5 +1,8 @@
 function Utils({ fs, vm, path }){
 
+    const whiteSpaceRegEx = new RegExp(/\s*/,"g");
+    const parameterMatchRegEx = new RegExp(/\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/,"g");
+    
     Object.prototype.nameof = function(obj) {
           return Object.keys(obj)[0];
     };
@@ -92,9 +95,9 @@ function Utils({ fs, vm, path }){
     };
 
     this.getFunctionParams=function(func){
-      let functionParams = /\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/g.exec(func.toString());
+      let functionParams = parameterMatchRegEx.exec(func.toString());
       if (functionParams && functionParams.length > 0){
-        functionParams = functionParams[0].replace(/\s*/g,"").replace("({","").replace("}){","").split(",");
+        functionParams = functionParams[0].replace(whiteSpaceRegEx,"").replace("({","").replace("}){","").split(",");
         if (functionParams.length > 0){
           return functionParams;
         }

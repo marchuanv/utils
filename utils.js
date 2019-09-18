@@ -233,3 +233,6 @@ if (typeof module !== "undefined"){
     const path = require("path");
     module.exports = Utils({ fs, vm, path });
 }
+if (typeof window !== "undefined"){
+    window.utils = Utils();
+}

@@ -234,5 +234,5 @@ if (typeof module !== "undefined"){
     module.exports = new Utils({ fs, vm, path });
 }
 if (typeof window !== "undefined"){
-    window.utils = new Utils();
+    window.utils = new Utils({ fs:null,vm: null, path: null });
 }

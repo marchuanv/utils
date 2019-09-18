@@ -226,3 +226,10 @@ function Utils({ fs, vm, path }){
   }
  
 }
+
+if (typeof module !== "undefined"){
+    const fs = require("fs");
+    const vm = require("vm");
+    const path = require("path");
+    module.exports = Utils({ fs, vm, path });
+}

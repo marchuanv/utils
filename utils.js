@@ -212,9 +212,17 @@ function Utils({ fs, vm, path }){
     return Math.round(Math.abs((newDate.getTime() - currentDate.getTime())/(oneDay)));
   }
   
-  this.getCurrentMonth = () =>{
+  this.getCurrentMonth = () => {
     const currentDate = new Date();
     return currentDate.getMonth()+1;
+  }
+  
+  this.createWhitespace = (level) => {
+    let whitespace = "";
+    for (let i = 0; i < level; i++) {
+        whitespace = whitespace + " ";
+    };
+    return whitespace;
   }
  
 }

@@ -98,6 +98,7 @@ function Utils({ fs, vm, path }){
     this.getFunctionParams=function(func){
         
       whiteSpaceRegEx.lastIndex = 0;
+      
       funcParamMatch.lastIndex = 0;
       let params = funcParamMatch.exec(func.toString());
       if (params && params.length > 0) {
@@ -107,7 +108,7 @@ function Utils({ fs, vm, path }){
           .replace("}){","")
           .split(",");
       }
-    
+
       classCtorParamMatch.lastIndex = 0;
       params = classCtorParamMatch.exec(func.toString());
       if (params && params.length > 0){
@@ -117,8 +118,13 @@ function Utils({ fs, vm, path }){
           .replace("){","")
           .split(",");
       }
-    
-      return func.toString ().replace(/[\r\n\s]+/g,' ').match(/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/g).slice(1,3).join('').split(/\s*,\s*/);
+      
+      return func.toString ()
+        .replace(/[\r\n\s]+/g,' ')
+        .match(/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/g)
+        .slice(1,3)
+        .join('')
+        .split(/\s*,\s*/);
     };
 
     this.getRandomNumber=function(min, max){

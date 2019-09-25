@@ -95,7 +95,7 @@ function Utils({ fs, vm, path }){
       return ret;
     };
 
-    const getFunctionParams=function(func){
+    this.getFunctionParams=function(func){
         
       parameterMatchRegEx.lastIndex = 0;
       parameterMatchRegEx2.lastIndex = 0;

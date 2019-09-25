@@ -113,7 +113,7 @@ function Utils({ fs, vm, path }){
               return functionParams;
           } else {
             functionParams = parameterMatchRegEx2.exec(func.toString());
-            functionParams = functionParams[0].replace(whiteSpaceRegEx,"").replace("(","").replace("){","").split(",");
+            functionParams = functionParams[0].replace(whiteSpaceRegEx,"").replace("constructor(","").replace("){","").split(",");
             return functionParams;
           }
         }

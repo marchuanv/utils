@@ -2,7 +2,7 @@ function Utils({ fs, vm, path }){
 
     const whiteSpaceRegEx = new RegExp(/\s*/,"g");
     const parameterMatchRegEx = new RegExp(/\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/,"g");
-    const parameterMatchRegEx2 = new RegExp(/constructor\s*\(\s*[A-z]+\s*\)\s*\{/,"g");
+    const parameterMatchRegEx2 = new RegExp(/constructor\s*\((\s*[A-z0-9,]\s*)+\)\s*\{/,"g");
     
     Object.prototype.nameof = function(obj) {
           return Object.keys(obj)[0];

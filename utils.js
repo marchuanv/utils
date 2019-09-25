@@ -1,8 +1,8 @@
 function Utils({ fs, vm, path }){
 
     const whiteSpaceRegEx = new RegExp(/\s*/,"g");
-    const parameterMatchRegEx = new RegExp(/\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/,"g");
-    const parameterMatchRegEx2 = new RegExp(/constructor\s*\((\s*[A-z0-9,]\s*)+\)\s*\{/,"g");
+    const funcParamMatch = new RegExp(/\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/,"g");
+    const classCtorParamMatch = new RegExp(/constructor\s*\((\s*[A-z0-9,]\s*)+\)\s*\{/,"g");
     
     Object.prototype.nameof = function(obj) {
           return Object.keys(obj)[0];
@@ -97,18 +97,25 @@ function Utils({ fs, vm, path }){
 
     this.getFunctionParams=function(func){
         
-      parameterMatchRegEx.lastIndex = 0;
-      parameterMatchRegEx2.lastIndex = 0;
       whiteSpaceRegEx.lastIndex = 0;
-    
-      let functionParams = parameterMatchRegEx.exec(func.toString());
-      if (functionParams && functionParams.length > 0){
-        return functionParams[0].replace(whiteSpaceRegEx,"").replace("constructor(","").replace("){","").split(",");
+      funcParamMatch.lastIndex = 0;
+      let params = funcParamMatch.exec(func.toString());
+      if (params && params.length > 0) {
+        return params[0]
+          .replace(whiteSpaceRegEx,"")
+          .replace("({","")
+          .replace("}){","")
+          .split(",");
       }
     
-      functionParams = parameterMatchRegEx2.exec(func.toString());
-      if (functionParams && functionParams.length > 0){
-        return functionParams[0].replace(whiteSpaceRegEx,"").replace("({","").replace("}){","").split(",");
+      classCtorParamMatch.lastIndex = 0;
+      params = classCtorParamMatch.exec(func.toString());
+      if (params && params.length > 0){
+        return params[0]
+          .replace(whiteSpaceRegEx,"")
+          .replace("constructor(","")
+          .replace("){","")
+          .split(",");
       }
     
       return func.toString ().replace(/[\r\n\s]+/g,' ').match(/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/g).slice(1,3).join('').split(/\s*,\s*/);

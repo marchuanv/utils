@@ -95,29 +95,23 @@ function Utils({ fs, vm, path }){
       return ret;
     };
 
-    this.getFunctionParams=function(func){
-        parameterMatchRegEx.lastIndex = 0;
-        parameterMatchRegEx2.lastIndex = 0;
-        whiteSpaceRegEx.lastIndex = 0;
-        let functionParams = parameterMatchRegEx.exec(func.toString());
-        if (functionParams && functionParams.length > 0){
-          functionParams = functionParams[0].replace(whiteSpaceRegEx,"").replace("({","").replace("}){","").split(",");
-          if (functionParams.length > 0){
-              return functionParams;
-          }
-        }
-        functionParams = parameterMatchRegEx2.exec(func.toString());
-        if (functionParams && functionParams.length > 0){
-          functionParams = functionParams[0].replace(whiteSpaceRegEx,"").replace("({","").replace("}){","").split(",");
-          if (functionParams.length > 0){
-              return functionParams;
-          } else {
-            functionParams = parameterMatchRegEx2.exec(func.toString());
-            functionParams = functionParams[0].replace(whiteSpaceRegEx,"").replace("constructor(","").replace("){","").split(",");
-            return functionParams;
-          }
-        }
-        return func.toString ().replace(/[\r\n\s]+/g,' ').match(/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/g).slice(1,3).join('').split(/\s*,\s*/);
+    const getFunctionParams=function(func){
+        
+      parameterMatchRegEx.lastIndex = 0;
+      parameterMatchRegEx2.lastIndex = 0;
+      whiteSpaceRegEx.lastIndex = 0;
+    
+      let functionParams = parameterMatchRegEx.exec(func.toString());
+      if (functionParams && functionParams.length > 0){
+        return functionParams[0].replace(whiteSpaceRegEx,"").replace("constructor(","").replace("){","").split(",");
+      }
+    
+      functionParams = parameterMatchRegEx2.exec(func.toString());
+      if (functionParams && functionParams.length > 0){
+        return functionParams[0].replace(whiteSpaceRegEx,"").replace("({","").replace("}){","").split(",");
+      }
+    
+      return func.toString ().replace(/[\r\n\s]+/g,' ').match(/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/g).slice(1,3).join('').split(/\s*,\s*/);
     };
 
     this.getRandomNumber=function(min, max){

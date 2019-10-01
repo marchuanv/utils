@@ -102,10 +102,8 @@ function Utils({ fs, vm, path }){
       funcDestructionMatch.lastIndex = 0;
       let params = funcDestructionMatch.exec(func.toString());
       if (params && params.length > 0) {
-        return params[0]
+        return params[1]
           .replace(whiteSpaceRegEx,"")
-          .replace("({","")
-          .replace("}){","")
           .split(",");
       }
       classCtorParamMatch.lastIndex = 0;

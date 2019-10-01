@@ -1,7 +1,8 @@
 function Utils({ fs, vm, path }){
 
     const whiteSpaceRegEx = new RegExp(/\s*/,"g");
-    const funcParamMatch = new RegExp(/\(\s*{\s*[\s*a-z,A-Z]+}\s*\)\s*\{/,"g");
+    const funcDestructionMatch = new RegExp(/\s*function \s*[A-z]+\(\s*\{\s*([A-z]+,\s*)*([A-z]+)\s*\}\s*\)\s*\{/,"g");
+    const funcParamMatch = new RegExp(/\s*function \s*[A-z]+\(\s*([A-z]+,\s*)*([A-z]+)\s*\)\s*\{/,"g");
     const classCtorParamMatch = new RegExp(/constructor\s*\((\s*[A-z0-9,]\s*)+\)\s*\{/,"g");
     
     Object.prototype.nameof = function(obj) {
@@ -98,9 +99,8 @@ function Utils({ fs, vm, path }){
     this.getFunctionParams=function(func){
         
       whiteSpaceRegEx.lastIndex = 0;
-      
-      funcParamMatch.lastIndex = 0;
-      let params = funcParamMatch.exec(func.toString());
+      funcDestructionMatch.lastIndex = 0;
+      let params = funcDestructionMatch.exec(func.toString());
       if (params && params.length > 0) {
         return params[0]
           .replace(whiteSpaceRegEx,"")
@@ -108,7 +108,6 @@ function Utils({ fs, vm, path }){
           .replace("}){","")
           .split(",");
       }
-
       classCtorParamMatch.lastIndex = 0;
       params = classCtorParamMatch.exec(func.toString());
       if (params && params.length > 0){
@@ -118,13 +117,15 @@ function Utils({ fs, vm, path }){
           .replace("){","")
           .split(",");
       }
-      
-      return func.toString ()
-        .replace(/[\r\n\s]+/g,' ')
-        .match(/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/g)
-        .slice(1,3)
-        .join('')
-        .split(/\s*,\s*/);
+      funcParamMatch.lastIndex = 0;
+      params = funcParamMatch.exec(func.toString());
+      if (params && params.length > 0){
+        return params[0]
+          .replace(whiteSpaceRegEx,"")
+          .replace("constructor(","")
+          .replace("){","")
+          .split(",");
+      }
     };
 
     this.getRandomNumber=function(min, max){

@@ -1,8 +1,8 @@
 function Utils({ fs, vm, path }){
 
     const whiteSpaceRegEx = new RegExp(/\s*/,"g");
-    const funcDestructionMatch = new RegExp(/\s*function \s*[A-z]+\(\s*\{\s*([A-z]+,\s*)*([A-z]+)\s*\}\s*\)\s*\{/,"g");
-    const funcParamMatch = new RegExp(/\s*function \s*[A-z]+\(\s*([A-z]+,\s*)*([A-z]+)\s*\)\s*\{/,"g");
+    const funcDestructionMatch = new RegExp(/(?:\s*function \s*[A-z]+\(\s*\{\s*)(([A-z]+,\s*)*([A-z]+))(?:\s*\}\s*\)\s*\{)/,"g");
+    const funcParamMatch = new RegExp(/(?:\s*function \s*[A-z]+\()(\s*([A-z]+,\s*)*([A-z]+))(?:\s*\)\s*\{)/,"g");
     const classCtorParamMatch = new RegExp(/constructor\s*\((\s*[A-z0-9,]\s*)+\)\s*\{/,"g");
     
     Object.prototype.nameof = function(obj) {
@@ -120,10 +120,8 @@ function Utils({ fs, vm, path }){
       funcParamMatch.lastIndex = 0;
       params = funcParamMatch.exec(func.toString());
       if (params && params.length > 0){
-        return params[0]
+        return params[1]
           .replace(whiteSpaceRegEx,"")
-          .replace("constructor(","")
-          .replace("){","")
           .split(",");
       }
     };

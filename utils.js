@@ -102,26 +102,45 @@ function Utils({ fs, vm, path }){
       funcDestructionMatch.lastIndex = 0;
       let params = funcDestructionMatch.exec(func.toString());
       if (params && params.length > 0) {
-        return params[1]
+        params = params[1]
           .replace(whiteSpaceRegEx,"")
           .split(",");
+        return params.map(x=>{
+          return {
+            name: x,
+            destructuring: true
+          }
+        });
       }
       classCtorParamMatch.lastIndex = 0;
       params = classCtorParamMatch.exec(func.toString());
       if (params && params.length > 0){
-        return params[0]
+        params = params[0]
           .replace(whiteSpaceRegEx,"")
           .replace("constructor(","")
           .replace("){","")
           .split(",");
+        return params.map(x=>{
+          return {
+            name: x,
+            destructuring: false
+          }
+        });
       }
       funcParamMatch.lastIndex = 0;
       params = funcParamMatch.exec(func.toString());
       if (params && params.length > 0){
-        return params[1]
+        params = params[1]
           .replace(whiteSpaceRegEx,"")
           .split(",");
+        return params.map(x=>{
+          return {
+            name: x,
+            destructuring: false
+          }
+        });
       }
+
     };
 
     this.getRandomNumber=function(min, max){

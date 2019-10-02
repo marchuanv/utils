@@ -159,7 +159,7 @@ function Utils({ fs, vm, path }){
             return value;
           });
        }catch(err){
-           utils.log("JSON SERIALISATION", "error creating json string", err, silentLogging);
+           this.log("JSON SERIALISATION", "error creating json string", err, silentLogging);
            return null;
        }
     };
@@ -179,7 +179,7 @@ function Utils({ fs, vm, path }){
           });
 
       }catch(err){
-        utils.log("JSON DESERIALISATION", "error parsing json", err, silentLogging);
+        this.log("JSON DESERIALISATION", "error parsing json", err, silentLogging);
         return null;
       }
     };

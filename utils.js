@@ -9,7 +9,7 @@ function Utils({ fs, vm, path }){
           return Object.keys(obj)[0];
     };
 
-    this.sizeOf = (obj) => {
+     this.sizeOf = (obj) => {
         let bytes=0;
         switch(typeof obj) {
             case 'number':
@@ -29,10 +29,10 @@ function Utils({ fs, vm, path }){
                             const prop = obj[key];
                             bytes = bytes + this.sizeOf(prop);
                         } else {
-                            continue
+                            continue;
                         }
                     }
-                } else {
+                } else if (objClass !== "Null") {
                     bytes += obj.toString().length * 2
                 };
                 break;

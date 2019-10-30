@@ -173,7 +173,7 @@ function Utils({ fs, vm, path }){
           }
         });
       }
-
+      return [];
     };
 
     this.getRandomNumber=function(min, max){

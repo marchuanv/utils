@@ -4,12 +4,8 @@ function Utils({ fs, vm, path }){
     const funcDestructionMatch = new RegExp(/(?:\s*function \s*[A-z]+\(\s*\{\s*)(([A-z]+,\s*)*([A-z]+))(?:\s*\}\s*\)\s*\{)/,"g");
     const funcParamMatch = new RegExp(/(?:\s*function \s*[A-z]+\()(\s*([A-z]+,\s*)*([A-z]+))(?:\s*\)\s*\{)/,"g");
     const classCtorParamMatch = new RegExp(/constructor\s*\((\s*[A-z0-9,]\s*)+\)\s*\{/,"g");
-    
-    Object.prototype.nameof = function(obj) {
-          return Object.keys(obj)[0];
-    };
 
-     this.sizeOf = (obj) => {
+    this.sizeOf = (obj) => {
         let bytes=0;
         switch(typeof obj) {
             case 'number':

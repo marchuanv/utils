@@ -163,17 +163,17 @@ function Utils({ fs, vm, path }){
     
     this.getJSONString=function(data, includeFunctions=false){
        try{
-          const json = JSON.stringify(data, (key, value) => {
+          if (!data){
+            return "";
+          }
+          return JSON.stringify(data, (key, value) => {
             if (typeof value === "function" && includeFunctions === true) {
               return "/Function(" + value.toString() + ")/";
             }
             return value;
           });
-
-          return json.replace("\"","");
-
        }catch(err){
-           return null;
+           return "";
        }
     };
 

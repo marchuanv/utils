@@ -88,21 +88,6 @@ function Utils({ fs, vm, path }){
         }
     };
     
-    this.log=(source, message, obj=null,silent=false)=>{
-        if (silent){
-            return;
-        }
-        if (message && obj){
-            console.log(`${JSON.stringify(new Date())} ${source}: ${message}`, obj);
-        } else if(message){
-            console.log(`${JSON.stringify(new Date())} ${source}: ${message}`);
-        }
-    };
-
-    this.error=(source, message)=>{
-        throw new Error(`${JSON.stringify(new Date())} ${source}: ${message}`);
-    };
-    
     this.isEmptyObject=function(obj) {
         for(var prop in obj) {
             if(obj.hasOwnProperty(prop))
@@ -176,21 +161,23 @@ function Utils({ fs, vm, path }){
       return Math.floor(Math.random()*(max-min+1)+min);
     };
     
-    this.getJSONString=function(data, includeFunctions=false, silentLogging=true){
+    this.getJSONString=function(data, includeFunctions=false){
        try{
-          return JSON.stringify(data, (key, value) => {
+          const json = JSON.stringify(data, (key, value) => {
             if (typeof value === "function" && includeFunctions === true) {
               return "/Function(" + value.toString() + ")/";
             }
             return value;
           });
+
+          return json.replace("\"","");
+
        }catch(err){
-           this.log("JSON SERIALISATION", "error creating json string", err, silentLogging);
            return null;
        }
     };
 
-    this.getJSONObject=function(jsonString, includeFunctions=false, silentLogging=true){
+    this.getJSONObject=function(jsonString, includeFunctions=false){
       try{
           const dateFormat = /^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?(Z)?$/;
           return JSON.parse(jsonString, (key, value) => {
@@ -205,7 +192,6 @@ function Utils({ fs, vm, path }){
           });
 
       }catch(err){
-        this.log("JSON DESERIALISATION", "error parsing json", err, silentLogging);
         return null;
       }
     };

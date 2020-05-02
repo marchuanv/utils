@@ -10,10 +10,8 @@
         "url": "https://github.com/marchuanv/utils/issues"
     },
     "engines": {
-        "engines": {
-            "node": "8.11.3",
-            "npm": "5.6.0"
-        }
+        "node": "12.16.1",
+        "npm": "6.13.4"
     },
     "repository": {
         "type": "git",

@@ -171,7 +171,7 @@ function Utils({ fs, vm, path }){
               return "/Function(" + value.toString() + ")/";
             }
             return value;
-          });
+          },4);
        }catch(err){
            return "";
        }

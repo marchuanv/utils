@@ -1,9 +1,25 @@
-function Utils({ fs, vm, path }){
+function Utils({ fs, vm, path, crypto }){
 
     const whiteSpaceRegEx = new RegExp(/\s*/,"g");
     const funcDestructionMatch = new RegExp(/(?:\s*function \s*[A-z]+\(\s*\{\s*)(([A-z]+,\s*)*([A-z]+))(?:\s*\}\s*\)\s*\{)/,"g");
     const funcParamMatch = new RegExp(/(?:\s*function \s*[A-z]+\()(\s*([A-z]+,\s*)*([A-z]+))(?:\s*\)\s*\{)/,"g");
     const classCtorParamMatch = new RegExp(/constructor\s*\((\s*[A-z0-9,]\s*)+\)\s*\{/,"g");
+    const genRandomString = (length) => {
+      return crypto.randomBytes(Math.ceil(length/2))
+              .toString('hex') /** convert to hexadecimal format */
+              .slice(0,length);   /** return required number of characters */
+    };
+    const sha512 = (password, salt) => {
+      var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+      hash.update(password);
+      var value = hash.digest('hex');
+      return { salt, hashedPassphrase: value };
+    };
+  
+    this.hashPassphrase = (userpassword, salt) => {
+      salt = salt || genRandomString(16); /** Gives us salt of length 16 */
+      return sha512(userpassword, salt);
+    }
 
     this.sizeOf = (obj) => {
         let bytes=0;
@@ -268,8 +284,9 @@ function Utils({ fs, vm, path }){
 if (typeof module !== "undefined"){
     const fs = require("fs");
     const vm = require("vm");
+    const crypto = require("crypto");
     const path = require("path");
-    module.exports = new Utils({ fs, vm, path });
+    module.exports = new Utils({ fs, vm, path, crypto });
 }
 if (typeof window !== "undefined"){
     window.utils = new Utils({ fs:null,vm: null, path: null });

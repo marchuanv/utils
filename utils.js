@@ -267,7 +267,7 @@ function Utils({ fs, vm, crypto, fsPath }){
   }
   
   this.getFullPaths = (rootDir) => {
-    const paths = [];
+    let paths = [];
     fs.readdirSync(rootDir).forEach(file => {
      let fullPath = fsPath.join(rootDir, file);
      paths.push(fullPath);

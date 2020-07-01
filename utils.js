@@ -1,4 +1,4 @@
-function Utils({ fs, vm, path, crypto }){
+function Utils({ fs, vm, path, crypto, fsPath }){
 
     const whiteSpaceRegEx = new RegExp(/\s*/,"g");
     const funcDestructionMatch = new RegExp(/(?:\s*function \s*[A-z]+\(\s*\{\s*)(([A-z]+,\s*)*([A-z]+))(?:\s*\}\s*\)\s*\{)/,"g");
@@ -264,6 +264,18 @@ function Utils({ fs, vm, path, crypto }){
     newDate.setDate(lastDayOfSelectedMonth);
 
     return Math.round(Math.abs((newDate.getTime() - currentDate.getTime())/(oneDay)));
+  }
+  
+  this.getFullPaths = (rootDir) => {
+    const paths = [];
+    fs.readdirSync(dir).forEach(file => {
+     let fullPath = fsPath.join(dir, file);
+     paths.push(fullPath);
+     if (fs.lstatSync(fullPath).isDirectory()) {
+        this.traverseDir(fullPath);
+     }  
+    });
+    return paths;
   }
   
   this.getCurrentMonth = () => {

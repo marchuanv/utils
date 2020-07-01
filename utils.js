@@ -272,7 +272,7 @@ function Utils({ fs, vm, crypto, fsPath }){
      let fullPath = fsPath.join(rootDir, file);
      paths.push(fullPath);
      if (fs.lstatSync(fullPath).isDirectory()) {
-        this.getFullPaths(fullPath);
+        paths = paths.concat(this.getFullPaths(fullPath));
      }  
     });
     return paths;

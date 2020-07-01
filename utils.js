@@ -1,4 +1,4 @@
-function Utils({ fs, vm, path, crypto, fsPath }){
+function Utils({ fs, vm, crypto, fsPath }){
 
     const whiteSpaceRegEx = new RegExp(/\s*/,"g");
     const funcDestructionMatch = new RegExp(/(?:\s*function \s*[A-z]+\(\s*\{\s*)(([A-z]+,\s*)*([A-z]+))(?:\s*\}\s*\)\s*\{)/,"g");
@@ -297,8 +297,8 @@ if (typeof module !== "undefined"){
     const fs = require("fs");
     const vm = require("vm");
     const crypto = require("crypto");
-    const path = require("path");
-    module.exports = new Utils({ fs, vm, path, crypto });
+    const fsPath = require("path");
+    module.exports = new Utils({ fs, vm, fsPath, crypto });
 }
 if (typeof window !== "undefined"){
     window.utils = new Utils({ fs:null,vm: null, path: null });

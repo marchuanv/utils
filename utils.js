@@ -270,10 +270,12 @@ function Utils({ fs, vm, crypto, fsPath }){
     let paths = [];
     fs.readdirSync(rootDir).forEach(file => {
      let fullPath = fsPath.join(rootDir, file);
-     paths.push(fullPath);
+   
      if (fs.lstatSync(fullPath).isDirectory()) {
         paths = paths.concat(this.getFullPaths(fullPath));
-     }  
+     } else {
+        paths.push(fullPath);
+     }
     });
     return paths;
   }

@@ -13,7 +13,7 @@ function Utils({ fs, vm, crypto, fsPath }){
       var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
       hash.update(password);
       var value = hash.digest('hex');
-      return { salt, hashedPassphrase: value };
+      return { hashedPassphraseSalt: salt, hashedPassphrase: value };
     };
   
     this.hashPassphrase = (userpassword, salt) => {

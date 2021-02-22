@@ -292,7 +292,36 @@ function Utils({ fs, vm, crypto, fsPath }){
     };
     return whitespace;
   }
- 
+
+  this.base64ToString = (base64Str) => {
+    return Buffer.from(base64Str, "base64").toString("utf8");;
+  };
+
+  this.decryptFromBase64Str = (base64Str, decryptionKey, passphrase) => {
+    const dataBuf = Buffer.from(base64Str, "base64");
+    try {
+        return crypto.privateDecrypt({ 
+            key: decryptionKey,
+            passphrase,
+            padding: crypto.constants.RSA_PKCS1_PADDING
+        }, dataBuf).toString("utf8");
+    } catch {
+        return null;
+    }
+  };
+
+  this.encryptToBase64Str = (dataStr, encryptionkey) => {
+    const dataBuf = Buffer.from(dataStr, "utf8");
+    try {
+        return crypto.publicEncrypt( { 
+            key: encryptionkey,
+            padding: crypto.constants.RSA_PKCS1_PADDING
+        }, dataBuf).toString("base64");
+    } catch {
+        return null;
+    }
+  };
+
 }
 
 if (typeof module !== "undefined"){

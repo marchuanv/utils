@@ -297,6 +297,10 @@ function Utils({ fs, vm, crypto, fsPath }){
     return Buffer.from(base64Str, "base64").toString("utf8");;
   };
 
+  this.stringToBase64 = (str) => {
+    return Buffer.from(str, "utf8").toString("base64");
+  };
+
   this.decryptFromBase64Str = (base64Str, decryptionKey, passphrase) => {
     const dataBuf = Buffer.from(base64Str, "base64");
     try {

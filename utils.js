@@ -333,11 +333,6 @@ function Utils({ fs, vm, crypto, fsPath }){
     });
   };
     
-  this.requireUncached = (module) => {
-    delete require.cache[require.resolve(module)];
-    return require(module);
-  };
-
 }
 
 if (typeof module !== "undefined"){

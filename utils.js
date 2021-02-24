@@ -332,6 +332,11 @@ function Utils({ fs, vm, crypto, fsPath }){
         privateKeyEncoding: { type: 'pkcs8', format: 'pem', cipher: 'aes-256-cbc', passphrase }
     });
   };
+    
+  this.requireUncached = (module) => {
+    delete require.cache[require.resolve(module)];
+    return require(module);
+  };
 
 }
 

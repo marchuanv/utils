@@ -182,12 +182,13 @@ function Utils({ fs, vm, crypto, fsPath }){
           if (!data){
             return "";
           }
-          const jsonStr = JSON.stringify(data, (key, value) => {
+          let jsonStr = JSON.stringify(data, (key, value) => {
             if (typeof value === "function" && includeFunctions === true) {
               return "/Function(" + value.toString() + ")/";
             }
             return value;
           },4);
+          jsonStr = jsonStr.replace(/\\n/g, '').replace(/\\/g, "");
           return jsonStr;
        }catch(err){
            return "";
@@ -197,7 +198,6 @@ function Utils({ fs, vm, crypto, fsPath }){
     this.getJSONObject=function(jsonString, includeFunctions=false){
       try{
           const dateFormat = /^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?(Z)?$/;
-          jsonString = jsonString.replace(/\\n/g, '').replace(/\\/g, "");
           const obj = JSON.parse(jsonString, (key, value) => {
             if (typeof value === "string" && dateFormat.test(value)) {
               return new Date(value);

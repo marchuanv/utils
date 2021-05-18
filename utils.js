@@ -333,7 +333,7 @@ function Utils({ fs, vm, crypto, fsPath }){
         privateKeyEncoding: { type: 'pkcs8', format: 'pem', cipher: 'aes-256-cbc', passphrase }
     });
   };
-
+    
 }
 
 if (typeof module !== "undefined"){

@@ -182,12 +182,13 @@ function Utils({ fs, vm, crypto, fsPath }){
           if (!data){
             return "";
           }
-          return JSON.stringify(data, (key, value) => {
+          const jsonStr = JSON.stringify(data, (key, value) => {
             if (typeof value === "function" && includeFunctions === true) {
               return "/Function(" + value.toString() + ")/";
             }
             return value;
           },4);
+          return jsonStr;
        }catch(err){
            return "";
        }

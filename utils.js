@@ -337,7 +337,9 @@ function Utils({ fs, vm, crypto, fsPath }){
     
 }
 
-if (typeof module !== "undefined"){
+if (typeof module === "undefined"){
+  window.module = { exports: null };
+} else {
     const fs = require("fs");
     const vm = require("vm");
     const crypto = require("crypto");
@@ -345,5 +347,15 @@ if (typeof module !== "undefined"){
     module.exports = new Utils({ fs, vm, fsPath, crypto });
 }
 if (typeof window !== "undefined"){
-    window.utils = new Utils({ fs:null,vm: null, path: null });
+  window.require = (src) => {
+    return new Promise( (resolve) => {
+        var script = document.createElement('script');
+        script.onload = () => {
+            resolve(module.exports);
+        };
+        script.src = src;
+        document.getElementsByTagName('head')[0].appendChild(script);
+    });
+  }
+  window.utils = new Utils({ fs:null,vm: null, path: null });;
 }

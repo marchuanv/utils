@@ -113,10 +113,12 @@ function Utils({ fs, vm, crypto, fsPath }){
     };
     
     this.generateGUID=function() {
-        function S4() {
-            return (((1 + Math.random()) * 0x10000) |0).toString(16).substring(1); 
+       function uuidv4() {
+          return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+          );
         }
-        return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+        return uuidv4();
     };
     
     this.getFunctionName=function(func) {

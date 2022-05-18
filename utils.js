@@ -52,6 +52,11 @@ function Utils({ fs, vm, crypto, fsPath }){
         return bytes;
     };
     
+    this.requireUncached = function (module) {
+        delete require.cache[require.resolve(module)];
+        return require(module);
+    };
+    
     this.toArrayBuffer=function(str) {
         var ab = new ArrayBuffer(str.length);
         var view = new Uint8Array(ab);

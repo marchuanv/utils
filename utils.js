@@ -314,6 +314,7 @@ function Utils({ fs, vm, crypto, fsPath }){
             padding: crypto.constants.RSA_PKCS1_PADDING
         }, dataBuf).toString("utf8");
     } catch {
+        console.log(err);
         return null;
     }
   };
@@ -325,7 +326,8 @@ function Utils({ fs, vm, crypto, fsPath }){
             key: encryptionkey,
             padding: crypto.constants.RSA_PKCS1_PADDING
         }, dataBuf).toString("base64");
-    } catch {
+    } catch (err) {
+        console.log(err);
         return null;
     }
   };

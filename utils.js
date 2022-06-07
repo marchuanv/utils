@@ -313,7 +313,7 @@ function Utils({ fs, vm, crypto, fsPath }){
             passphrase,
             padding: crypto.constants.RSA_PKCS1_PADDING
         }, dataBuf).toString("utf8");
-    } catch {
+    } catch (err) {
         console.log(err);
         return null;
     }

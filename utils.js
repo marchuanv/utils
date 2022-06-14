@@ -300,7 +300,7 @@ function Utils({ fs, vm, crypto, fsPath }){
 
   this.isBase64String = (str) => {
     const params = base64RegEx.exec(str);
-    return params.length > 0;
+    return params !== null && params.length > 0;
   };
   
   this.base64ToString = (base64Str) => {

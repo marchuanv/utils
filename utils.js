@@ -111,10 +111,12 @@ function Utils({ fs, vm, crypto, fsPath }){
     };
     
     this.isEmptyObject=function(obj) {
-        const properties = Object.getOwnPropertyNames(obj);
-        for(const prop in properties) {
-            return false;
-        };
+        if (obj) {
+            const properties = Object.getOwnPropertyNames(obj);
+            for(const prop in properties) {
+                return false;
+            };
+        }
         return true;
     };
     

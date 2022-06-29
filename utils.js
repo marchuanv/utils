@@ -111,11 +111,10 @@ function Utils({ fs, vm, crypto, fsPath }){
     };
     
     this.isEmptyObject=function(obj) {
-        for(var prop in obj) {
-            if(obj.hasOwnProperty(prop))
-                return false;
+        for(const prop in obj) {
+            return false;
         };
-        return JSON.stringify(obj) === JSON.stringify({});
+        return true;
     };
     
     this.generateGUID=function() {

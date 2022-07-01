@@ -347,10 +347,9 @@ function Utils({ fs, vm, crypto, fsPath }){
     });
   };
     
-  this.createProperty = function(object, name) {
-    return Promise((resolve) => {
-        Object.defineProperty(object, name, { configurable: false, writable: false, value: resolve });
-    });
+  this.createProperty = function(object, name, callback, eventCallback) {
+    Object.defineProperty(object, name, { configurable: false, writable: false, value: callback });
+    Object.defineProperty(object, `${name}Event`, { configurable: false, writable: false, value: eventCallback });
   };
     
 }

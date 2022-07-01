@@ -340,10 +340,16 @@ function Utils({ fs, vm, crypto, fsPath }){
     }
   };
 
-  this.generatePublicPrivateKeys = (passphrase) => {
+  this.generatePublicPrivateKeys = function(passphrase) {
     return crypto.generateKeyPairSync('rsa', { modulusLength: 4096,
         publicKeyEncoding: { type: 'spki', format: 'pem'},
         privateKeyEncoding: { type: 'pkcs8', format: 'pem', cipher: 'aes-256-cbc', passphrase }
+    });
+  };
+    
+  this.createProperty = async function(object, name) {
+    return Promise((resolve) => {
+        Object.defineProperty(object, name, { configurable: false, writable: false, value: resolve });
     });
   };
     

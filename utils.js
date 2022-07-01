@@ -347,7 +347,7 @@ function Utils({ fs, vm, crypto, fsPath }){
     });
   };
     
-  this.createProperty = async function(object, name) {
+  this.createProperty = function(object, name) {
     return Promise((resolve) => {
         Object.defineProperty(object, name, { configurable: false, writable: false, value: resolve });
     });

@@ -2,7 +2,7 @@ function Utils({ fs, vm, crypto, fsPath }){
 
   const whiteSpaceRegEx = new RegExp(/\s*/,"g");
   const funcDestructionMatch = new RegExp(/\s*function\s*[A-z]+\s*\(\s*\{\s*((?:\s*[A-z0-9]+\s*\,)+)(\s*[A-z0-9]+\s*)\}\s*\)/);
-  const funcParamMatch = new RegExp(/\s*function\s*[A-z]+\s*\(((?:\s*[A-z0-9]+\s*\,)+)(\s*[A-z0-9]+\s*)\)/);
+  const funcParamMatch = new RegExp(/\s*function\s*[A-z]+\s*\((((?:\s*[A-z0-9]+\s*\,)+)(\s*[A-z0-9]+\s*)|(\s*[A-z0-9]+\s*)|\s*)\)/);
   const classCtorParamMatch = new RegExp(/constructor\s*\((\s*[A-z0-9,]\s*)+\)\s*\{/);
   const base64RegEx = new RegExp(/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/,"g");
   const genRandomString = (length) => {

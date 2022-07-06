@@ -144,18 +144,16 @@ function Utils({ fs, vm, crypto, fsPath }){
         params = params.splice(1, params.length).filter(p => p);
         for(const param of this.getJSONObject(this.getJSONString(params))) {
           const paramSplit = param.split(',');
+          const cleanedParam = param.replace(whiteSpaceRegEx,'').replace(',','')
           if (paramSplit && paramSplit.length > 1) {
-            params = params.concat(paramSplit.filter(ps => ps).map(ps => ps.replace(whiteSpaceRegEx,'').replace(',','')));
+            params = params.concat(paramSplit.filter(ps => ps));
           } else {
-            params.push(param.replace(whiteSpaceRegEx,'').replace(',',''));
+            params.push(cleanedParam);
           }
-          params = params.filter(p => p !== param);
         }
-        return params.map(x=>{
-          return {
-            name: x
-          }
-        });
+        params = params.filter(ps => ps).map(ps => { return { Id: this.generateGUID(), name: ps.replace(whiteSpaceRegEx,'').replace(',','') } });
+        params = params.map(param => params.splice(params.findIndex(param1 => param1.name === param.name && param1.Id !== param.Id),1)[0]).filter(param => param);
+        return params;
       } else {
         return [];
       }

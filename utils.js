@@ -151,8 +151,8 @@ function Utils({ fs, vm, crypto, fsPath }){
             params.push(cleanedParam);
           }
         }
-        params = params.filter(ps => ps).map(ps => { return { Id: this.generateGUID(), name: ps.replace(whiteSpaceRegEx,'').replace(',','') } });
-        params = params.map(param => params.splice(params.findIndex(param1 => param1.name === param.name && param1.Id !== param.Id),1)[0]).filter(param => param);
+        params = params.filter(ps => ps).map(ps => ps.replace(whiteSpaceRegEx,'').replace(',',''));
+        params = [...new Set(params)].map(param => { return { name: param } });
         return params;
       } else {
         return [];

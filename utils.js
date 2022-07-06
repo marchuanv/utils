@@ -141,7 +141,7 @@ function Utils({ fs, vm, crypto, fsPath }){
     const getParams = (regEx) => {
       let params = regEx.exec(func.toString());
       if (params && params.length > 0) {
-        params = params.splice(1, params.length);
+        params = params.splice(1, params.length).filter(p => p);
         for(const param of this.getJSONObject(this.getJSONString(params))) {
           const paramSplit = param.split(',');
           if (paramSplit && paramSplit.length > 1) {

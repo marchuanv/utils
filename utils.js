@@ -151,7 +151,7 @@ function Utils({ fs, vm, crypto, fsPath }){
             params.push(cleanedParam);
           }
         }
-        params = params.filter(ps => ps).map(ps => ps.replace(whiteSpaceRegEx,'').replace(',',''));
+        params = params.map(ps => ps.replace(whiteSpaceRegEx,'').replace(/\,/g,''));
         params = [...new Set(params)].map(param => { return { name: param } });
         return params;
       } else {

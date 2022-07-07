@@ -146,14 +146,14 @@ function Utils({ fs, vm, crypto, fsPath }){
         if (params.length === 0 && firstMatch) {
           return [];
         }
-        for(const param of this.getJSONObject(this.getJSONString(params))) {
-          const paramSplit = param.split(',');
-          const cleanedParam = param.replace(whiteSpaceRegEx,'').replace(',','')
+        const paramLength = params.length;
+        for(let i = 0; i < paramLength; i++) {
+          const param = params[i];
+          const paramSplit = param.split(',').filter(ps => ps);
           if (paramSplit && paramSplit.length > 1) {
-            params = params.concat(paramSplit.filter(ps => ps));
-          } else {
-            params.push(cleanedParam);
+            params.splice(i, 1);
           }
+          params = params.concat(paramSplit);
         }
         params = params.map(ps => ps.replace(whiteSpaceRegEx,'').replace(/\,/g,''));
         params = [...new Set(params)].map(param => { return { name: param } });

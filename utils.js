@@ -141,7 +141,11 @@ function Utils({ fs, vm, crypto, fsPath }){
     const getParams = (regEx) => {
       let params = regEx.exec(func.toString());
       if (params && params.length > 0) {
-        params = params.splice(1, params.length).filter(p => p);
+        const firstMatch = params[0];
+        params = params.filter(p => p && p !== firstMatch);
+        if (params.length === 0 && firstMatch) {
+          return [];
+        }
         for(const param of this.getJSONObject(this.getJSONString(params))) {
           const paramSplit = param.split(',');
           const cleanedParam = param.replace(whiteSpaceRegEx,'').replace(',','')
@@ -155,14 +159,14 @@ function Utils({ fs, vm, crypto, fsPath }){
         params = [...new Set(params)].map(param => { return { name: param } });
         return params;
       } else {
-        return [];
+        return null;
       }
     };
     let params = getParams(funcParamMatch);
-    if (params.length === 0) {
+    if (!params) {
       params = getParams(classCtorParamMatch);
     }
-    if (params.length === 0) {
+    if (!params) {
       params = getParams(funcDestructionMatch);
     }
     return params;

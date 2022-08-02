@@ -295,6 +295,7 @@ this.createWhitespace = (level) => {
 }
 
 this.isBase64String = (str) => {
+  base64RegEx.lastIndex = -1;
   const params = base64RegEx.exec(str);
   return params !== null && params.length > 0;
 };

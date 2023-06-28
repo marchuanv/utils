@@ -370,7 +370,7 @@ function Utils({
                 });
         };
 
-        this.walkDir = async (dir, callback) => {
+        this.walkDir = (dir, callback) => {
                 if (existsSync(dir)) {
                         const files = readdirSync(dir);
                         for (const f of files) {
@@ -379,9 +379,9 @@ function Utils({
                                 var fileSizeInMegabytes = stat.size / (1024 * 1024);
                                 let isDirectory = stat.isDirectory();
                                 if (isDirectory) {
-                                        await this.walkDir(dirPath, callback);
+                                        this.walkDir(dirPath, callback);
                                 } else {
-                                        await callback(join(dir, f), fileSizeInMegabytes);
+                                        callback(join(dir, f), fileSizeInMegabytes);
                                 }
                         };
                 }

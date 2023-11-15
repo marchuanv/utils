@@ -7,6 +7,14 @@ class PropertiesTest extends Properties {
         super.set('Id', value)
     }
 }
+class PropertiesTestHierarchy extends Properties {
+    get propertiesTest() {
+        return super.get('propertiesTest', PropertiesTest.prototype);
+    }
+    set propertiesTest(value) {
+        super.set('propertiesTest', value)
+    }
+}
 const suite = describe('when properties change', () => {
     it('should sync data', () => {
         const properties = new PropertiesTest();
@@ -30,6 +38,15 @@ const suite = describe('when properties change', () => {
         });
         const expectedValue = '1deccbb7-b859-4e77-a1b5-7b5b58ce3b31';
         properties.Id = expectedValue; //onChange
+        expect(properties.Id).toBe(actualValue);
+    });
+    it('should serialise', () => {
+        const propertiesTestHierarchy = new PropertiesTestHierarchy();
+        const propertiesTest = new PropertiesTest();
+        propertiesTestHierarchy.propertiesTest = propertiesTest;
+        const actualValue = 'ef7cbdeb-6536-4e38-a9e1-cc1acdd00e7d';
+        propertiesTest.Id = actualValue;
+        const serialise = propertiesTestHierarchy.serialise();
         expect(properties.Id).toBe(actualValue);
     });
 });

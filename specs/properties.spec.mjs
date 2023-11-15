@@ -1,7 +1,7 @@
 import { Properties } from '../lib/registry.mjs';
 class PropertiesTest extends Properties {
     get Id() {
-        return super.get('Id');
+        return super.get('Id', String.prototype);
     }
     set Id(value) {
         super.set('Id', value)

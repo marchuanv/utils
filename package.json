@@ -1,21 +1,34 @@
 {
     "name": "utils",
-    "username": "marchuanv",
+    "description": "common modules, algorithms and general functions",
     "version": "1.0.0",
-    "description": "",
-    "main": "utils.js",
-    "author": "marchuan van der merwe",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/marchuanv/utils/issues"
+    "author": "Marchuan Van Der Merwe",
+    "type": "module",
+    "main": "utils.mjs",
+    "license": "LGPL-3.0-or-later",
+    "engines": {
+        "node": "18.16.1",
+        "npm": "9.5.1"
     },
-   "engines" : {
-        "npm" : ">=7.10.0",
-        "node" : ">=16.0.0"
+    "keywords": [
+        "utilities",
+        "utils"
+    ],
+    "files": [
+        "lib"
+    ],
+    "scripts": {
+        "test": "node specs/index.mjs"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/marchuanv/utils.git"
+        "url": "git+https://github.com/marchuanv/utils.git"
     },
-    "homepage": "https://github.com/marchuanv/utils#readme"
+    "bugs": {
+        "url": "https://github.com/marchuanv/utils/issues"
+    },
+    "homepage": "https://github.com/marchuanv/utils#readme",
+    "dependencies": {
+        "jasmine": "^5.1.0"
+    }
 }

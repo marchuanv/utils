@@ -1,6 +1,6 @@
-import { general, importExtended, properties, security } from "./lib/registry.mjs";
+import { general, importExtended, Properties, security } from "./lib/registry.mjs";
 
-export { general, importExtended, properties, security };
+export { general, importExtended, Properties, security };
 
 if (typeof module !== "undefined") {
         module.exports = { general, security, importExtended, properties };

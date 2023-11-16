@@ -50,5 +50,11 @@ const suite = describe('when properties change', () => {
         expect(propertiesTest.Id).toBe(actualValue);
         expect(serialise).toBeDefined();
     });
+    it('should share properties context', () => {
+        const sharedContext = {};
+        const propertiesTest1 = new PropertiesTest(sharedContext);
+        const propertiesTest2 = new PropertiesTest(sharedContext);
+        expect(propertiesTest1.Id).toBe(propertiesTest2.Id);
+    });
 });
 process.specs.set(suite, []);

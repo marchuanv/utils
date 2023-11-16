@@ -47,7 +47,8 @@ const suite = describe('when properties change', () => {
         const actualValue = 'ef7cbdeb-6536-4e38-a9e1-cc1acdd00e7d';
         propertiesTest.Id = actualValue;
         const serialise = propertiesTestHierarchy.serialise();
-        expect(properties.Id).toBe(actualValue);
+        expect(propertiesTest.Id).toBe(actualValue);
+        expect(serialise).toBeDefined();
     });
 });
 process.specs.set(suite, []);

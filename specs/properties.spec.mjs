@@ -1,4 +1,4 @@
-import { Properties } from '../lib/registry.mjs';
+import { Context, Properties } from '../lib/registry.mjs';
 class PropertiesTest extends Properties {
     get Id() {
         return super.get('Id', String.prototype);
@@ -51,10 +51,22 @@ const suite = describe('when properties change', () => {
         expect(serialise).toBeDefined();
     });
     it('should share properties context', () => {
-        const sharedContext = {};
+        const sharedContext = new Context();
         const propertiesTest1 = new PropertiesTest(sharedContext);
+        propertiesTest1.Id = '53133497-bc28-4d70-9989-116afa2708bc';
         const propertiesTest2 = new PropertiesTest(sharedContext);
-        expect(propertiesTest1.Id).toBe(propertiesTest2.Id);
+        propertiesTest2.Id = 'd05081fb-911f-4def-8fcd-4f8f61607085';
+        const propertiesTest3 = new PropertiesTest(sharedContext);
+        propertiesTest3.Id = '50b96ac8-d838-4dfb-bde0-cda761762e60';
+        const propertiesTest4 = new PropertiesTest(sharedContext);
+        propertiesTest4.Id = 'f4b98f82-2ed8-425c-88d6-f1aef96d2f03';
+        expect(propertiesTest1.Id).toBeDefined();
+        expect(propertiesTest2.Id).toBeDefined();
+        expect(propertiesTest3.Id).toBeDefined();
+        expect(propertiesTest1.Id).not.toBe(propertiesTest2.Id);
+        expect(propertiesTest1.Id).not.toBe(propertiesTest3.Id);
+        expect(propertiesTest2.Id).toBe(propertiesTest3.Id); //using shared bag and eventraiser
+        expect(propertiesTest2.Id).toBe(propertiesTest4.Id); //using shared bag and eventraiser
     });
 });
 process.specs.set(suite, []);

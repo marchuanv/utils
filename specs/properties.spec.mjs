@@ -1,4 +1,39 @@
-import { Context, Properties } from '../lib/registry.mjs';
+import { Properties } from '../lib/registry.mjs';
+
+class ContextRoot extends Properties {
+    get Id() {
+        return super.get('Id', String.prototype);
+    }
+    set Id(value) {
+        super.set('Id', value)
+    }
+}
+
+class ContextA extends Properties {
+    get Id() {
+        return super.get('Id', String.prototype);
+    }
+    set Id(value) {
+        super.set('Id', value)
+    }
+}
+class ContextB extends Properties {
+    get Id() {
+        return super.get('Id', String.prototype);
+    }
+    set Id(value) {
+        super.set('Id', value)
+    }
+}
+class ContextC extends Properties {
+    get Id() {
+        return super.get('Id', String.prototype);
+    }
+    set Id(value) {
+        super.set('Id', value)
+    }
+}
+
 class PropertiesTest extends Properties {
     get Id() {
         return super.get('Id', String.prototype);
@@ -60,13 +95,40 @@ const suite = describe('when properties change', () => {
         propertiesTest3.Id = '50b96ac8-d838-4dfb-bde0-cda761762e60';
         const propertiesTest4 = new PropertiesTest(sharedContext);
         propertiesTest4.Id = 'f4b98f82-2ed8-425c-88d6-f1aef96d2f03';
+
         expect(propertiesTest1.Id).toBeDefined();
         expect(propertiesTest2.Id).toBeDefined();
         expect(propertiesTest3.Id).toBeDefined();
+        expect(propertiesTest4.Id).toBeDefined();
+
         expect(propertiesTest1.Id).not.toBe(propertiesTest2.Id);
         expect(propertiesTest1.Id).not.toBe(propertiesTest3.Id);
         expect(propertiesTest2.Id).toBe(propertiesTest3.Id); //using shared bag and eventraiser
         expect(propertiesTest2.Id).toBe(propertiesTest4.Id); //using shared bag and eventraiser
+    });
+    fit('should share properties with same context', () => {
+
+        const context = new ContextRoot();
+        context.Id = '653ef45a-14ba-400b-a1a9-c0695d6b1f06';
+
+        const contextA = new ContextA(context);
+        contextA.Id = '250b70e1-fe1f-47eb-8185-04278ddef1bc';
+
+        const contextB = new ContextB(contextA);
+        contextB.Id = 'c0785886-6652-4308-aab5-b96b15eb942e';
+
+        const contextC = new ContextC(contextA);
+        contextC.Id = 'a70b6d9a-6e3b-40d3-a1b5-08327d1cd6e2';
+
+        expect(context.Id).not.toBe(contextA.Id);
+        expect(context.Id).not.toBe(contextB.Id);
+        expect(context.Id).not.toBe(contextC.Id);
+
+        expect(contextA.Id).not.toBe(contextB.Id);
+        expect(contextA.Id).not.toBe(contextC.Id);
+
+        expect(contextB.Id).toBe(contextC.Id); //they share a context
+        expect(contextC.Id).toBe(contextB.Id); //they share a context
     });
 });
 process.specs.set(suite, []);

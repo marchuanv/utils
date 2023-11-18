@@ -56,11 +56,14 @@ const suite = describe('when properties change', () => {
         const actualValue = 'ef7cbdeb-6536-4e38-a9e1-cc1acdd00e7d';
         properties.Id = actualValue;
         expect(properties.Id).toBe(actualValue);
+        let firedCount = 0;
         properties.onSet('Id', (value) => {
+            firedCount = firedCount + 1;
             return actualValue;
         });
         const expectedValue = '5a0bf50b-6ba5-4570-984c-cdcada1d19f0';
         properties.Id = expectedValue; //onChange
+        expect(firedCount).toBe(1);
         expect(properties.Id).toBe(actualValue);
     });
     it('should sync data within context', () => {
@@ -68,11 +71,14 @@ const suite = describe('when properties change', () => {
         const actualValue = 'b4ad82a4-d76e-4b36-bc4d-f0ca5386622f';
         properties.Id = actualValue;
         expect(properties.Id).toBe(actualValue);
+        let firedCount = 0;
         properties.onSet('Id', (value) => {
+            firedCount = firedCount + 1;
             return actualValue;
         });
         const expectedValue = '1deccbb7-b859-4e77-a1b5-7b5b58ce3b31';
         properties.Id = expectedValue; //onChange
+        expect(firedCount).toBe(1);
         expect(properties.Id).toBe(actualValue);
     });
     it('should serialise', () => {
@@ -90,13 +96,13 @@ const suite = describe('when properties change', () => {
         const context = new ContextRoot();
         context.Id = '653ef45a-14ba-400b-a1a9-c0695d6b1f06';
 
-        const contextA = new ContextA(context);
+        const contextA = new ContextA({ name: 'contextRoot', value: context });
         contextA.Id = '250b70e1-fe1f-47eb-8185-04278ddef1bc';
 
-        const contextB = new ContextB(contextA);
+        const contextB = new ContextB({ name: 'contextA', value: contextA });
         contextB.Id = 'c0785886-6652-4308-aab5-b96b15eb942e';
 
-        const contextC = new ContextC(contextA);
+        const contextC = new ContextC({ name: 'contextA', value: contextA });
         contextC.Id = 'a70b6d9a-6e3b-40d3-a1b5-08327d1cd6e2';
 
         expect(context.Id).not.toBe(contextA.Id);

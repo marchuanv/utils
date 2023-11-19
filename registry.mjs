@@ -1,7 +1,6 @@
 import Jasmine from 'jasmine';
 import { General } from './lib/general.mjs';
 import { Import } from './lib/import.mjs';
-import { Relation } from './lib/relation.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/spec.mjs';
 
@@ -21,4 +20,4 @@ export { Specs };
 const baseUrl = import.meta.url;
 const currentDir = fileURLToPath(new URL('./', baseUrl));
 
-export { Jasmine, Relation, general, importExtended, security, walkDir, currentDir };
+export { Jasmine, general, importExtended, security, walkDir, currentDir };

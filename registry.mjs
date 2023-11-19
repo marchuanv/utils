@@ -3,6 +3,7 @@ import { General } from './lib/general.mjs';
 import { Import } from './lib/import.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/spec.mjs';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const general = new General();
 const importExtended = new Import();
@@ -14,10 +15,9 @@ export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, randomUUID } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
 export { basename, join, resolve } from 'node:path';
-export { fileURLToPath, pathToFileURL } from 'url';
 export { Specs };
 
 const baseUrl = import.meta.url;
 const currentDir = fileURLToPath(new URL('./', baseUrl));
 
-export { Jasmine, general, importExtended, security, walkDir, currentDir };
+export { Jasmine, general, importExtended, security, walkDir, currentDir, fileURLToPath,  pathToFileURL };

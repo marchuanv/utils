@@ -2,7 +2,7 @@ import Jasmine from 'jasmine';
 import { General } from './lib/general.mjs';
 import { Import } from './lib/import.mjs';
 import { Security } from './lib/security.mjs';
-import { Specs } from './lib/spec.mjs';
+import { Specs } from './lib/specs.mjs';
 import { fileURLToPath, pathToFileURL } from 'url';
 
 const general = new General();

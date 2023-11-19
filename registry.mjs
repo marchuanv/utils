@@ -21,4 +21,4 @@ export { Specs };
 const baseUrl = import.meta.url;
 const currentDir = fileURLToPath(new URL('./', baseUrl));
 
-export { Jasmine, Properties, Relation, general, importExtended, security, walkDir, currentDir };
+export { Jasmine, Relation, general, importExtended, security, walkDir, currentDir };

@@ -1,13 +1,15 @@
 import Jasmine from 'jasmine';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { General } from './lib/general.mjs';
 import { Import } from './lib/import.mjs';
+import { Reflection } from './lib/reflection.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
-import { fileURLToPath, pathToFileURL } from 'url';
 
 const general = new General();
 const importExtended = new Import();
 const security = new Security();
+const reflection = new Reflection();
 const { walkDir } = general;
 
 export { EventEmitter } from 'events';
@@ -20,4 +22,5 @@ export { Specs };
 const baseUrl = import.meta.url;
 const currentDir = fileURLToPath(new URL('./', baseUrl));
 
-export { Jasmine, general, importExtended, security, walkDir, currentDir, fileURLToPath,  pathToFileURL };
+export { Jasmine, currentDir, fileURLToPath, general, importExtended, pathToFileURL, reflection, security, walkDir };
+

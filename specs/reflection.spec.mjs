@@ -17,7 +17,7 @@ describe('when ', () => {
 });
 
 class Human {
-    constructor(age = 1, parts = ['head', 'feet', 'legs', 'arms'], height, weight) {
+    constructor(age = 1, parts = ['head', 'feet', 'legs', 'arms'], height, weight, organs = { heart: true }) {
         this._age = age;
     }
     get age() {

@@ -12,6 +12,7 @@ const security = new Security();
 const reflection = new Reflection();
 const { walkDir } = general;
 
+export { Member } from './lib/member.mjs';
 export { EventEmitter } from 'events';
 export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, randomUUID } from 'node:crypto';

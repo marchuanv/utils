@@ -1,3 +1,4 @@
+import { addSchema, validate } from "@hyperjump/json-schema/draft-2020-12";
 import Jasmine from 'jasmine';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { General } from './lib/general.mjs';
@@ -17,10 +18,10 @@ export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, randomUUID } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
 export { basename, join, resolve } from 'node:path';
-export { Specs };
+export { Member } from './lib/member.mjs';
 
 const baseUrl = import.meta.url;
 const currentDir = fileURLToPath(new URL('./', baseUrl));
 
-export { Jasmine, currentDir, fileURLToPath, general, importExtended, pathToFileURL, reflection, security, walkDir };
+export { Jasmine, Specs, addSchema, currentDir, fileURLToPath, general, importExtended, pathToFileURL, reflection, security, validate, walkDir };
 

@@ -38,4 +38,13 @@ class Baby extends Human {
     set name(value) {
         this._name = value;
     }
+    static ctor() {
+        
+    }
+    static get ctorProp() {
+        
+    }
+    static set ctorProp(value) {
+        
+    }
 }

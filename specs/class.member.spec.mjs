@@ -1,8 +1,9 @@
-import { ClassMember } from "../lib/class.member.mjs";
+import { ClassMember } from "../registry.mjs";
 
 describe('when ', () => {
     it('should', () => {
         const classMember = new ClassMember(Baby);
+        console.log();
     });
 });
 

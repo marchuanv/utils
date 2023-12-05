@@ -2,7 +2,24 @@ import { ClassMember } from "../registry.mjs";
 
 describe('when ', () => {
     it('should', () => {
-        const classMember = new ClassMember(Baby);
+        const babyClassMember = new ClassMember(Baby);
+        let methods = babyClassMember.findAll({ isMethod: true });
+        let ctorMethods = babyClassMember.findAll({ isMethod: true, isCtor: true });
+        let staticMethods = babyClassMember.findAll({ isMethod: true, isStatic: true });
+        let properties = babyClassMember.findAll({ isProperty: true });
+        expect(methods.length).toBe(1);
+        expect(ctorMethods.length).toBe(1);
+        expect(staticMethods.length).toBe(0);
+        expect(properties.length).toBe(2);
+        const humanClassMember = babyClassMember.find('Human', true, false, false, false, false);
+        methods = humanClassMember.findAll({ isMethod: true });
+        ctorMethods = babyClassMember.findAll({ isMethod: true, isCtor: true });
+        staticMethods = humanClassMember.findAll({ isMethod: true, isStatic: true });
+        properties = humanClassMember.findAll({ isProperty: true });
+        expect(methods.length).toBe(1);
+        expect(ctorMethods.length).toBe(1);
+        expect(staticMethods.length).toBe(1);
+        expect(properties.length).toBe(2);
     });
 });
 
@@ -58,5 +75,11 @@ class Baby extends Human {
     */
     set name(value) {
         this._name = value;
+    }
+    /**
+     * @param { Number } age
+    */
+    setAge(age) {
+        super.age = age;
     }
 }

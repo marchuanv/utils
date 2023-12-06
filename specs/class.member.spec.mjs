@@ -6,20 +6,24 @@ describe('when ', () => {
         let methods = babyClassMember.findAll({ isMethod: true });
         let ctorMethods = babyClassMember.findAll({ isCtor: true });
         let staticMethods = babyClassMember.findAll({ isMethod: true, isStatic: true });
-        let properties = babyClassMember.findAll({ isProperty: true });
+        let getterProperties = babyClassMember.findAll({ isProperty: true, isGetter: true });
+        let setterProperties = babyClassMember.findAll({ isProperty: true, isSetter: true });
         expect(methods.length).toBe(1);
         expect(ctorMethods.length).toBe(1);
         expect(staticMethods.length).toBe(0);
-        expect(properties.length).toBe(2);
+        expect(getterProperties.length).toBe(1);
+        expect(setterProperties.length).toBe(1);
         const humanClassMember = babyClassMember.find('Human', true, false, false, false, false);
         methods = humanClassMember.findAll({ isMethod: true });
         ctorMethods = humanClassMember.findAll({ isCtor: true });
         staticMethods = humanClassMember.findAll({ isMethod: true, isStatic: true });
-        properties = humanClassMember.findAll({ isProperty: true });
+        getterProperties = humanClassMember.findAll({ isProperty: true, isGetter: true });
+        setterProperties = humanClassMember.findAll({ isProperty: true, isSetter: true });
         expect(methods.length).toBe(0);
         expect(ctorMethods.length).toBe(1);
         expect(staticMethods.length).toBe(1);
-        expect(properties.length).toBe(2);
+        expect(getterProperties.length).toBe(1);
+        expect(setterProperties.length).toBe(1);
     });
 });
 

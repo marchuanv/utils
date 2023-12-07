@@ -19,8 +19,8 @@ export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncry
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
 export { basename, join, resolve } from 'node:path';
 export { ClassMember } from './lib/reflect/class.member.mjs';
+export { ClassMemberSchema } from './lib/reflect/class.member.schema.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';
-export { MemberSchema } from './lib/reflect/member.schema.mjs';
 export { MethodMember } from './lib/reflect/method.member.mjs';
 export { PropertyMember } from './lib/reflect/property.member.mjs';
 

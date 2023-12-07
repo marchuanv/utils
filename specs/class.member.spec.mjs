@@ -1,4 +1,4 @@
-import { ClassMember, MemberSchema } from "../registry.mjs";
+import { ClassMember, ClassMemberSchema } from "../registry.mjs";
 
 describe('when ', () => {
     it('should', () => {
@@ -25,7 +25,7 @@ describe('when ', () => {
         expect(getterProperties.length).toBe(1);
         expect(setterProperties.length).toBe(1);
 
-        const babySchema = new MemberSchema(babyClassMember);
+        const babySchema = new ClassMemberSchema(babyClassMember);
         let actualProperty = babySchema.properties['name'];
 
         expect(babySchema.title).toBe('Baby');
@@ -34,7 +34,7 @@ describe('when ', () => {
 
         expect(JSON.stringify(actualProperty)).toBe('{"$ref":"/string"}');
 
-        const humanSchema = new MemberSchema(humanClassMember);
+        const humanSchema = new ClassMemberSchema(humanClassMember);
         actualProperty = humanSchema.properties['parts'];
 
         expect(humanSchema.title).toBe('Human');

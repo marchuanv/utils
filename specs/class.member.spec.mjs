@@ -1,7 +1,8 @@
-import { ClassMember, ClassMemberSchema } from "../registry.mjs";
+import { } from "../lib/container.mjs";
+import { ClassMember, Container, ContainerReference, Schema } from "../registry.mjs";
 
 describe('when ', () => {
-    it('should', () => {
+    it('should', async () => {
         const babyClassMember = new ClassMember(Baby);
         let methods = babyClassMember.findAll({ isMethod: true });
         let ctorMethods = babyClassMember.findAll({ isCtor: true });
@@ -24,29 +25,14 @@ describe('when ', () => {
         expect(staticMethods.length).toBe(1);
         expect(getterProperties.length).toBe(1);
         expect(setterProperties.length).toBe(1);
+        
+        const human = new Human(1);
 
-        const babySchema = new ClassMemberSchema(babyClassMember);
-        let actualProperty = babySchema.properties['name'];
-
-        expect(babySchema.title).toBe('Baby');
-        expect(babySchema.type).toBe(Baby);
-        expect(actualProperty).toBeDefined();
-
-        expect(JSON.stringify(actualProperty)).toBe('{"$ref":"/string"}');
-
-        const humanSchema = new ClassMemberSchema(humanClassMember);
-        actualProperty = humanSchema.properties['parts'];
-
-        expect(humanSchema.title).toBe('Human');
-        expect(humanSchema.type).toBe(Human);
-        expect(actualProperty).toBeDefined();
-
-        expect(JSON.stringify(actualProperty)).toBe('{"$ref":"/array"}');
-
+        await Schema.validate(human);
     });
 });
 
-class Human {
+class Human extends Container {
     /**
      * @param { Number } age
      * @param { Array<String> } parts
@@ -54,7 +40,14 @@ class Human {
      * @param { Number } weight
      * @param {{ heart: Boolean }} organs
     */
-    constructor(age = 1, parts = ['head', 'feet', 'legs', 'arms'], height, weight, organs = { heart: true }) {
+    constructor(age = 1, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
+        super([
+            new ContainerReference('age', age, Number),
+            new ContainerReference('height', height, Number),
+            new ContainerReference('weight', weight, Number),
+            new ContainerReference('parts', parts, Array),
+            new ContainerReference('organs', organs, Object)
+        ]);
         this._age = age;
     }
     /**
@@ -85,6 +78,7 @@ class Baby extends Human {
      * @param { String } name
     */
     constructor(name) {
+        super(1, 49, 3.3);
         this._name = name;
     }
     /**

@@ -1,4 +1,4 @@
-import { ClassMember } from "../registry.mjs";
+import { ClassMember, MemberSchema } from "../registry.mjs";
 
 describe('when ', () => {
     it('should', () => {
@@ -24,6 +24,25 @@ describe('when ', () => {
         expect(staticMethods.length).toBe(1);
         expect(getterProperties.length).toBe(1);
         expect(setterProperties.length).toBe(1);
+
+        const babySchema = new MemberSchema(babyClassMember);
+        let actualProperty = babySchema.properties['name'];
+
+        expect(babySchema.title).toBe('Baby');
+        expect(babySchema.type).toBe(Baby);
+        expect(actualProperty).toBeDefined();
+
+        expect(JSON.stringify(actualProperty)).toBe('{"$ref":"/string"}');
+
+        const humanSchema = new MemberSchema(humanClassMember);
+        actualProperty = humanSchema.properties['parts'];
+
+        expect(humanSchema.title).toBe('Human');
+        expect(humanSchema.type).toBe(Human);
+        expect(actualProperty).toBeDefined();
+
+        expect(JSON.stringify(actualProperty)).toBe('{"$ref":"/array"}');
+
     });
 });
 

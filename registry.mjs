@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { General } from './lib/general.mjs';
 import { Import } from './lib/import.mjs';
 import { Member } from './lib/reflect/member.mjs';
+import { Schema } from './lib/schema.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
 
@@ -23,8 +24,9 @@ export { MemberSchema } from './lib/reflect/member.schema.mjs';
 export { MethodMember } from './lib/reflect/method.member.mjs';
 export { PropertyMember } from './lib/reflect/property.member.mjs';
 
+
 const baseUrl = import.meta.url;
 const currentDir = fileURLToPath(new URL('./', baseUrl));
 
-export { Jasmine, Member, Specs, addSchema, currentDir, fileURLToPath, general, importExtended, pathToFileURL, security, validate, walkDir };
+export { Jasmine, Member, Schema, Specs, addSchema, currentDir, fileURLToPath, general, importExtended, pathToFileURL, security, validate as validateSchema, walkDir };
 

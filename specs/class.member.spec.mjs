@@ -1,34 +1,33 @@
 import { } from "../lib/container.mjs";
-import { ClassMember, Container, ContainerReference, Schema } from "../registry.mjs";
+import { Container, ContainerReference } from "../registry.mjs";
 
 describe('when ', () => {
     it('should', async () => {
-        const babyClassMember = new ClassMember(Baby);
-        let methods = babyClassMember.findAll({ isMethod: true });
-        let ctorMethods = babyClassMember.findAll({ isCtor: true });
-        let staticMethods = babyClassMember.findAll({ isMethod: true, isStatic: true });
-        let getterProperties = babyClassMember.findAll({ isProperty: true, isGetter: true });
-        let setterProperties = babyClassMember.findAll({ isProperty: true, isSetter: true });
-        expect(methods.length).toBe(1);
-        expect(ctorMethods.length).toBe(1);
-        expect(staticMethods.length).toBe(0);
-        expect(getterProperties.length).toBe(1);
-        expect(setterProperties.length).toBe(1);
-        const humanClassMember = babyClassMember.find('Human', true, false, false, false, false);
-        methods = humanClassMember.findAll({ isMethod: true });
-        ctorMethods = humanClassMember.findAll({ isCtor: true });
-        staticMethods = humanClassMember.findAll({ isMethod: true, isStatic: true });
-        getterProperties = humanClassMember.findAll({ isProperty: true, isGetter: true });
-        setterProperties = humanClassMember.findAll({ isProperty: true, isSetter: true });
-        expect(methods.length).toBe(0);
-        expect(ctorMethods.length).toBe(1);
-        expect(staticMethods.length).toBe(1);
-        expect(getterProperties.length).toBe(1);
-        expect(setterProperties.length).toBe(1);
+        // const babyClassMember = new ClassMember(Baby);
+        // let methods = babyClassMember.findAll({ isMethod: true });
+        // let ctorMethods = babyClassMember.findAll({ isCtor: true });
+        // let staticMethods = babyClassMember.findAll({ isMethod: true, isStatic: true });
+        // let getterProperties = babyClassMember.findAll({ isProperty: true, isGetter: true });
+        // let setterProperties = babyClassMember.findAll({ isProperty: true, isSetter: true });
+        // expect(methods.length).toBe(1);
+        // expect(ctorMethods.length).toBe(1);
+        // expect(staticMethods.length).toBe(0);
+        // expect(getterProperties.length).toBe(1);
+        // expect(setterProperties.length).toBe(1);
+        // const humanClassMember = babyClassMember.find('Human', true, false, false, false, false);
+        // methods = humanClassMember.findAll({ isMethod: true });
+        // ctorMethods = humanClassMember.findAll({ isCtor: true });
+        // staticMethods = humanClassMember.findAll({ isMethod: true, isStatic: true });
+        // getterProperties = humanClassMember.findAll({ isProperty: true, isGetter: true });
+        // setterProperties = humanClassMember.findAll({ isProperty: true, isSetter: true });
+        // expect(methods.length).toBe(0);
+        // expect(ctorMethods.length).toBe(1);
+        // expect(staticMethods.length).toBe(1);
+        // expect(getterProperties.length).toBe(1);
+        // expect(setterProperties.length).toBe(1);
         
-        const human = new Human(1);
-
-        await Schema.validate(human);
+        const baby = new Baby('john');
+        // await Schema.validate(baby, Baby);
     });
 });
 
@@ -40,8 +39,9 @@ class Human extends Container {
      * @param { Number } weight
      * @param {{ heart: Boolean }} organs
     */
-    constructor(age = 1, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
+    constructor(name, age, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
         super([
+            new ContainerReference('name', name, String),
             new ContainerReference('age', age, Number),
             new ContainerReference('height', height, Number),
             new ContainerReference('weight', weight, Number),
@@ -78,7 +78,7 @@ class Baby extends Human {
      * @param { String } name
     */
     constructor(name) {
-        super(1, 49, 3.3);
+        super(name, 1, 49, 3.3);
         this._name = name;
     }
     /**

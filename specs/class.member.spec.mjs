@@ -1,5 +1,5 @@
 import { } from "../lib/container.mjs";
-import { Container, ContainerReference } from "../registry.mjs";
+import { ComplexType, Container, ContainerItem, PrimitiveType, Schema } from "../registry.mjs";
 
 describe('when ', () => {
     it('should', async () => {
@@ -27,7 +27,7 @@ describe('when ', () => {
         // expect(setterProperties.length).toBe(1);
         
         const baby = new Baby('john');
-        // await Schema.validate(baby, Baby);
+        await Schema.validate(baby, Baby);
     });
 });
 
@@ -41,12 +41,12 @@ class Human extends Container {
     */
     constructor(name, age, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
         super([
-            new ContainerReference('name', name, String),
-            new ContainerReference('age', age, Number),
-            new ContainerReference('height', height, Number),
-            new ContainerReference('weight', weight, Number),
-            new ContainerReference('parts', parts, Array),
-            new ContainerReference('organs', organs, Object)
+            new ContainerItem( { name }, PrimitiveType.String),
+            new ContainerItem({ age }, PrimitiveType.Number),
+            new ContainerItem({ height }, PrimitiveType.Number),
+            new ContainerItem({ weight }, PrimitiveType.Number),
+            new ContainerItem({ parts }, ComplexType.StringArray),
+            new ContainerItem({ organs }, ComplexType.Object)
         ]);
         this._age = age;
     }

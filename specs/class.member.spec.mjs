@@ -4,40 +4,14 @@ import { ComplexType, Container, MemberParameter, PrimitiveType, Schema, TypeMap
 
 describe('when ', () => {
     it('should', async () => {
-        // const babyClassMember = new ClassMember(Baby);
-        // let methods = babyClassMember.findAll({ isMethod: true });
-        // let ctorMethods = babyClassMember.findAll({ isCtor: true });
-        // let staticMethods = babyClassMember.findAll({ isMethod: true, isStatic: true });
-        // let getterProperties = babyClassMember.findAll({ isProperty: true, isGetter: true });
-        // let setterProperties = babyClassMember.findAll({ isProperty: true, isSetter: true });
-        // expect(methods.length).toBe(1);
-        // expect(ctorMethods.length).toBe(1);
-        // expect(staticMethods.length).toBe(0);
-        // expect(getterProperties.length).toBe(1);
-        // expect(setterProperties.length).toBe(1);
-        // const humanClassMember = babyClassMember.find('Human', true, false, false, false, false);
-        // methods = humanClassMember.findAll({ isMethod: true });
-        // ctorMethods = humanClassMember.findAll({ isCtor: true });
-        // staticMethods = humanClassMember.findAll({ isMethod: true, isStatic: true });
-        // getterProperties = humanClassMember.findAll({ isProperty: true, isGetter: true });
-        // setterProperties = humanClassMember.findAll({ isProperty: true, isSetter: true });
-        // expect(methods.length).toBe(0);
-        // expect(ctorMethods.length).toBe(1);
-        // expect(staticMethods.length).toBe(1);
-        // expect(getterProperties.length).toBe(1);
-        // expect(setterProperties.length).toBe(1);
-        
         const baby = new Baby('john');
-
-        // const serializer = new Serialiser(baby, Baby);
-
-        // const str = await serializer.serialise();
-
-        // console.log();
-
-
-        // const obj = Serialiser.deserialise(str, Baby);
-
+        const serialiser1 = new Serialiser(baby, Baby);
+        const serialisedStr1 = await serialiser1.serialise();
+        const deserialisedObj = await Serialiser.deserialise(serialisedStr1, Baby);
+        const serialiser2 = new Serialiser(deserialisedObj, Baby);
+        const serialisedStr2 = await serialiser2.serialise();
+        expect(deserialisedObj).toBeInstanceOf(Baby);
+        expect(serialisedStr1).toBe(serialisedStr2);
     });
 });
 

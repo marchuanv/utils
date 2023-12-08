@@ -1,5 +1,6 @@
 import { } from "../lib/container.mjs";
-import { ComplexType, Container, ContainerItem, PrimitiveType, Schema } from "../registry.mjs";
+import { Serialiser } from "../lib/serialiser.mjs";
+import { ComplexType, Container, MemberParameter, PrimitiveType, Schema } from "../registry.mjs";
 
 describe('when ', () => {
     it('should', async () => {
@@ -27,7 +28,16 @@ describe('when ', () => {
         // expect(setterProperties.length).toBe(1);
         
         const baby = new Baby('john');
-        await Schema.validate(baby, Baby);
+
+        const serializer = new Serialiser(baby, Baby);
+
+        const str = await serializer.serialise();
+
+        console.log();
+
+
+        const obj = Serialiser.deserialise(str, Baby);
+
     });
 });
 
@@ -41,12 +51,12 @@ class Human extends Container {
     */
     constructor(name, age, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
         super([
-            new ContainerItem( { name }, PrimitiveType.String),
-            new ContainerItem({ age }, PrimitiveType.Number),
-            new ContainerItem({ height }, PrimitiveType.Number),
-            new ContainerItem({ weight }, PrimitiveType.Number),
-            new ContainerItem({ parts }, ComplexType.StringArray),
-            new ContainerItem({ organs }, ComplexType.Object)
+            new MemberParameter( { name }, PrimitiveType.String),
+            new MemberParameter({ age }, PrimitiveType.Number),
+            new MemberParameter({ height }, PrimitiveType.Number),
+            new MemberParameter({ weight }, PrimitiveType.Number),
+            new MemberParameter({ parts }, ComplexType.StringArray),
+            new MemberParameter({ organs }, ComplexType.Object)
         ]);
         this._age = age;
     }

@@ -27,7 +27,7 @@ export { MethodMember } from './lib/reflect/method.member.mjs';
 export { PropertyMember } from './lib/reflect/property.member.mjs';
 export { PrimitiveType } from './lib/primitivetype.mjs';
 export { ComplexType } from './lib/complextype.mjs';
-export { TypeMap } from './lib/reflect/typemap.mjs';
+export { TypeMapper } from './lib/reflect/type.mapper.mjs';
 
 const baseUrl = import.meta.url;
 const currentDir = fileURLToPath(new URL('./', baseUrl));

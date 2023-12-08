@@ -1,6 +1,6 @@
 import { } from "../lib/container.mjs";
 import { Serialiser } from "../lib/serialiser.mjs";
-import { ComplexType, Container, MemberParameter, PrimitiveType, Schema } from "../registry.mjs";
+import { ComplexType, Container, MemberParameter, PrimitiveType, Schema, TypeMapper } from "../registry.mjs";
 
 describe('when ', () => {
     it('should', async () => {
@@ -29,14 +29,14 @@ describe('when ', () => {
         
         const baby = new Baby('john');
 
-        const serializer = new Serialiser(baby, Baby);
+        // const serializer = new Serialiser(baby, Baby);
 
-        const str = await serializer.serialise();
+        // const str = await serializer.serialise();
 
-        console.log();
+        // console.log();
 
 
-        const obj = Serialiser.deserialise(str, Baby);
+        // const obj = Serialiser.deserialise(str, Baby);
 
     });
 });
@@ -52,12 +52,12 @@ class Human extends Container {
     */
     constructor(name, age, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
         super([
-            new MemberParameter( { name }, PrimitiveType.String),
-            new MemberParameter({ age }, PrimitiveType.Number),
-            new MemberParameter({ height }, PrimitiveType.Number),
-            new MemberParameter({ weight }, PrimitiveType.Number),
-            new MemberParameter({ parts }, ComplexType.StringArray),
-            new MemberParameter({ organs }, ComplexType.Object)
+            new MemberParameter( { name }, new TypeMapper(PrimitiveType.String)),
+            new MemberParameter({ age }, new TypeMapper(PrimitiveType.Number)),
+            new MemberParameter({ height }, new TypeMapper(PrimitiveType.Number)),
+            new MemberParameter({ weight }, new TypeMapper(PrimitiveType.Number)),
+            new MemberParameter({ parts }, new TypeMapper(ComplexType.StringArray)),
+            new MemberParameter({ organs }, new TypeMapper(ComplexType.Object))
         ]);
         this._age = age;
     }
@@ -79,6 +79,7 @@ class Human extends Container {
      * @param { Number } height
      * @param { Number } weight
      * @param {{ heart: Boolean }} organs
+     * @returns { Human }
     */
     static create(age = 1, parts = ['head', 'feet', 'legs', 'arms'], height, weight, organs = { heart: true }) {
     }

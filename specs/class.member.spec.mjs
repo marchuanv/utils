@@ -43,10 +43,11 @@ describe('when ', () => {
 
 class Human extends Container {
     /**
+     * @param { String } name
      * @param { Number } age
-     * @param { Array<String> } parts
      * @param { Number } height
      * @param { Number } weight
+     * @param { Array<String> } parts
      * @param {{ heart: Boolean }} organs
     */
     constructor(name, age, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {

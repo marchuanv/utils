@@ -1,5 +1,5 @@
 import { TypeMapper, randomUUID } from "../registry.mjs";
-fdescribe('when mapping types', () => {
+describe('when mapping types', () => {
     it('should register a class reference type', () => {
         const classId = randomUUID();
         TypeMapper.register(classId, ClassRefType);

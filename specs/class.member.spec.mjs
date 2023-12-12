@@ -1,10 +1,7 @@
 import {
     Container,
     MemberParameter,
-    PrimitiveType,
-    ReferenceType,
-    Serialiser,
-    TypeMapper
+    Serialiser
 } from "../registry.mjs";
 describe('when serialising an instance of a class', () => {
     it('should serialise and deserialise with equality', async () => {
@@ -30,12 +27,12 @@ class Human extends Container {
     */
     constructor(name, age, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
         super([
-            new MemberParameter( { name }, new TypeMapper(PrimitiveType.String)),
-            new MemberParameter({ age }, new TypeMapper(PrimitiveType.Number)),
-            new MemberParameter({ height }, new TypeMapper(PrimitiveType.Number)),
-            new MemberParameter({ weight }, new TypeMapper(PrimitiveType.Number)),
-            new MemberParameter({ parts }, new TypeMapper(ReferenceType.StringArray)),
-            new MemberParameter({ organs }, new TypeMapper(ReferenceType.Object))
+            new MemberParameter({ name }),
+            new MemberParameter({ age }),
+            new MemberParameter({ height }),
+            new MemberParameter({ weight }),
+            new MemberParameter({ parts }),
+            new MemberParameter({ organs })
         ]);
     }
     /**

@@ -1,9 +1,14 @@
-import { } from "../lib/container.mjs";
-import { Serialiser } from "../lib/serialiser.mjs";
-import { ComplexType, Container, MemberParameter, PrimitiveType, Schema, TypeMapper } from "../registry.mjs";
+import {
+    ComplexType,
+    Container,
+    MemberParameter,
+    PrimitiveType,
+    Serialiser,
+    TypeMapper
+} from "../registry.mjs";
 
-describe('when ', () => {
-    it('should', async () => {
+describe('when serialising an instance of a class', () => {
+    it('should serialise and deserialise with equality', async () => {
         const baby = new Baby('john');
         const serialiser1 = new Serialiser(baby, Baby);
         const serialisedStr1 = await serialiser1.serialise();

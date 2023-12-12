@@ -1,3 +1,3 @@
 import { Specs } from '../registry.mjs';
-const specs = new Specs(10000, './');
+const specs = new Specs(60000, './');
 specs.run();

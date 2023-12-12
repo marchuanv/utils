@@ -1,8 +1,8 @@
 import {
-    ComplexType,
     Container,
     MemberParameter,
     PrimitiveType,
+    ReferenceType,
     Serialiser,
     TypeMapper
 } from "../registry.mjs";
@@ -34,8 +34,8 @@ class Human extends Container {
             new MemberParameter({ age }, new TypeMapper(PrimitiveType.Number)),
             new MemberParameter({ height }, new TypeMapper(PrimitiveType.Number)),
             new MemberParameter({ weight }, new TypeMapper(PrimitiveType.Number)),
-            new MemberParameter({ parts }, new TypeMapper(ComplexType.StringArray)),
-            new MemberParameter({ organs }, new TypeMapper(ComplexType.Object))
+            new MemberParameter({ parts }, new TypeMapper(ReferenceType.StringArray)),
+            new MemberParameter({ organs }, new TypeMapper(ReferenceType.Object))
         ]);
     }
     /**

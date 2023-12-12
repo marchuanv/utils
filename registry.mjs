@@ -5,6 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { General } from './lib/general.mjs';
 import { Import } from './lib/import.mjs';
 import { Member } from './lib/reflect/member.mjs';
+import { Type } from "./lib/reflect/type.mjs";
 import { Schema } from './lib/schema.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
@@ -19,13 +20,13 @@ export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, randomUUID } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
 export { basename, join, resolve } from 'node:path';
-export { ComplexType } from './lib/complextype.mjs';
 export { Container } from './lib/container.mjs';
-export { PrimitiveType } from './lib/primitivetype.mjs';
 export { ClassMember } from './lib/reflect/class.member.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';
 export { MethodMember } from './lib/reflect/method.member.mjs';
+export { PrimitiveType } from './lib/reflect/primitivetype.mjs';
 export { PropertyMember } from './lib/reflect/property.member.mjs';
+export { ReferenceType } from './lib/reflect/referencetype.mjs';
 export { TypeMapper } from './lib/reflect/type.mapper.mjs';
 export { Serialiser } from "./lib/serialiser.mjs";
 
@@ -34,5 +35,5 @@ const currentDir = fileURLToPath(new URL('./', baseUrl));
 
 setMetaSchemaOutputFormat(VERBOSE);
 
-export { Jasmine, Member, Schema, Specs, VERBOSE, addSchema, currentDir, fileURLToPath, general, importExtended, pathToFileURL, security, validate as validateSchema, walkDir };
+export { Jasmine, Member, Schema, Specs, Type, VERBOSE, addSchema, currentDir, fileURLToPath, general, importExtended, pathToFileURL, security, validate as validateSchema, walkDir };
 

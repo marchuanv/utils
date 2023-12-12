@@ -23,7 +23,6 @@ export { ComplexType } from './lib/complextype.mjs';
 export { Container } from './lib/container.mjs';
 export { PrimitiveType } from './lib/primitivetype.mjs';
 export { ClassMember } from './lib/reflect/class.member.mjs';
-export { ClassMemberSchema } from './lib/reflect/class.member.schema.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';
 export { MethodMember } from './lib/reflect/method.member.mjs';
 export { PropertyMember } from './lib/reflect/property.member.mjs';

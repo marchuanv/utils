@@ -6,7 +6,6 @@ import {
     Serialiser,
     TypeMapper
 } from "../registry.mjs";
-
 describe('when serialising an instance of a class', () => {
     it('should serialise and deserialise with equality', async () => {
         const baby = new Baby('john');

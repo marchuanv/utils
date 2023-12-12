@@ -37,7 +37,6 @@ class Human extends Container {
             new MemberParameter({ parts }, new TypeMapper(ComplexType.StringArray)),
             new MemberParameter({ organs }, new TypeMapper(ComplexType.Object))
         ]);
-        this._age = age;
     }
     /**
      * @returns { Number }
@@ -69,7 +68,6 @@ class Baby extends Human {
     */
     constructor(name) {
         super(name, 1, 49, 3.3);
-        this._name = name;
     }
     /**
      * @returns { String }

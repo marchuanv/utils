@@ -1,7 +1,7 @@
-import { TypeMapper, randomUUID } from "../registry.mjs";
+import { GUID, TypeMapper } from "../registry.mjs";
 describe('when mapping types', () => {
     it('should register a class reference type', () => {
-        const classId = randomUUID();
+        const classId = new GUID();
         TypeMapper.register(classId, ClassRefType);
         const referenceTypeById = TypeMapper.getReferenceType(classId);
         const referenceTypeByClass = TypeMapper.getReferenceType(ClassRefType);
@@ -19,7 +19,7 @@ describe('when mapping types', () => {
         expect(referenceTypeByClass.isObject).toBeTrue();
     });
     it('should register a class as an array', () => {
-        const classId = randomUUID();
+        const classId = new GUID();
         TypeMapper.register(classId, ClassRefTypeAsArray, true);
         const referenceTypeById = TypeMapper.getReferenceType(classId);
         const referenceTypeByClass = TypeMapper.getReferenceType(ClassRefTypeAsArray);
@@ -39,7 +39,7 @@ describe('when mapping types', () => {
     it('should NOT register an array', () => {
         let error = null;
         try {
-            const classId = randomUUID();
+            const classId = new GUID();
             TypeMapper.register(classId, Array);
         } catch(err) {
             error = err;
@@ -50,7 +50,7 @@ describe('when mapping types', () => {
     it('should NOT register an object', () => {
         let error = null;
         try {
-            const classId = randomUUID();
+            const classId = new GUID();
             TypeMapper.register(classId, Object);
         } catch(err) {
             error = err;

@@ -1,12 +1,12 @@
 import {
+    GUID,
     VERBOSE,
     addSchema,
-    randomUUID,
     validateSchema
 } from "../registry.mjs";
 describe('when creating a complext schema', () => {
     it('should validate without errors', async () => {
-        const classId = randomUUID();
+        const classId = new GUID();
         const schema = 'https://json-schema.org/draft/2020-12/schema';
         let title = 'Child';
         let typeName = 'Child';
@@ -56,6 +56,6 @@ describe('when creating a complext schema', () => {
  * @param { String } className
 */
 function createSchemaUrl(classId, className) {
-    const path = classId.replace(/\-/g,'');
+    const path = classId.toString().replace(/\-/g,'');
     return `https://${path}/${className}`;
 }

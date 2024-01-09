@@ -17,10 +17,11 @@ const { walkDir } = general;
 
 export { EventEmitter } from 'events';
 export { Buffer } from 'node:buffer';
-export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, randomUUID } from 'node:crypto';
+export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
 export { basename, join, resolve } from 'node:path';
 export { Container } from './lib/container.mjs';
+export { GUID } from './lib/guid.mjs';
 export { ClassMember } from './lib/reflect/class.member.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';
 export { MethodMember } from './lib/reflect/method.member.mjs';

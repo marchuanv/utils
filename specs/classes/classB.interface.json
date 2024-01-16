@@ -3,7 +3,9 @@
         "className": "ClassB",
         "Id": "dde05a59-21f7-44e5-b9e9-b3f1572a10c3",
         "classFilePath": "./specs/classes/classB.mjs",
-        "classExtendedFilePath": "./specs/classes/classA.mjs",
+        "extend": {
+            "Id": "22d655cc-8eba-4425-84e2-afa924e208c2"
+        },
         "ctor": {
             "parameters": {
                 "name": {

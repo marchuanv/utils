@@ -3,7 +3,7 @@
         "className": "ClassA",
         "Id": "22d655cc-8eba-4425-84e2-afa924e208c2",
         "classFilePath": "./specs/classes/classA.mjs",
-        "classExtendedFilePath": "./lib/container.mjs",
+        "extend": {},
         "ctor": {
             "parameters": {
                 "name": {
@@ -32,7 +32,7 @@
                 },
                 "parts": {
                     "type": {
-                        "isReferenceType": false,
+                        "isReferenceType": true,
                         "typeName": "array"
                     }
                 },

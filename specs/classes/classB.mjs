@@ -6,7 +6,7 @@ export class ClassB extends ClassA {
      * @param { String } name
     */
     constructor(name) {
-        super(name);
+        super(name, 12, 43, 65);
     }
     /**
      * @returns { String }

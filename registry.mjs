@@ -42,4 +42,3 @@ setMetaSchemaOutputFormat(VERBOSE);
 
 export { InterfaceRegistry, Jasmine, Member, Schema, Specs, Type, VERBOSE, addSchema, currentDir, fileURLToPath, general, importExtended, pathToFileURL, security, validate as validateSchema, vm, walkDir };
 
-InterfaceRegistry.load('./specs/classes');

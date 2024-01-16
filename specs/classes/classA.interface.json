@@ -5,15 +5,75 @@
         "classFilePath": "./specs/classes/classA.mjs",
         "classExtendedFilePath": "./lib/container.mjs",
         "ctor": {
-            "name": "ClassA",
-            "isStatic": false,
-            "returns": {
-                "typeName": "",
-                "nativeTypeName": ""
-            },
             "parameters": []
         },
-        "methods": [],
-        "properties": []
+        "methods": {
+            "create": {
+                "isStatic": true,
+                "returns": {
+                    "typeName": "",
+                    "nativeTypeName": ""
+                },
+                "parameters": []
+            }
+        },
+        "properties": {
+            "name": {
+                "isStatic": false,
+                "returns": {
+                    "typeName": "",
+                    "nativeTypeName": ""
+                },
+                "parameters": []
+            },
+            "age": {
+                "isStatic": false,
+                "returns": {
+                    "typeName": "",
+                    "nativeTypeName": ""
+                },
+                "parameters": []
+            },
+            "height": {
+                "isStatic": false,
+                "returns": {
+                    "typeName": "",
+                    "nativeTypeName": ""
+                },
+                "isGetter": false,
+                "isSetter": false,
+                "parameters": []
+            },
+            "weight": {
+                "isStatic": false,
+                "returns": {
+                    "typeName": "",
+                    "nativeTypeName": ""
+                },
+                "isGetter": false,
+                "isSetter": false,
+                "parameters": []
+            },
+            "parts": {
+                "isStatic": false,
+                "returns": {
+                    "typeName": "",
+                    "nativeTypeName": ""
+                },
+                "isGetter": false,
+                "isSetter": false,
+                "parameters": []
+            },
+            "organs": {
+                "isStatic": false,
+                "returns": {
+                    "typeName": "",
+                    "nativeTypeName": ""
+                },
+                "isGetter": false,
+                "isSetter": false,
+                "parameters": []
+            }
+        }
     }
 }

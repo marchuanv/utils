@@ -7,34 +7,46 @@
         "ctor": {
             "parameters": {
                 "name": {
-                    "isReferenceType": false,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string",
+                        "nativeTypeName": "string"
+                    }
                 },
                 "age": {
-                    "isReferenceType": false,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number",
+                        "nativeTypeName": "number"
+                    }
                 },
                 "height": {
-                    "isReferenceType": false,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number",
+                        "nativeTypeName": "number"
+                    }
                 },
                 "weight": {
-                    "isReferenceType": false,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number",
+                        "nativeTypeName": "number"
+                    }
                 },
                 "parts": {
-                    "isReferenceType": true,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "array",
+                        "nativeTypeName": "array"
+                    }
                 },
                 "organs": {
-                    "isReferenceType": true,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": true,
+                        "typeName": "object",
+                        "nativeTypeName": "object"
+                    }
                 }
             }
         },
@@ -42,8 +54,11 @@
             "create": {
                 "isStatic": true,
                 "returns": {
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "ClassA",
+                        "nativeTypeName": "object"
+                    }
                 },
                 "parameters": []
             }
@@ -52,27 +67,33 @@
             "name": {
                 "isStatic": false,
                 "returns": {
-                    "isReferenceType": false,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string",
+                        "nativeTypeName": "string"
+                    }
                 },
                 "parameters": []
             },
             "age": {
                 "isStatic": false,
                 "returns": {
-                    "isReferenceType": false,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number",
+                        "nativeTypeName": "number"
+                    }
                 },
                 "parameters": []
             },
             "height": {
                 "isStatic": false,
                 "returns": {
-                    "isReferenceType": false,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number",
+                        "nativeTypeName": "number"
+                    }
                 },
                 "isGetter": false,
                 "isSetter": false,
@@ -81,9 +102,11 @@
             "weight": {
                 "isStatic": false,
                 "returns": {
-                    "isReferenceType": false,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number",
+                        "nativeTypeName": "number"
+                    }
                 },
                 "isGetter": false,
                 "isSetter": false,
@@ -92,9 +115,11 @@
             "parts": {
                 "isStatic": false,
                 "returns": {
-                    "isReferenceType": true,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "array",
+                        "nativeTypeName": "array"
+                    }
                 },
                 "isGetter": false,
                 "isSetter": false,
@@ -103,9 +128,11 @@
             "organs": {
                 "isStatic": false,
                 "returns": {
-                    "isReferenceType": true,
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "object",
+                        "nativeTypeName": "object"
+                    }
                 },
                 "isGetter": false,
                 "isSetter": false,

@@ -5,19 +5,30 @@
         "classFilePath": "./specs/classes/classB.mjs",
         "classExtendedFilePath": "./specs/classes/classA.mjs",
         "ctor": {
-            "parameters": []
+            "parameters": {
+                "name": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string",
+                        "nativeTypeName": "string"
+                    }
+                }
+            }
         },
         "methods": {
             "setAge": {
                 "isStatic": true,
                 "returns": {
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "",
+                        "nativeTypeName": ""
+                    }
                 },
                 "parameters": {
                     "age": {
-                        "typeName": "",
-                        "nativeTypeName": ""
+                        "typeName": "number",
+                        "nativeTypeName": "number"
                     }
                 }
             }
@@ -26,9 +37,14 @@
             "name": {
                 "isStatic": false,
                 "returns": {
-                    "typeName": "",
-                    "nativeTypeName": ""
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string",
+                        "nativeTypeName": "string"
+                    }
                 },
+                "isGetter": false,
+                "isSetter": false,
                 "parameters": []
             }
         }

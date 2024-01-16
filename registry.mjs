@@ -5,7 +5,6 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import vm from "vm";
 import { General } from './lib/general.mjs';
 import { Import } from './lib/import.mjs';
-import { InterfaceRegistry } from './lib/interface.registry.mjs';
 import { Member } from './lib/reflect/member.mjs';
 import { Type } from "./lib/reflect/type.mjs";
 import { Schema } from './lib/schema.mjs';
@@ -33,10 +32,20 @@ export { ReferenceType } from './lib/reflect/referencetype.mjs';
 export { TypeMapper } from './lib/reflect/type.mapper.mjs';
 export { Serialiser } from './lib/serialiser.mjs';
 
-const baseUrl = import.meta.url;
-const currentDir = fileURLToPath(new URL('./', baseUrl));
-
 setMetaSchemaOutputFormat(VERBOSE);
 
-export { InterfaceRegistry, Jasmine, Member, Schema, Specs, Type, VERBOSE, addSchema, currentDir, fileURLToPath, general, importExtended, pathToFileURL, security, validate as validateSchema, vm, walkDir };
+export {
+    Jasmine,
+    Member,
+    Schema,
+    Specs,
+    Type,
+    VERBOSE,
+    addSchema, fileURLToPath,
+    general, importExtended,
+    pathToFileURL, security,
+    validate as validateSchema,
+    vm,
+    walkDir
+};
 

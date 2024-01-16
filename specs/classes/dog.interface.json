@@ -1,0 +1,83 @@
+{
+    "Dog": {
+        "className": "Dog",
+        "Id": "2e732c70-708f-4320-9bba-ba476fee0e15",
+        "classFilePath": "./specs/classes/dog.mjs",
+        "extend": {},
+        "ctor": {
+            "parameters": {
+                "name": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string"
+                    }
+                },
+                "age": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number"
+                    }
+                },
+                "weight": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number"
+                    }
+                },
+                "food": {
+                    "type": {
+                        "isReferenceType": true,
+                        "typeName": "Food"
+                    }
+                }
+            }
+        },
+        "methods": {},
+        "properties": {
+            "name": {
+                "isStatic": false,
+                "returns": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string"
+                    }
+                },
+                "parameters": []
+            },
+            "age": {
+                "isStatic": false,
+                "returns": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number"
+                    }
+                },
+                "parameters": []
+            },
+            "weight": {
+                "isStatic": false,
+                "returns": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "number"
+                    }
+                },
+                "isGetter": false,
+                "isSetter": false,
+                "parameters": []
+            },
+            "food": {
+                "isStatic": false,
+                "returns": {
+                    "type": {
+                        "isReferenceType": true,
+                        "typeName": "Food"
+                    }
+                },
+                "isGetter": false,
+                "isSetter": false,
+                "parameters": []
+            }
+        }
+    }
+}

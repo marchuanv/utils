@@ -1,9 +1,4 @@
 import {
-    Container,
-    fileURLToPath,
-    join
-} from "../../registry.mjs";
-import {
     ClassA
 } from "./classA.mjs";
 export class ClassB extends ClassA {
@@ -32,5 +27,3 @@ export class ClassB extends ClassA {
         super.age = age;
     }
 }
-const currentDir = fileURLToPath(new URL('./', import.meta.url))
-Container.register(join(currentDir, 'classB.interface.json'), ClassB);

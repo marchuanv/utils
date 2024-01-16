@@ -1,8 +1,6 @@
 import {
     Container,
-    MemberParameter,
-    fileURLToPath,
-    join
+    MemberParameter
 } from "../../registry.mjs";
 export class ClassA extends Container {
     /**
@@ -46,5 +44,3 @@ export class ClassA extends Container {
     static create(age = 1, parts = ['head', 'feet', 'legs', 'arms'], height, weight, organs = { heart: true }) {
     }
 }
-const currentDir = fileURLToPath(new URL('./', import.meta.url))
-Container.register(join(currentDir, 'classA.interface.json'), ClassA);

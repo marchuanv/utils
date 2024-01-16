@@ -1,0 +1,51 @@
+{
+    "Food": {
+        "className": "Food",
+        "Id": "9b4506a9-ed68-4d86-9899-a8cfd10591f0",
+        "classFilePath": "./specs/classes/food.mjs",
+        "extend": {},
+        "ctor": {
+            "parameters": {
+                "name": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string"
+                    }
+                },
+                "isAdultFood": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "boolean"
+                    }
+                }
+            }
+        },
+        "methods": {},
+        "properties": {
+            "name": {
+                "isStatic": false,
+                "returns": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string"
+                    }
+                },
+                "isGetter": true,
+                "isSetter": true,
+                "parameters": []
+            },
+            "isAdultFood": {
+                "isStatic": false,
+                "returns": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "boolean"
+                    }
+                },
+                "isGetter": true,
+                "isSetter": true,
+                "parameters": []
+            }
+        }
+    }
+}

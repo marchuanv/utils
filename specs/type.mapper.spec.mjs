@@ -41,7 +41,7 @@ describe('when mapping types', () => {
         try {
             const classId = new GUID();
             TypeMapper.register(classId, Array);
-        } catch(err) {
+        } catch (err) {
             error = err;
         }
         expect(error).toBeDefined();
@@ -52,7 +52,7 @@ describe('when mapping types', () => {
         try {
             const classId = new GUID();
             TypeMapper.register(classId, Object);
-        } catch(err) {
+        } catch (err) {
             error = err;
         }
         expect(error).toBeDefined();

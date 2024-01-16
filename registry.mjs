@@ -25,7 +25,6 @@ export { basename, join, resolve } from 'node:path';
 export { ClassInterface } from './lib/class.interface.mjs';
 export { Container } from './lib/container.mjs';
 export { GUID } from './lib/guid.mjs';
-export { ClassMember } from './lib/reflect/class.member.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';
 export { MethodMember } from './lib/reflect/method.member.mjs';
 export { PrimitiveType } from './lib/reflect/primitivetype.mjs';

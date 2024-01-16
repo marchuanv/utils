@@ -1,0 +1,19 @@
+{
+    "ClassA": {
+        "name": "ClassA",
+        "Id": "22d655cc-8eba-4425-84e2-afa924e208c2",
+        "classFilePath": "./specs/classes/classA.mjs",
+        "classExtendedFilePath": "./lib/container.mjs",
+        "ctor": {
+            "name": "ClassA",
+            "isStatic": false,
+            "returns": {
+                "typeName": "",
+                "nativeTypeName": ""
+            },
+            "parameters": []
+        },
+        "methods": [],
+        "properties": []
+    }
+}

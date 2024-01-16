@@ -1,0 +1,19 @@
+{
+    "ClassB": {
+        "name": "ClassB",
+        "Id": "dde05a59-21f7-44e5-b9e9-b3f1572a10c3",
+        "classFilePath": "./specs/classes/classB.mjs",
+        "classExtendedFilePath": "./specs/classes/classA.mjs",
+        "ctor": {
+            "name": "ClassB",
+            "isStatic": false,
+            "returns": {
+                "typeName": "",
+                "nativeTypeName": ""
+            },
+            "parameters": []
+        },
+        "methods": [],
+        "properties": []
+    }
+}

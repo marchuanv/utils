@@ -1,22 +1,27 @@
 import { GUID, TypeMapper } from "../registry.mjs";
 describe('when mapping types', () => {
-    it('should register a class reference type', () => {
+    it('should register and find a class reference type', () => {
         const classId = new GUID();
         TypeMapper.register(classId, ClassRefType);
         const referenceTypeById = TypeMapper.getReferenceType(classId);
         const referenceTypeByClass = TypeMapper.getReferenceType(ClassRefType);
+        const referenceTypeByClassName = TypeMapper.getReferenceType(ClassRefType.name);
 
         expect(referenceTypeById).toBeDefined();
         expect(referenceTypeByClass).toBeDefined();
+        expect(referenceTypeByClassName).toBeDefined();
 
         expect(referenceTypeById).not.toBeNull();
         expect(referenceTypeByClass).not.toBeNull();
+        expect(referenceTypeByClassName).not.toBeNull();
 
         expect(referenceTypeById.isArray).toBeFalse();
         expect(referenceTypeByClass.isArray).toBeFalse();
+        expect(referenceTypeByClassName.isArray).toBeFalse();
 
         expect(referenceTypeById.isObject).toBeTrue();
         expect(referenceTypeByClass.isObject).toBeTrue();
+        expect(referenceTypeByClassName.isObject).toBeTrue();
     });
     it('should register a class as an array', () => {
         const classId = new GUID();

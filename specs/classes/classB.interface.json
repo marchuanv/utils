@@ -1,6 +1,6 @@
 {
     "ClassB": {
-        "name": "ClassB",
+        "className": "ClassB",
         "Id": "dde05a59-21f7-44e5-b9e9-b3f1572a10c3",
         "classFilePath": "./specs/classes/classB.mjs",
         "classExtendedFilePath": "./specs/classes/classA.mjs",
@@ -9,8 +9,7 @@
                 "name": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "string",
-                        "nativeTypeName": "string"
+                        "typeName": "string"
                     }
                 }
             }
@@ -21,14 +20,15 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "",
-                        "nativeTypeName": ""
+                        "typeName": ""
                     }
                 },
                 "parameters": {
                     "age": {
-                        "typeName": "number",
-                        "nativeTypeName": "number"
+                        "type": {
+                            "isReferenceType": false,
+                            "typeName": "number"
+                        }
                     }
                 }
             }
@@ -39,8 +39,7 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "string",
-                        "nativeTypeName": "string"
+                        "typeName": "string"
                     }
                 },
                 "isGetter": false,

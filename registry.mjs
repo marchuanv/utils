@@ -15,9 +15,7 @@ import { Specs } from './lib/specs.mjs';
 const general = new General();
 const importExtended = new Import();
 const security = new Security();
-const { walkDir } = general;
-
-InterfaceRegistry.load('./specs/classes');
+const { walkDir } = General;
 
 export { EventEmitter } from 'events';
 export { Buffer } from 'node:buffer';
@@ -45,3 +43,5 @@ setMetaSchemaOutputFormat(VERBOSE);
 
 export { InterfaceRegistry, Jasmine, Member, Schema, Specs, Type, VERBOSE, addSchema, currentDir, fileURLToPath, general, importExtended, pathToFileURL, security, validate as validateSchema, vm, walkDir };
 
+InterfaceRegistry.load('./lib');
+InterfaceRegistry.load('./specs/classes');

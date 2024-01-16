@@ -1,5 +1,5 @@
 import {
-    Container
+    Container, MemberParameter
 } from "../../registry.mjs";
 export class ClassA extends Container {
     /**
@@ -11,7 +11,14 @@ export class ClassA extends Container {
      * @param {{ heart: Boolean }} organs
     */
     constructor(name, age, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
-        super({ name, age, height, weight, parts, organs });
+        super([
+            new MemberParameter({ name }, 'string', false),
+            new MemberParameter({ age }, 'number', false),
+            new MemberParameter({ height }, 'number', false),
+            new MemberParameter({ weight }, 'number', false),
+            new MemberParameter({ parts }, 'array', true),
+            new MemberParameter({ organs }, 'object', true)
+        ]);
     }
     /**
      * @returns { Number }

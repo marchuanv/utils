@@ -1,6 +1,6 @@
 {
     "ClassA": {
-        "name": "ClassA",
+        "className": "ClassA",
         "Id": "22d655cc-8eba-4425-84e2-afa924e208c2",
         "classFilePath": "./specs/classes/classA.mjs",
         "classExtendedFilePath": "./lib/container.mjs",
@@ -9,43 +9,37 @@
                 "name": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "string",
-                        "nativeTypeName": "string"
+                        "typeName": "string"
                     }
                 },
                 "age": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "number",
-                        "nativeTypeName": "number"
+                        "typeName": "number"
                     }
                 },
                 "height": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "number",
-                        "nativeTypeName": "number"
+                        "typeName": "number"
                     }
                 },
                 "weight": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "number",
-                        "nativeTypeName": "number"
+                        "typeName": "number"
                     }
                 },
                 "parts": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "array",
-                        "nativeTypeName": "array"
+                        "typeName": "array"
                     }
                 },
                 "organs": {
                     "type": {
                         "isReferenceType": true,
-                        "typeName": "object",
-                        "nativeTypeName": "object"
+                        "typeName": "object"
                     }
                 }
             }
@@ -56,8 +50,7 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "ClassA",
-                        "nativeTypeName": "object"
+                        "typeName": "ClassA"
                     }
                 },
                 "parameters": []
@@ -69,8 +62,7 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "string",
-                        "nativeTypeName": "string"
+                        "typeName": "string"
                     }
                 },
                 "parameters": []
@@ -80,8 +72,7 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "number",
-                        "nativeTypeName": "number"
+                        "typeName": "number"
                     }
                 },
                 "parameters": []
@@ -91,8 +82,7 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "number",
-                        "nativeTypeName": "number"
+                        "typeName": "number"
                     }
                 },
                 "isGetter": false,
@@ -104,8 +94,7 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "number",
-                        "nativeTypeName": "number"
+                        "typeName": "number"
                     }
                 },
                 "isGetter": false,
@@ -117,8 +106,7 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "array",
-                        "nativeTypeName": "array"
+                        "typeName": "array"
                     }
                 },
                 "isGetter": false,
@@ -130,8 +118,7 @@
                 "returns": {
                     "type": {
                         "isReferenceType": false,
-                        "typeName": "object",
-                        "nativeTypeName": "object"
+                        "typeName": "object"
                     }
                 },
                 "isGetter": false,

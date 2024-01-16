@@ -1,0 +1,44 @@
+{
+    "Serialiser": {
+        "name": "Serialiser",
+        "Id": "d14daa02-d6ff-4164-9af1-eec30f0474df",
+        "classFilePath": "./lib/serialise.mjs",
+        "classExtendedFilePath": "./lib/container.mjs",
+        "ctor": {
+            "parameters": {
+                "args": {
+                    "type": {
+                        "isReferenceType": true,
+                        "typeName": "array",
+                        "nativeTypeName": "array"
+                    }
+                }
+            }
+        },
+        "methods": {
+            "serialise": {
+                "isStatic": false,
+                "returns": {
+                    "type": {
+                        "isReferenceType": false,
+                        "typeName": "string",
+                        "nativeTypeName": "string"
+                    }
+                },
+                "parameters": []
+            },
+            "deserialise": {
+                "isStatic": true,
+                "returns": {
+                    "type": {
+                        "isReferenceType": true,
+                        "typeName": "object",
+                        "nativeTypeName": "object"
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "properties": {}
+    }
+}

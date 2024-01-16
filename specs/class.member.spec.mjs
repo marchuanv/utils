@@ -1,7 +1,9 @@
 import {
-    ClassB,
     Serialiser
 } from "../registry.mjs";
+import {
+    ClassB
+} from "./classes/classB.mjs";
 describe('when serialising an instance of a class', () => {
     it('should serialise and deserialise with equality', async () => {
         const baby = new ClassB('john');

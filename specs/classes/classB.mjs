@@ -1,6 +1,6 @@
 import {
     ClassA
-} from "../../registry.mjs";
+} from "./classA.mjs";
 export class ClassB extends ClassA {
     /**
      * @param { String } name

@@ -32,8 +32,6 @@ export { PropertyMember } from './lib/reflect/property.member.mjs';
 export { ReferenceType } from './lib/reflect/referencetype.mjs';
 export { TypeMapper } from './lib/reflect/type.mapper.mjs';
 export { Serialiser } from './lib/serialiser.mjs';
-export { ClassA } from './specs/classes/classA.mjs';
-export { ClassB } from './specs/classes/classB.mjs';
 
 const baseUrl = import.meta.url;
 const currentDir = fileURLToPath(new URL('./', baseUrl));

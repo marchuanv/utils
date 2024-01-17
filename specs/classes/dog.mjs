@@ -14,10 +14,10 @@ export class Dog extends Container {
     */
     constructor(name, age, weight, food) {
         super([
-            new MemberParameter({ name }, 'string', false),
-            new MemberParameter({ age }, 'number', false),
-            new MemberParameter({ weight }, 'number', false),
-            new MemberParameter({ food }, 'Food', true)
+            new MemberParameter({ name }, String),
+            new MemberParameter({ age }, Number),
+            new MemberParameter({ weight }, Number),
+            new MemberParameter({ food }, Food)
         ]);
     }
     /**

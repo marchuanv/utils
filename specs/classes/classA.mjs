@@ -13,12 +13,12 @@ export class ClassA extends Container {
     */
     constructor(name, age, height, weight, parts = ['head', 'feet', 'legs', 'arms'], organs = { heart: true }) {
         super([
-            new MemberParameter({ name }, 'string', false),
-            new MemberParameter({ age }, 'number', false),
-            new MemberParameter({ height }, 'number', false),
-            new MemberParameter({ weight }, 'number', false),
-            new MemberParameter({ parts }, 'array', true),
-            new MemberParameter({ organs }, 'object', true)
+            new MemberParameter({ name }, String),
+            new MemberParameter({ age }, Number),
+            new MemberParameter({ height }, Number),
+            new MemberParameter({ weight }, Number),
+            new MemberParameter({ parts }, Array),
+            new MemberParameter({ organs }, Object)
         ]);
     }
     /**

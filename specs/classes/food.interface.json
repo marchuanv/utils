@@ -8,14 +8,12 @@
             "parameters": {
                 "name": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "string"
+                        "refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
                     }
                 },
                 "isAdultFood": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "boolean"
+                        "refId": "4be60aad-142f-49f4-b690-3d2ab7483bf5"
                     }
                 }
             }
@@ -26,8 +24,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "string"
+                        "refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
                     }
                 },
                 "isGetter": true,
@@ -38,8 +35,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "boolean"
+                        "refId": "4be60aad-142f-49f4-b690-3d2ab7483bf5"
                     }
                 },
                 "isGetter": true,

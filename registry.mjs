@@ -4,9 +4,10 @@ import Jasmine from 'jasmine';
 import { fileURLToPath, pathToFileURL } from 'url';
 import vm from "vm";
 import { General } from './lib/general.mjs';
+import { GUID } from './lib/guid.mjs';
 import { Import } from './lib/import.mjs';
 import { Member } from './lib/reflect/member.mjs';
-import { Type } from "./lib/reflect/type.mjs";
+import { TypeDefinition } from "./lib/reflect/type.definition.mjs";
 import { Schema } from './lib/schema.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
@@ -23,23 +24,22 @@ export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node
 export { basename, join, resolve } from 'node:path';
 export { ClassInterface } from './lib/class.interface.mjs';
 export { Container } from './lib/container.mjs';
-export { GUID } from './lib/guid.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';
 export { MethodMember } from './lib/reflect/method.member.mjs';
 export { PrimitiveType } from './lib/reflect/primitivetype.mjs';
 export { PropertyMember } from './lib/reflect/property.member.mjs';
 export { ReferenceType } from './lib/reflect/referencetype.mjs';
-export { TypeMapper } from './lib/reflect/type.mapper.mjs';
 export { Serialiser } from './lib/serialiser.mjs';
 
 setMetaSchemaOutputFormat(VERBOSE);
 
 export {
+    GUID,
     Jasmine,
     Member,
     Schema,
     Specs,
-    Type,
+    TypeDefinition,
     VERBOSE,
     addSchema, fileURLToPath,
     general, importExtended,

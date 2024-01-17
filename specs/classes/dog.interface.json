@@ -8,26 +8,22 @@
             "parameters": {
                 "name": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "string"
+                        "refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
                     }
                 },
                 "age": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "weight": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "food": {
                     "type": {
-                        "isReferenceType": true,
-                        "typeName": "Food"
+                        "refId": "9b4506a9-ed68-4d86-9899-a8cfd10591f0"
                     }
                 }
             }
@@ -38,8 +34,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "string"
+                        "refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
                     }
                 },
                 "parameters": []
@@ -48,8 +43,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "parameters": []
@@ -58,8 +52,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "isGetter": false,
@@ -70,8 +63,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": true,
-                        "typeName": "Food"
+                        "refId": "9b4506a9-ed68-4d86-9899-a8cfd10591f0"
                     }
                 },
                 "isGetter": false,

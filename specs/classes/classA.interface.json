@@ -8,38 +8,32 @@
             "parameters": {
                 "name": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "string"
+                        "refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
                     }
                 },
                 "age": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "height": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "weight": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "parts": {
                     "type": {
-                        "isReferenceType": true,
-                        "typeName": "array"
+                        "refId": "d789b720-a84c-4b68-bedd-dd4fc5c5be20"
                     }
                 },
                 "organs": {
                     "type": {
-                        "isReferenceType": true,
-                        "typeName": "object"
+                        "refId": "11b2c041-b639-4e82-9b94-a43c523497db"
                     }
                 }
             }
@@ -49,8 +43,7 @@
                 "isStatic": true,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "ClassA"
+                        "refId": "22d655cc-8eba-4425-84e2-afa924e208c2"
                     }
                 },
                 "parameters": []
@@ -61,8 +54,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "string"
+                        "refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
                     }
                 },
                 "parameters": []
@@ -71,8 +63,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "parameters": []
@@ -81,8 +72,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "isGetter": false,
@@ -93,8 +83,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "number"
+                        "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                     }
                 },
                 "isGetter": false,
@@ -105,8 +94,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "array"
+                        "refId": "d789b720-a84c-4b68-bedd-dd4fc5c5be20"
                     }
                 },
                 "isGetter": false,
@@ -117,8 +105,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "object"
+                        "refId": "11b2c041-b639-4e82-9b94-a43c523497db"
                     }
                 },
                 "isGetter": false,

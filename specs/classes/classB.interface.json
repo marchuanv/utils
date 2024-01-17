@@ -10,8 +10,7 @@
             "parameters": {
                 "name": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "string"
+                        "refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
                     }
                 }
             }
@@ -21,15 +20,13 @@
                 "isStatic": true,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": ""
+                        "refId": "f92ba0be-c0a7-426a-a13a-4f56929ec2bf"
                     }
                 },
                 "parameters": {
                     "age": {
                         "type": {
-                            "isReferenceType": false,
-                            "typeName": "number"
+                            "refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
                         }
                     }
                 }
@@ -40,8 +37,7 @@
                 "isStatic": false,
                 "returns": {
                     "type": {
-                        "isReferenceType": false,
-                        "typeName": "string"
+                        "refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
                     }
                 },
                 "isGetter": false,

@@ -1,11 +1,10 @@
-import { GUID, TypeDefinition } from "../registry.mjs";
+import { TypeDefinition } from "../registry.mjs";
 import { ClassA } from './classes/classA.mjs';
 import { ClassB } from './classes/classB.mjs';
 import { Dog } from './classes/dog.mjs';
 import { Food } from './classes/food.mjs';
 describe('when mapping types', () => {
-    fit('should register and find classA', () => {
-
+    it('should register and find classA', () => {
         const foundByClass = TypeDefinition.find({ type: ClassA });
         const foundByName = TypeDefinition.find({ typeName: ClassA.name });
 
@@ -19,109 +18,59 @@ describe('when mapping types', () => {
         expect(foundByName.isObject).toBeFalse();
     });
     it('should register and find ClassB', () => {
-        const classId = new GUID();
-        const referenceTypeById = TypeMapper.getReferenceType(classId);
-        const referenceTypeByClass = TypeMapper.getReferenceType(ClassB);
-        const referenceTypeByClassName = TypeMapper.getReferenceType(ClassB.name);
+        const foundByClass = TypeDefinition.find({ type: ClassB });
+        const foundByName = TypeDefinition.find({ typeName: ClassB.name });
 
-        expect(referenceTypeById).toBeDefined();
-        expect(referenceTypeByClass).toBeDefined();
-        expect(referenceTypeByClassName).toBeDefined();
+        expect(foundByClass).toBeDefined();
+        expect(foundByName).toBeDefined();
 
-        expect(referenceTypeById).not.toBeNull();
-        expect(referenceTypeByClass).not.toBeNull();
-        expect(referenceTypeByClassName).not.toBeNull();
+        expect(foundByClass).not.toBeNull();
+        expect(foundByName).not.toBeNull();
 
-        expect(referenceTypeById.isArray).toBeFalse();
-        expect(referenceTypeByClass.isArray).toBeFalse();
-        expect(referenceTypeByClassName.isArray).toBeFalse();
-
-        expect(referenceTypeById.isObject).toBeTrue();
-        expect(referenceTypeByClass.isObject).toBeTrue();
-        expect(referenceTypeByClassName.isObject).toBeTrue();
+        expect(foundByClass.isObject).toBeFalse();
+        expect(foundByName.isObject).toBeFalse();
     });
     it('should register and find Dog', () => {
-        const classId = new GUID();
-        const referenceTypeById = TypeMapper.getReferenceType(classId);
-        const referenceTypeByClass = TypeMapper.getReferenceType(Dog);
-        const referenceTypeByClassName = TypeMapper.getReferenceType(Dog.name);
+        const foundByClass = TypeDefinition.find({ type: Dog });
+        const foundByName = TypeDefinition.find({ typeName: Dog.name });
 
-        expect(referenceTypeById).toBeDefined();
-        expect(referenceTypeByClass).toBeDefined();
-        expect(referenceTypeByClassName).toBeDefined();
+        expect(foundByClass).toBeDefined();
+        expect(foundByName).toBeDefined();
 
-        expect(referenceTypeById).not.toBeNull();
-        expect(referenceTypeByClass).not.toBeNull();
-        expect(referenceTypeByClassName).not.toBeNull();
+        expect(foundByClass).not.toBeNull();
+        expect(foundByName).not.toBeNull();
 
-        expect(referenceTypeById.isArray).toBeFalse();
-        expect(referenceTypeByClass.isArray).toBeFalse();
-        expect(referenceTypeByClassName.isArray).toBeFalse();
-
-        expect(referenceTypeById.isObject).toBeTrue();
-        expect(referenceTypeByClass.isObject).toBeTrue();
-        expect(referenceTypeByClassName.isObject).toBeTrue();
+        expect(foundByClass.isObject).toBeFalse();
+        expect(foundByName.isObject).toBeFalse();
     });
     it('should register and find Food', () => {
-        const classId = new GUID();
-        const referenceTypeById = TypeMapper.getReferenceType(classId);
-        const referenceTypeByClass = TypeMapper.getReferenceType(Food);
-        const referenceTypeByClassName = TypeMapper.getReferenceType(Food.name);
+        const foundByClass = TypeDefinition.find({ type: Food });
+        const foundByName = TypeDefinition.find({ typeName: Food.name });
 
-        expect(referenceTypeById).toBeDefined();
-        expect(referenceTypeByClass).toBeDefined();
-        expect(referenceTypeByClassName).toBeDefined();
+        expect(foundByClass).toBeDefined();
+        expect(foundByName).toBeDefined();
 
-        expect(referenceTypeById).not.toBeNull();
-        expect(referenceTypeByClass).not.toBeNull();
-        expect(referenceTypeByClassName).not.toBeNull();
+        expect(foundByClass).not.toBeNull();
+        expect(foundByName).not.toBeNull();
 
-        expect(referenceTypeById.isArray).toBeFalse();
-        expect(referenceTypeByClass.isArray).toBeFalse();
-        expect(referenceTypeByClassName.isArray).toBeFalse();
-
-        expect(referenceTypeById.isObject).toBeTrue();
-        expect(referenceTypeByClass.isObject).toBeTrue();
-        expect(referenceTypeByClassName.isObject).toBeTrue();
+        expect(foundByClass.isObject).toBeFalse();
+        expect(foundByName.isObject).toBeFalse();
     });
     it('should register a class as an array', () => {
-        const classId = new GUID();
-        TypeMapper.register(classId, Food, true);
-        const referenceTypeById = TypeMapper.getReferenceType(classId);
-        const referenceTypeByClass = TypeMapper.getReferenceType(ClassRefTypeAsArray);
 
-        expect(referenceTypeById).toBeDefined();
-        expect(referenceTypeByClass).toBeDefined();
+        const foundByClass = TypeDefinition.find({ type: Array });
+        const foundByName = TypeDefinition.find({ typeName: Array.name });
 
-        expect(referenceTypeById).not.toBeNull();
-        expect(referenceTypeByClass).not.toBeNull();
+        expect(foundByClass).toBeDefined();
+        expect(foundByName).toBeDefined();
 
-        expect(referenceTypeById.isArray).toBeTrue();
-        expect(referenceTypeByClass.isArray).toBeTrue();
+        expect(foundByClass).not.toBeNull();
+        expect(foundByName).not.toBeNull();
 
-        expect(referenceTypeById.isObject).toBeFalse();
-        expect(referenceTypeByClass.isObject).toBeFalse();
-    });
-    it('should NOT register an array', () => {
-        let error = null;
-        try {
-            const classId = new GUID();
-            TypeMapper.register(classId, Array);
-        } catch (err) {
-            error = err;
-        }
-        expect(error).toBeDefined();
-        expect(error).not.toBeNull();
-    });
-    it('should NOT register an object', () => {
-        let error = null;
-        try {
-            const classId = new GUID();
-            TypeMapper.register(classId, Object);
-        } catch (err) {
-            error = err;
-        }
-        expect(error).toBeDefined();
-        expect(error).not.toBeNull();
+        expect(foundByClass.isObject).toBeFalse();
+        expect(foundByName.isObject).toBeFalse();
+
+        expect(foundByClass.isArray).toBeTrue();
+        expect(foundByName.isArray).toBeTrue();
     });
 });

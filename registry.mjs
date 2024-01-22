@@ -23,7 +23,7 @@ export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
 export { basename, join, resolve } from 'node:path';
-export { ClassContract } from './lib/class.contract.mjs';
+export { ClassIntegrity } from './lib/class.integrity.mjs';
 export { ClassInterface } from './lib/class.interface.mjs';
 export { Container } from './lib/container.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';

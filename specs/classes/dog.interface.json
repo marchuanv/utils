@@ -1,79 +1,141 @@
 {
-    "Dog": {
-        "className": "Dog",
-        "Id": "2e732c70-708f-4320-9bba-ba476fee0e15",
-        "classFilePath": "./specs/classes/dog.mjs",
-        "extend": {
-            "type": {
-                "$refId": "8936e9ae-c830-4840-b21c-04b643b8a5a7"
-            }
+    "className": "Dog",
+    "Id": "2e732c70-708f-4320-9bba-ba476fee0e15",
+    "scriptFilePath": "./specs/classes/dog.mjs",
+    "extend": {
+        "type": {
+            "$refId": "8936e9ae-c830-4840-b21c-04b643b8a5a7"
+        }
+    },
+    "ctor": {
+        "Id": "d0e8d415-648b-4d1b-819d-f665114a1383",
+        "name": "constructor",
+        "isCtor": true,
+        "isStatic": false,
+        "typeDefinition": {
+            "Id": "2e732c70-708f-4320-9bba-ba476fee0e15",
+            "name": "dog",
+            "typeName": "Dog",
+            "isArray": false,
+            "isReferenceType": true,
+            "isObject": false
         },
-        "ctor": {
-            "parameters": {
-                "name": {
-                    "type": {
-                        "$refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
-                    }
-                },
-                "age": {
-                    "type": {
-                        "$refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
-                    }
-                },
-                "weight": {
-                    "type": {
-                        "$refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
-                    }
-                },
-                "food": {
-                    "type": {
-                        "$refId": "9b4506a9-ed68-4d86-9899-a8cfd10591f0"
-                    }
+        "parameters": [
+            {
+                "Id": "624c8206-57d6-49aa-bb6d-9ecc70a55cf8",
+                "name": "name",
+                "typeDefinition": {
+                    "Id": "68c86ae1-f150-41d2-a01e-7bb439ec6e29",
+                    "name": "string",
+                    "typeName": "String",
+                    "isArray": false,
+                    "isReferenceType": false,
+                    "isObject": false
+                }
+            },
+            {
+                "Id": "4fbe113c-55bc-4c94-8bae-3c0b9d2290d7",
+                "name": "age",
+                "typeDefinition": {
+                    "Id": "36320378-ccc5-4c38-8425-50950c5ff61d",
+                    "name": "number",
+                    "typeName": "Number",
+                    "isArray": false,
+                    "isReferenceType": false,
+                    "isObject": false
+                }
+            },
+            {
+                "Id": "d2c6df02-630f-400b-b413-33733ddf6b2d",
+                "name": "weight",
+                "typeDefinition": {
+                    "Id": "36320378-ccc5-4c38-8425-50950c5ff61d",
+                    "name": "number",
+                    "typeName": "Number",
+                    "isArray": false,
+                    "isReferenceType": false,
+                    "isObject": false
+                }
+            },
+            {
+                "Id": "d2c6df02-630f-400b-b413-33733ddf6b2d",
+                "name": "food",
+                "typeDefinition": {
+                    "Id": "9b4506a9-ed68-4d86-9899-a8cfd10591f0",
+                    "name": "food",
+                    "typeName": "Food",
+                    "isArray": false,
+                    "isReferenceType": true,
+                    "isObject": false
                 }
             }
+        ]
+    },
+    "methods": [],
+    "properties": [
+        {
+            "Id": "889232ac-4374-4879-8b66-8fcb6140ee56",
+            "name": "name",
+            "isGetter": true,
+            "isSetter": false,
+            "isStatic": false,
+            "typeDefinition": {
+                "Id": "68c86ae1-f150-41d2-a01e-7bb439ec6e29",
+                "name": "string",
+                "typeName": "String",
+                "isArray": false,
+                "isReferenceType": true,
+                "isObject": false
+            },
+            "parameters": []
         },
-        "methods": {},
-        "properties": {
-            "name": {
-                "isStatic": false,
-                "returns": {
-                    "type": {
-                        "$refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
-                    }
-                },
-                "parameters": []
+        {
+            "Id": "77d843e5-9ecf-42b5-8a96-08233ad66c83",
+            "name": "age",
+            "isGetter": true,
+            "isSetter": false,
+            "isStatic": false,
+            "typeDefinition": {
+                "Id": "36320378-ccc5-4c38-8425-50950c5ff61d",
+                "name": "number",
+                "typeName": "Number",
+                "isArray": false,
+                "isReferenceType": true,
+                "isObject": false
             },
-            "age": {
-                "isStatic": false,
-                "returns": {
-                    "type": {
-                        "$refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
-                    }
-                },
-                "parameters": []
+            "parameters": []
+        },
+        {
+            "Id": "564d8004-04ba-48ba-b35a-0fb0697c4816",
+            "name": "weight",
+            "isGetter": true,
+            "isSetter": false,
+            "isStatic": false,
+            "typeDefinition": {
+                "Id": "36320378-ccc5-4c38-8425-50950c5ff61d",
+                "name": "number",
+                "typeName": "Number",
+                "isArray": false,
+                "isReferenceType": false,
+                "isObject": false
             },
-            "weight": {
-                "isStatic": false,
-                "returns": {
-                    "type": {
-                        "$refId": "36320378-ccc5-4c38-8425-50950c5ff61d"
-                    }
-                },
-                "isGetter": false,
-                "isSetter": false,
-                "parameters": []
+            "parameters": []
+        },
+        {
+            "Id": "229d9753-d113-4b77-8e7d-46a233d5ab38",
+            "name": "food",
+            "isGetter": true,
+            "isSetter": false,
+            "isStatic": false,
+            "typeDefinition": {
+                "Id": "9b4506a9-ed68-4d86-9899-a8cfd10591f0",
+                "name": "food",
+                "typeName": "Food",
+                "isArray": false,
+                "isReferenceType": true,
+                "isObject": false
             },
-            "food": {
-                "isStatic": false,
-                "returns": {
-                    "type": {
-                        "$refId": "9b4506a9-ed68-4d86-9899-a8cfd10591f0"
-                    }
-                },
-                "isGetter": false,
-                "isSetter": false,
-                "parameters": []
-            }
+            "parameters": []
         }
-    }
+    ]
 }

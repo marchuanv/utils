@@ -1,0 +1,34 @@
+{
+    "$id": "https://540885dc317a40e5b7b0e4549b37dff6/typedefinition",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "TypeDefinition",
+    "type": "object",
+    "properties": {
+        "Id": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "typeName": {
+            "type": "string"
+        },
+        "isArray": {
+            "type": "boolean"
+        },
+        "isReferenceType": {
+            "type": "boolean"
+        },
+        "isObject": {
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "Id",
+        "name",
+        "typeName",
+        "isArray",
+        "isReferenceType",
+        "isObject"
+    ]
+}

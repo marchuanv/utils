@@ -1,47 +1,80 @@
 {
-    "Food": {
-        "className": "Food",
-        "Id": "9b4506a9-ed68-4d86-9899-a8cfd10591f0",
-        "classFilePath": "./specs/classes/food.mjs",
-        "extend": {},
-        "ctor": {
-            "parameters": {
-                "name": {
-                    "type": {
-                        "$refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
-                    }
-                },
-                "isAdultFood": {
-                    "type": {
-                        "$refId": "4be60aad-142f-49f4-b690-3d2ab7483bf5"
-                    }
+    "className": "Food",
+    "Id": "9b4506a9-ed68-4d86-9899-a8cfd10591f0",
+    "scriptFilePath": "./specs/classes/food.mjs",
+    "ctor": {
+        "Id": "35af3262-7bdf-404f-aaf7-be3074abc14f",
+        "name": "constructor",
+        "isCtor": true,
+        "isStatic": false,
+        "typeDefinition": {
+            "Id": "9b4506a9-ed68-4d86-9899-a8cfd10591f0",
+            "name": "food",
+            "typeName": "Food",
+            "isArray": false,
+            "isReferenceType": true,
+            "isObject": false
+        },
+        "parameters": [
+            {
+                "Id": "6964f19b-84c3-4a99-9bb9-a29807f7f9dc",
+                "name": "name",
+                "typeDefinition": {
+                    "Id": "68c86ae1-f150-41d2-a01e-7bb439ec6e29",
+                    "name": "string",
+                    "typeName": "String",
+                    "isArray": false,
+                    "isReferenceType": false,
+                    "isObject": false
+                }
+            },
+            {
+                "Id": "73d5beb1-23be-4e62-b893-92197701652c",
+                "name": "isAdultFood",
+                "typeDefinition": {
+                    "Id": "4be60aad-142f-49f4-b690-3d2ab7483bf5",
+                    "name": "boolean",
+                    "typeName": "Boolean",
+                    "isArray": false,
+                    "isReferenceType": false,
+                    "isObject": false
                 }
             }
-        },
-        "methods": {},
-        "properties": {
-            "name": {
-                "isStatic": false,
-                "returns": {
-                    "type": {
-                        "$refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
-                    }
-                },
-                "isGetter": true,
-                "isSetter": true,
-                "parameters": []
+        ]
+    },
+    "methods": [],
+    "properties": [
+        {
+            "Id": "1f785a06-a5de-4c7f-bb66-40b19e3a47db",
+            "name": "name",
+            "isGetter": true,
+            "isSetter": false,
+            "isStatic": false,
+            "typeDefinition": {
+                "Id": "68c86ae1-f150-41d2-a01e-7bb439ec6e29",
+                "name": "string",
+                "typeName": "String",
+                "isArray": false,
+                "isReferenceType": true,
+                "isObject": false
             },
-            "isAdultFood": {
-                "isStatic": false,
-                "returns": {
-                    "type": {
-                        "$refId": "4be60aad-142f-49f4-b690-3d2ab7483bf5"
-                    }
-                },
-                "isGetter": true,
-                "isSetter": true,
-                "parameters": []
-            }
+            "parameters": []
+        },
+        {
+            "Id": "026d42dc-a1df-4fa1-aef0-bf791e853bb4",
+            "name": "isAdultFood",
+            "isGetter": true,
+            "isSetter": false,
+            "isStatic": false,
+            "typeDefinition": {
+                "Id": "4be60aad-142f-49f4-b690-3d2ab7483bf5",
+                "name": "boolean",
+                "typeName": "Boolean",
+                "isArray": false,
+                "isReferenceType": true,
+                "isObject": false
+            },
+            "parameters": []
         }
-    }
+    ]
 }

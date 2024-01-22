@@ -1,7 +1,4 @@
 import {
-    MemberParameter
-} from '../../registry.mjs';
-import {
     Animal,
     Food
 } from '../index.mjs';
@@ -13,12 +10,7 @@ export class Dog extends Animal {
      * @param { Food } food
     */
     constructor(name, age, weight, food) {
-        super([
-            new MemberParameter({ name }, String),
-            new MemberParameter({ age }, Number),
-            new MemberParameter({ weight }, Number),
-            new MemberParameter({ food }, Food)
-        ]);
+        super(name, age, weight, food);
     }
     /**
      * @returns { String }

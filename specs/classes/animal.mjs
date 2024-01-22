@@ -2,13 +2,23 @@ import {
     Container,
     MemberParameter
 } from '../../registry.mjs';
+import {
+    Food
+} from '../index.mjs';
 export class Animal extends Container {
     /**
      * @param { String } name
-     * @param { Boolean } isAdultFood
+     * @param { Number } age
+     * @param { Number } weight
+     * @param { Food } food
+     * @param { String } type
     */
-    constructor(type) {
+    constructor(name, age, weight, food, type) {
         super([
+            new MemberParameter({ name }, String),
+            new MemberParameter({ age }, Number),
+            new MemberParameter({ weight }, Number),
+            new MemberParameter({ food }, Food),
             new MemberParameter({ type }, String)
         ]);
     }

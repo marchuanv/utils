@@ -10,7 +10,7 @@ export class Food extends Container {
     constructor(name, isAdultFood) {
         super([
             new MemberParameter({ name }, String),
-            new MemberParameter({ isAdultFood }, Boolean)
+            new MemberParameter({ isAdultFood }, String)
         ]);
     }
     /**

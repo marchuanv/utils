@@ -1,0 +1,29 @@
+{
+    "Animal": {
+        "className": "Animal",
+        "Id": "8936e9ae-c830-4840-b21c-04b643b8a5a7",
+        "classFilePath": "./specs/classes/animal.mjs",
+        "extend": {},
+        "ctor": {
+            "parameters": {
+                "type": {
+                    "type": {
+                        "$refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
+                    }
+                }
+            }
+        },
+        "methods": {},
+        "properties": {
+            "type": {
+                "isStatic": false,
+                "returns": {
+                    "type": {
+                        "$refId": "68c86ae1-f150-41d2-a01e-7bb439ec6e29"
+                    }
+                },
+                "parameters": []
+            }
+        }
+    }
+}

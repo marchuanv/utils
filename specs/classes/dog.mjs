@@ -1,11 +1,11 @@
 import {
-    Container,
     MemberParameter
 } from '../../registry.mjs';
 import {
+    Animal,
     Food
 } from '../index.mjs';
-export class Dog extends Container {
+export class Dog extends Animal {
     /**
      * @param { String } name
      * @param { Number } age

@@ -13,7 +13,8 @@ describe('when deserialising the Dog class given correct json data', () => {
             food: {
                 name: "epol",
                 isAdultFood: true
-            }
+            },
+            type: 'dog'
         });
         let dogInstance = null;
         try {

@@ -3,6 +3,7 @@ import { VERBOSE } from "@hyperjump/json-schema/experimental";
 import Jasmine from 'jasmine';
 import { fileURLToPath, pathToFileURL } from 'url';
 import vm from "vm";
+
 import { General } from './lib/general.mjs';
 import { GUID } from './lib/guid.mjs';
 import { Import } from './lib/import.mjs';
@@ -22,6 +23,7 @@ export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
 export { basename, join, resolve } from 'node:path';
+export { ClassContract } from './lib/class.contract.mjs';
 export { ClassInterface } from './lib/class.interface.mjs';
 export { Container } from './lib/container.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';
@@ -35,8 +37,7 @@ setMetaSchemaOutputFormat(VERBOSE);
 export {
     GUID,
     Jasmine,
-    Member,
-    Schema,
+    Member, Schema,
     Specs,
     TypeDefinition,
     VERBOSE,

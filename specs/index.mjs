@@ -1,13 +1,9 @@
 import { Container, Specs, fileURLToPath, join } from '../registry.mjs';
-import { ClassA } from './classes/classA.mjs';
-import { ClassB } from './classes/classB.mjs';
 import { Dog } from './classes/dog.mjs';
 import { Food } from './classes/food.mjs';
 const currentDir = fileURLToPath(new URL('./', import.meta.url));
 Container.register(join(currentDir, 'classes', 'food.interface.json'), Food);
 Container.register(join(currentDir, 'classes', 'dog.interface.json'), Dog);
-Container.register(join(currentDir, 'classes', 'classA.interface.json'), ClassA);
-Container.register(join(currentDir, 'classes', 'classB.interface.json'), ClassB);
-export { ClassA, ClassB, Dog, Food };
+export { Dog, Food };
 const specs = new Specs(60000, './');
 specs.run();

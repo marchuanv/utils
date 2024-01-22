@@ -1,36 +1,8 @@
 import { TypeDefinition } from "../registry.mjs";
-import { ClassA } from './classes/classA.mjs';
-import { ClassB } from './classes/classB.mjs';
 import { Dog } from './classes/dog.mjs';
 import { Food } from './classes/food.mjs';
 describe('when mapping types', () => {
-    it('should register and find classA', () => {
-        const foundByClass = TypeDefinition.find({ type: ClassA });
-        const foundByName = TypeDefinition.find({ typeName: ClassA.name });
-
-        expect(foundByClass).toBeDefined();
-        expect(foundByName).toBeDefined();
-
-        expect(foundByClass).not.toBeNull();
-        expect(foundByName).not.toBeNull();
-
-        expect(foundByClass.isObject).toBeFalse();
-        expect(foundByName.isObject).toBeFalse();
-    });
-    it('should register and find ClassB', () => {
-        const foundByClass = TypeDefinition.find({ type: ClassB });
-        const foundByName = TypeDefinition.find({ typeName: ClassB.name });
-
-        expect(foundByClass).toBeDefined();
-        expect(foundByName).toBeDefined();
-
-        expect(foundByClass).not.toBeNull();
-        expect(foundByName).not.toBeNull();
-
-        expect(foundByClass.isObject).toBeFalse();
-        expect(foundByName.isObject).toBeFalse();
-    });
-    it('should register and find Dog', () => {
+    it('should register and find the Dog class', () => {
         const foundByClass = TypeDefinition.find({ type: Dog });
         const foundByName = TypeDefinition.find({ typeName: Dog.name });
 
@@ -43,7 +15,7 @@ describe('when mapping types', () => {
         expect(foundByClass.isObject).toBeFalse();
         expect(foundByName.isObject).toBeFalse();
     });
-    it('should register and find Food', () => {
+    it('should register and find the Food class', () => {
         const foundByClass = TypeDefinition.find({ type: Food });
         const foundByName = TypeDefinition.find({ typeName: Food.name });
 

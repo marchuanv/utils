@@ -29,7 +29,6 @@ export { MethodMember } from './lib/reflect/method.member.mjs';
 export { PrimitiveType } from './lib/reflect/primitivetype.mjs';
 export { PropertyMember } from './lib/reflect/property.member.mjs';
 export { ReferenceType } from './lib/reflect/referencetype.mjs';
-export { Serialiser } from './lib/serialiser.mjs';
 
 setMetaSchemaOutputFormat(VERBOSE);
 

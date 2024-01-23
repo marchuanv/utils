@@ -8,11 +8,11 @@ import { Container } from './lib/container.mjs';
 import { General } from './lib/general.mjs';
 import { GUID } from './lib/guid.mjs';
 import { Import } from './lib/import.mjs';
-import { Member } from './lib/reflect/member.mjs';
-import { TypeDefinition } from "./lib/reflect/type.definition.mjs";
+import { Member } from './lib/member.mjs';
 import { Schema } from './lib/schema.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
+import { TypeDefinition } from "./lib/type.definition.mjs";
 
 import { Animal } from "./specs/classes/animal.mjs";
 import { Dog } from "./specs/classes/dog.mjs";
@@ -38,11 +38,11 @@ export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node
 export { basename, join, resolve } from 'node:path';
 export { ClassIntegrity } from './lib/class.integrity.mjs';
 export { ClassInterface } from './lib/class.interface.mjs';
-export { MemberParameter } from './lib/reflect/member.parameter.mjs';
-export { MethodMember } from './lib/reflect/method.member.mjs';
-export { PrimitiveType } from './lib/reflect/primitivetype.mjs';
-export { PropertyMember } from './lib/reflect/property.member.mjs';
-export { ReferenceType } from './lib/reflect/referencetype.mjs';
+export { MemberParameter } from './lib/member.parameter.mjs';
+export { MethodMember } from './lib/method.member.mjs';
+export { PrimitiveType } from './lib/primitivetype.mjs';
+export { PropertyMember } from './lib/property.member.mjs';
+export { ReferenceType } from './lib/referencetype.mjs';
 
 setMetaSchemaOutputFormat(VERBOSE);
 

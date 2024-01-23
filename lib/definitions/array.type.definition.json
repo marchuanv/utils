@@ -1,0 +1,8 @@
+{
+    "Id": "d789b720-a84c-4b68-bedd-dd4fc5c5be20",
+    "name": "array",
+    "typeName": "Array",
+    "isArray": true,
+    "isReferenceType": true,
+    "isObject": false
+}

@@ -5,6 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import vm from "vm";
 
 import { Container } from './lib/container.mjs';
+import { walkDir } from './lib/general.mjs';
 import { GUID } from './lib/guid.mjs';
 import { Import } from './lib/import.mjs';
 import { Member } from './lib/member.mjs';
@@ -25,7 +26,6 @@ export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node
 export { basename, join, resolve } from 'node:path';
 export { ClassIntegrity } from './lib/class.integrity.mjs';
 export { ClassInterface } from './lib/class.interface.mjs';
-export { walkDir } from './lib/general.mjs';
 export { MemberParameter } from './lib/member.parameter.mjs';
 export { MethodMember } from './lib/method.member.mjs';
 export { PrimitiveType } from './lib/primitivetype.mjs';
@@ -46,6 +46,7 @@ export {
     importExtended,
     pathToFileURL, security,
     validate as validateSchema,
-    vm
+    vm,
+    walkDir
 };
 

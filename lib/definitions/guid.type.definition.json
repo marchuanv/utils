@@ -1,0 +1,8 @@
+{
+    "Id": "82103ca0-7285-4136-b61d-d9b2846687a7",
+    "name": "guid",
+    "typeName": "GUID",
+    "isArray": false,
+    "isReferenceType": true,
+    "isObject": true
+}

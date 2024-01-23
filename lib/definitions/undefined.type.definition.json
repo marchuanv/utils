@@ -1,7 +1,7 @@
 {
     "Id": "851a9b60-204d-492c-b6c6-53c99c493ca0",
     "name": "undefined",
-    "typeName": "Undefined",
+    "typeName": "undefined",
     "isArray": false,
     "isReferenceType": true,
     "isObject": true

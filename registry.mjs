@@ -20,7 +20,7 @@ export { EventEmitter } from 'events';
 export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
-export { basename, join, resolve } from 'node:path';
+export { basename, dirname, extname, join, resolve } from 'node:path';
 export { ClassIntegrity } from './lib/class.integrity.mjs';
 export { ClassInterface } from './lib/class.interface.mjs';
 export { MemberParameter } from './lib/member.parameter.mjs';

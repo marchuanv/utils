@@ -1,0 +1,14 @@
+{
+    "$id": "https://540885dc317a40e5b7b0e4549b37dff6/dependency",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Dependency",
+    "type": "object",
+    "properties": {
+        "Id": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "Id"
+    ]
+}

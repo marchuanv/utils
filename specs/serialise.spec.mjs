@@ -21,6 +21,7 @@ describe('when deserialising the Dog class given correct json data', () => {
             dogInstance = await Container.deserialise(serialisedDogStr, Dog);
         } catch (err) {
             error = err;
+            console.error(error);
         }
         expect(error).toBeNull();
         expect(dogInstance).not.toBeNull();
@@ -44,6 +45,7 @@ describe('when deserialising the Dog class given incorrect json data', () => {
             await Container.deserialise(serialisedDogStr, Dog);
         } catch (err) {
             error = err;
+            console.error(error);
         }
         expect(error).toBeDefined();
         expect(error).not.toBeNull();

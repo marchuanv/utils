@@ -13,8 +13,11 @@
         "scriptFilePath": {
             "type": "string"
         },
-        "extend": {
-            "$ref": "https://540885dc317a40e5b7b0e4549b37dff6/class"
+        "dependencies": {
+            "type": "array",
+            "items": {
+                "$ref": "https://540885dc317a40e5b7b0e4549b37dff6/dependency"
+            }
         },
         "ctor": {
             "$ref": "https://540885dc317a40e5b7b0e4549b37dff6/method"
@@ -37,6 +40,7 @@
         "Id",
         "scriptFilePath",
         "methods",
-        "properties"
+        "properties",
+        "dependencies"
     ]
 }

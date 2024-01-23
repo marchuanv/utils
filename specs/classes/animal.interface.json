@@ -2,6 +2,7 @@
     "className": "Animal",
     "Id": "8936e9ae-c830-4840-b21c-04b643b8a5a7",
     "scriptFilePath": "./specs/classes/animal.mjs",
+    "dependencies": [],
     "ctor": {
         "Id": "338858c7-df5a-430a-9021-6bc937b00523",
         "name": "constructor",

@@ -2,11 +2,14 @@
     "className": "Dog",
     "Id": "2e732c70-708f-4320-9bba-ba476fee0e15",
     "scriptFilePath": "./specs/classes/dog.mjs",
-    "extend": {
-        "type": {
-            "$refId": "8936e9ae-c830-4840-b21c-04b643b8a5a7"
+    "dependencies": [
+        {
+            "Id": "8936e9ae-c830-4840-b21c-04b643b8a5a7"
+        },
+        {
+            "Id": "9b4506a9-ed68-4d86-9899-a8cfd10591f0"
         }
-    },
+    ],
     "ctor": {
         "Id": "d0e8d415-648b-4d1b-819d-f665114a1383",
         "name": "constructor",

@@ -1,4 +1,7 @@
-import { Animal, Dog, Food, Specs, TypeDefinition } from "../registry.mjs";
+import { Specs, TypeDefinition } from "../registry.mjs";
+import { Animal } from "./classes/animal.mjs";
+import { Dog } from "./classes/dog.mjs";
+import { Food } from "./classes/food.mjs";
 TypeDefinition.register([
     { scriptFilePath: './specs/classes/animal.mjs', targetClass: Animal },
     { scriptFilePath: './specs/classes/food.mjs', targetClass: Food },
@@ -9,3 +12,5 @@ TypeDefinition.register([
 }).catch((error) => {
     console.error(error);
 });
+export { Animal, Dog, Food };
+

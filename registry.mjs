@@ -12,9 +12,6 @@ import { Member } from './lib/member.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
 import { TypeDefinition } from "./lib/type.definition.mjs";
-import { Animal } from "./specs/classes/animal.mjs";
-import { Dog } from "./specs/classes/dog.mjs";
-import { Food } from "./specs/classes/food.mjs";
 
 const importExtended = new Import();
 const security = new Security();
@@ -36,7 +33,7 @@ export { Schema } from './lib/schema.mjs';
 setMetaSchemaOutputFormat(VERBOSE);
 
 export {
-    Animal, Container, Dog, Food, GUID,
+    Container, GUID,
     Jasmine,
     Member,
     Specs,

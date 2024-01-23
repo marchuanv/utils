@@ -4,6 +4,7 @@ import Jasmine from 'jasmine';
 import { fileURLToPath, pathToFileURL } from 'url';
 import vm from "vm";
 
+import { Container } from './lib/container.mjs';
 import { General } from './lib/general.mjs';
 import { GUID } from './lib/guid.mjs';
 import { Import } from './lib/import.mjs';
@@ -12,6 +13,18 @@ import { TypeDefinition } from "./lib/reflect/type.definition.mjs";
 import { Schema } from './lib/schema.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
+
+import { Animal } from "./specs/classes/animal.mjs";
+import { Dog } from "./specs/classes/dog.mjs";
+import { Food } from "./specs/classes/food.mjs";
+
+TypeDefinition.register([
+    { scriptFilePath: './specs/classes/animal.mjs', targetClass: Animal },
+    { scriptFilePath: './specs/classes/food.mjs', targetClass: Food },
+    { scriptFilePath: './specs/classes/dog.mjs', targetClass: Dog },
+]).catch((error) => {
+    console.error(error);
+});
 
 const general = new General();
 const importExtended = new Import();
@@ -25,7 +38,6 @@ export { existsSync, lstatSync, readFileSync, readdirSync, statSync } from 'node
 export { basename, join, resolve } from 'node:path';
 export { ClassIntegrity } from './lib/class.integrity.mjs';
 export { ClassInterface } from './lib/class.interface.mjs';
-export { Container } from './lib/container.mjs';
 export { MemberParameter } from './lib/reflect/member.parameter.mjs';
 export { MethodMember } from './lib/reflect/method.member.mjs';
 export { PrimitiveType } from './lib/reflect/primitivetype.mjs';
@@ -35,7 +47,7 @@ export { ReferenceType } from './lib/reflect/referencetype.mjs';
 setMetaSchemaOutputFormat(VERBOSE);
 
 export {
-    GUID,
+    Animal, Container, Dog, Food, GUID,
     Jasmine,
     Member, Schema,
     Specs,

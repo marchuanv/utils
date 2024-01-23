@@ -1,7 +1,4 @@
-import {
-    Animal,
-    Food
-} from '../index.mjs';
+import { Animal, Food } from "../../registry.mjs";
 export class Dog extends Animal {
     /**
      * @param { String } name

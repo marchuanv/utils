@@ -1,10 +1,8 @@
 import {
     Container,
+    Food,
     MemberParameter
 } from '../../registry.mjs';
-import {
-    Food
-} from '../index.mjs';
 export class Animal extends Container {
     /**
      * @param { String } name

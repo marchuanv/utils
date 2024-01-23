@@ -1,5 +1,4 @@
-import { TypeDefinition } from "../registry.mjs";
-import { Animal, Dog, Food } from './index.mjs';
+import { Animal, Dog, Food, TypeDefinition } from "../registry.mjs";
 describe('when mapping types', () => {
     it('should register and find the Dog, Food and Animal classes', () => {
         for (const Class of [Animal, Dog, Food]) {

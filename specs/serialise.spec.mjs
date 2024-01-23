@@ -1,7 +1,7 @@
 import {
-    Container
+    Container,
+    Dog
 } from "../registry.mjs";
-import { Dog } from "./index.mjs";
 
 describe('when deserialising the Dog class given correct json data', () => {
     it('should deserialise without error', async () => {

@@ -1,4 +1,4 @@
-import { addSchema, setMetaSchemaOutputFormat, validate } from "@hyperjump/json-schema/draft-2020-12";
+import { registerSchema, setMetaSchemaOutputFormat, validate } from "@hyperjump/json-schema/draft-2020-12";
 import { VERBOSE } from "@hyperjump/json-schema/experimental";
 import Jasmine from 'jasmine';
 import { fileURLToPath, pathToFileURL } from 'url';
@@ -24,12 +24,9 @@ export {
     GUID,
     Jasmine,
     Specs,
-    VERBOSE,
-    addSchema,
-    fileURLToPath,
+    VERBOSE, fileURLToPath,
     importExtended,
-    pathToFileURL,
-    security,
+    pathToFileURL, registerSchema, security,
     validate as validateSchema,
     vm,
     walkDir

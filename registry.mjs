@@ -15,7 +15,7 @@ const security = new Security();
 export { EventEmitter } from 'events';
 export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes } from 'node:crypto';
-export { existsSync, lstatSync, readFileSync, readdirSync, statSync, statfsSync, writeFileSync } from 'node:fs';
+export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 export { basename, dirname, extname, join, resolve } from 'node:path';
 
 setMetaSchemaOutputFormat(VERBOSE);

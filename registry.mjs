@@ -6,10 +6,12 @@ import vm from "vm";
 import { walkDir } from './lib/general.mjs';
 import { GUID } from './lib/guid.mjs';
 import { Import } from './lib/import.mjs';
+import { Reflection } from './lib/reflection.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
 
 const importExtended = new Import();
+const reflection = new Reflection();
 const security = new Security();
 
 export { EventEmitter } from 'events';
@@ -26,7 +28,7 @@ export {
     Specs,
     VERBOSE, fileURLToPath,
     importExtended,
-    pathToFileURL, registerSchema, security,
+    pathToFileURL, reflection, registerSchema, security,
     validate as validateSchema,
     vm,
     walkDir

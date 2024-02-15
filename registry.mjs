@@ -18,6 +18,7 @@ export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 export { basename, dirname, extname, join, relative, resolve } from 'node:path';
+export { Reference } from './lib/reference.mjs';
 
 setMetaSchemaOutputFormat(VERBOSE);
 

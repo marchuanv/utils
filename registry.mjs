@@ -11,7 +11,6 @@ import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
 
 const importExtended = new Import();
-const reflection = new Reflection();
 const security = new Security();
 
 export { EventEmitter } from 'events';
@@ -24,11 +23,10 @@ setMetaSchemaOutputFormat(VERBOSE);
 
 export {
     GUID,
-    Jasmine,
-    Specs,
+    Jasmine, Reflection, Specs,
     VERBOSE, fileURLToPath,
     importExtended,
-    pathToFileURL, reflection, registerSchema, security,
+    pathToFileURL, registerSchema, security,
     validate as validateSchema,
     vm,
     walkDir

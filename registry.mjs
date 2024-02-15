@@ -3,7 +3,7 @@ import { VERBOSE } from "@hyperjump/json-schema/experimental";
 import Jasmine from 'jasmine';
 import { fileURLToPath, pathToFileURL } from 'url';
 import vm from "vm";
-import { walkDir } from './lib/general.mjs';
+import { base64ToString, stringToBase64, walkDir } from './lib/general.mjs';
 import { GUID } from './lib/guid.mjs';
 import { Import } from './lib/import.mjs';
 import { Reflection } from './lib/reflection.mjs';
@@ -24,10 +24,9 @@ setMetaSchemaOutputFormat(VERBOSE);
 export {
     GUID,
     Jasmine, Reflection, Specs,
-    VERBOSE, fileURLToPath,
+    VERBOSE, base64ToString, fileURLToPath,
     importExtended,
-    pathToFileURL, registerSchema, security,
-    validate as validateSchema,
+    pathToFileURL, registerSchema, security, stringToBase64, validate as validateSchema,
     vm,
     walkDir
 };

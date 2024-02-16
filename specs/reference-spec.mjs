@@ -42,4 +42,13 @@ describe('when finding references', () => {
         expect(isRef).not.toBeNull();
         expect(isRef).toBeTrue();
     });
+    it('should enumerate all references', () => {
+        let Ids = [];
+        while (Reference.next) {
+            Ids.push(Reference.current);
+        }
+        expect(Ids).toBeDefined();
+        expect(Ids).not.toBeNull();
+        expect(Ids.length).toBe(3);
+    });
 });

@@ -40,9 +40,7 @@ describe('when finding references', () => {
     });
 
     it('should return an iterator over all references excluding the root', () => {
-        const ids = Reference.nextReference();
-        const referenceIds = Array.from(ids).map(ref => ref.toString());
-        console.log('Reference IDs:', referenceIds);
+        const referenceIds = Array.from(Reference.nextRef()).map(ref => ref.Id.toString());
         expect(referenceIds).toContain(B_Id.toString());
         expect(referenceIds).toContain(C_Id.toString());
         expect(referenceIds.length).toBe(2);

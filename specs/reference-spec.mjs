@@ -11,6 +11,7 @@ describe('when finding references', () => {
     beforeAll(() => {
         A = new Reference();
         ({ Id: A_Id } = A);
+        A.metadata.isRoot = true;
 
         B = new Reference(A_Id);
         ({ Id: B_Id } = B);
@@ -39,10 +40,20 @@ describe('when finding references', () => {
         expect(isRef).toBeTrue();
     });
 
-    it('should return an iterator over all references excluding the root', () => {
-        const referenceIds = Array.from(Reference.nextRef()).map(ref => ref.Id.toString());
+    it('should have metadata', () => {
+        const references = Array.from(Reference.nextRef());
+        const allMetadata = references.filter(ref => ref.metadata);
+        expect(allMetadata.length).toBe(references.length);
+    });
+
+    it('should return an iterator over all references including the root', () => {
+        const references = Array.from(Reference.nextRef());
+        const hasRoot = references.some(ref => ref.metadata.isRoot);
+        expect(hasRoot).toBeTrue();
+        const referenceIds = references.map(ref => ref.Id.toString());
+        expect(referenceIds).toContain(A_Id.toString());
         expect(referenceIds).toContain(B_Id.toString());
         expect(referenceIds).toContain(C_Id.toString());
-        expect(referenceIds.length).toBe(2);
+        expect(referenceIds.length).toBe(3);
     });
 });

@@ -6,7 +6,6 @@ import vm from "vm";
 import { base64ToString, stringToBase64, walkDir } from './lib/general.mjs';
 import { GUID } from './lib/guid.mjs';
 import { Import } from './lib/import.mjs';
-import { Reference } from './lib/reference.mjs';
 import { Reflection } from './lib/reflection.mjs';
 import { Security } from './lib/security.mjs';
 import { Specs } from './lib/specs.mjs';
@@ -19,14 +18,12 @@ export { Buffer } from 'node:buffer';
 export { constants, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 export { basename, dirname, extname, join, relative, resolve } from 'node:path';
-export { NamespaceReference } from './lib/namespace-ref.mjs';
-export { TypeReference } from './lib/type-ref.mjs';
 
 setMetaSchemaOutputFormat(VERBOSE);
 
 export {
     GUID,
-    Jasmine, Reference, Reflection, Specs,
+    Jasmine, Reflection, Specs,
     VERBOSE, base64ToString, fileURLToPath,
     importExtended,
     pathToFileURL, registerSchema, security, stringToBase64, validate as validateSchema,

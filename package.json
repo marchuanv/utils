@@ -30,7 +30,6 @@
     "homepage": "https://github.com/marchuanv/utils#readme",
     "dependencies": {
         "@hyperjump/json-schema": "^1.6.5",
-        "jasmine": "^5.1.0",
-        "js-sha1": "^0.7.0"
+        "jasmine": "^5.1.0"
     }
 }

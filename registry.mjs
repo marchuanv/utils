@@ -7,11 +7,11 @@ import { base64ToString, stringToBase64, walkDir } from './lib/general.mjs';
 import { Import } from './lib/import.mjs';
 import { Reflection } from './lib/reflection.mjs';
 import { Security } from './lib/security.mjs';
-import { Specs } from './lib/specs.mjs';
 
 const importExtended = new Import();
 const security = new Security();
 
+export { Specs } from 'component.specs';
 export { EventEmitter } from 'events';
 export { Buffer } from 'node:buffer';
 export { constants, createHash, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, randomUUID } from 'node:crypto';
@@ -21,7 +21,7 @@ export { basename, dirname, extname, join, relative, resolve } from 'node:path';
 setMetaSchemaOutputFormat(VERBOSE);
 
 export {
-    Jasmine, Reflection, Specs, VERBOSE, base64ToString, fileURLToPath, importExtended,
+    Jasmine, Reflection, VERBOSE, base64ToString, fileURLToPath, importExtended,
     pathToFileURL, registerSchema, security, stringToBase64, validate as validateSchema,
     vm,
     walkDir

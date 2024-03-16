@@ -15,5 +15,17 @@ describe('when getting extended prototypes', () => {
         expect(prototypes[2]).toBe(ExtendedClass);
     });
 });
+describe('when checking if a string is empty', () => {
+    it('should return true', () => {
+        let results = Reflection.isEmptyString('   ');
+        expect(results).toBeTrue();
+        results = Reflection.isEmptyString('');
+        expect(results).toBeTrue();
+    });
+    it('should return false', () => {
+        const results = Reflection.isEmptyString('Not Empty');
+        expect(results).toBeFalse();
+    });
+});
 class RootClass { }
 class ExtendedClass extends RootClass { }

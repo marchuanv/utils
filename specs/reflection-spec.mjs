@@ -1,4 +1,5 @@
 import { Reflection } from '../registry.mjs';
+class SomeClass { }
 describe('when getting extended classes', () => {
     it('should return only classes', () => {
         const classes = Reflection.getExtendedClasses(ExtendedClass);
@@ -25,6 +26,21 @@ describe('when checking if a string is empty', () => {
     it('should return false', () => {
         const results = Reflection.isEmptyString('Not Empty');
         expect(results).toBeFalse();
+    });
+});
+describe('when checking if an obj is a class', () => {
+    it('should return false if a string', () => {
+        let results = Reflection.isClass('');
+        expect(results).toBeFalse();
+    });
+    it('should return true if a class', () => {
+        let results = Reflection.isClass(SomeClass);
+        expect(results).toBeTrue();
+    });
+    it('should return true if am instance of a class', () => {
+        const instance = new SomeClass();
+        let results = Reflection.isClass(instance);
+        expect(results).toBeTrue();
     });
 });
 class RootClass { }

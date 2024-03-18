@@ -1,5 +1,23 @@
 import { Reflection } from '../registry.mjs';
 class SomeClass { }
+const primitiveTypes = [
+    String,
+    Boolean,
+    BigInt,
+    Number,
+    null,
+    Array,
+    Object
+];
+const primitiveStringTypes = [
+    'String',
+    'Boolean',
+    'BigInt',
+    'Number',
+    'null',
+    'Array',
+    'Object'
+];
 describe('when getting extended classes', () => {
     it('should return only classes', () => {
         const classes = Reflection.getExtendedClasses(ExtendedClass);
@@ -41,6 +59,32 @@ describe('when checking if an obj is a class', () => {
         const instance = new SomeClass();
         let results = Reflection.isClass(instance);
         expect(results).toBeTrue();
+    });
+});
+describe('when checking if a type is primitive', () => {
+    it('should return true', () => {
+        for (const _type of primitiveTypes) {
+            try {
+                const results = Reflection.isPrimitiveType(_type);
+                expect(results).toBeTrue();
+            } catch (error) {
+                console.log(error);
+                fail(`did not expected any errors for ${_type.name}`);
+            }
+        }
+    });
+});
+describe('when checking if a type string is primitive', () => {
+    it('should return true', () => {
+        for (const _typeStr of primitiveStringTypes) {
+            try {
+                const results = Reflection.isPrimitiveType(_typeStr);
+                expect(results).toBeTrue();
+            } catch (error) {
+                console.log(error);
+                fail(`did not expected any errors for ${_typeStr}`);
+            }
+        }
     });
 });
 class RootClass { }

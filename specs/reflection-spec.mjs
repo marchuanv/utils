@@ -58,5 +58,46 @@ describe('when checking if a type is primitive', () => {
         }
     });
 });
+fdescribe('when getting a class property', () => {
+    it('should return the property if found', () => {
+        try {
+            const property = Reflection.getClassProperty(PropertyTypeTest, 'name');
+            expect(property).toBeDefined();
+            expect(property).not.toBeNull();
+        } catch (error) {
+            console.log(error);
+            fail(`did not expected any errors`);
+        }
+    });
+});
+fdescribe('when getting a class property given resolving the property type', () => {
+    it('should return the property with a propertyType', () => {
+        try {
+            const beforeConditions = [
+                { order: 1, variable: 'super\\.' },
+                { order: 2, variable: '(get|set)' },
+                { order: 3, variable: '\\(\\{name\\:null\\}\\,' },
+            ];
+            const afterConditions = [
+                { order: 2, variable: '\\)' },
+            ];
+            const property = Reflection.getClassProperty(PropertyTypeTest, 'name', beforeConditions, afterConditions);
+            expect(property).toBeDefined();
+            expect(property).not.toBeNull();
+            if (property) {
+                expect(property.propertyType).toBeDefined();
+                expect(property.propertyType).not.toBeNull();
+            }
+        } catch (error) {
+            console.log(error);
+            fail(`did not expected any errors`);
+        }
+    });
+});
 class RootClass { }
 class ExtendedClass extends RootClass { }
+class PropertyTypeTest {
+    get name() {
+        return super.get({ name: null }, String);
+    }
+}

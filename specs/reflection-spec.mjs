@@ -58,7 +58,7 @@ describe('when checking if a type is primitive', () => {
         }
     });
 });
-fdescribe('when getting a class property', () => {
+describe('when getting a class property', () => {
     it('should return the property if found', () => {
         try {
             const property = Reflection.getClassProperty(PropertyTypeTest, 'name');
@@ -70,7 +70,7 @@ fdescribe('when getting a class property', () => {
         }
     });
 });
-fdescribe('when getting a class property given resolving the property type', () => {
+describe('when getting a class property given resolving the property type', () => {
     it('should return the property with a propertyType', () => {
         try {
             const beforeConditions = [

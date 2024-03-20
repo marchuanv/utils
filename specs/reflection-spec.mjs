@@ -95,7 +95,7 @@ describe('when getting a class property given resolving the property type', () =
     });
 });
 describe('when matching types', () => {
-    fit('should return true for classes', () => {
+    it('should return true for classes', () => {
         try {
             let isMatch = Reflection.typeMatch(RootClass, RootClass);
             expect(isMatch).toBeTrue();

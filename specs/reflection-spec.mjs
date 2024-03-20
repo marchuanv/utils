@@ -94,6 +94,48 @@ describe('when getting a class property given resolving the property type', () =
         }
     });
 });
+describe('when matching types', () => {
+    fit('should return true for classes', () => {
+        try {
+            let isMatch = Reflection.typeMatch(RootClass, RootClass);
+            expect(isMatch).toBeTrue();
+            isMatch = Reflection.typeMatch(RootClass, ExtendedClass);
+            expect(isMatch).toBeTrue();
+
+            isMatch = Reflection.typeMatch(RootClass.prototype, ExtendedClass.prototype);
+            expect(isMatch).toBeTrue();
+
+            isMatch = Reflection.typeMatch(RootClass, ExtendedClass.prototype);
+            expect(isMatch).toBeTrue();
+            isMatch = Reflection.typeMatch(RootClass.prototype, ExtendedClass);
+            expect(isMatch).toBeTrue();
+
+            isMatch = Reflection.typeMatch(Object, Object.prototype);
+            expect(isMatch).toBeTrue();
+            isMatch = Reflection.typeMatch(Object.prototype, Object);
+            expect(isMatch).toBeTrue();
+
+            isMatch = Reflection.typeMatch(null, undefined);
+            expect(isMatch).toBeFalse();
+            isMatch = Reflection.typeMatch(undefined, null);
+            expect(isMatch).toBeFalse();
+
+            isMatch = Reflection.typeMatch(undefined, null);
+            expect(isMatch).toBeFalse();
+            isMatch = Reflection.typeMatch(null, undefined);
+            expect(isMatch).toBeFalse();
+
+            isMatch = Reflection.typeMatch(undefined, undefined);
+            expect(isMatch).toBeTrue();
+            isMatch = Reflection.typeMatch(null, null);
+            expect(isMatch).toBeTrue();
+
+        } catch (error) {
+            console.log(error);
+            fail(`did not expected any errors`);
+        }
+    });
+});
 class RootClass { }
 class ExtendedClass extends RootClass { }
 class PropertyTypeTest {

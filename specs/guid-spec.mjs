@@ -28,28 +28,24 @@ class Dog { }
 class TestGUID extends GUID { }
 describe('when constructing guids given metadata', () => {
     it('should have equality between two guids having the same metadata', () => {
-        const metadata = { Id: randomUUID() };
-        const id = new TestGUID(metadata);
-        const id2 = new TestGUID(metadata);
-        expect(id).toBeDefined();
-        expect(id).not.toBeNull();
-        expect(id2).toBeDefined();
-        expect(id2).not.toBeNull();
-        expect(id).toBe(id2);
+        let metadata = { Id: randomUUID() };
+        let testGUIDA = new TestGUID(metadata);
+        let testGUIDB = new TestGUID(metadata);
+        expect(testGUIDA).toBe(testGUIDB);
+        metadata = randomUUID();
+        testGUIDA = new TestGUID(metadata);
+        testGUIDB = new TestGUID(metadata);
+        expect(testGUIDA).toBe(testGUIDB);
     });
     it('should have equality between two guids having the same class metadata', () => {
         const dog1 = new Animal('dog', new Food('epol'), Dog);
         const dog2 = new Animal('dog', new Food('epol'), Dog);
-        const id = new TestGUID(dog1);
-        const id2 = new TestGUID(dog2);
-        expect(id).toBeDefined();
-        expect(id).not.toBeNull();
-        expect(id2).toBeDefined();
-        expect(id2).not.toBeNull();
-        expect(id).toBe(id2);
+        const testGUIDA = new TestGUID(dog1);
+        const testGUIDB = new TestGUID(dog2);
+        expect(testGUIDA).toBe(testGUIDB);
     });
     it('should have equality between two guids having the same complex metadata', () => {
-        const id = new TestGUID({
+        const testGUIDA = new TestGUID({
             name: "Alice",
             age: 25,
             address: {
@@ -75,7 +71,7 @@ describe('when constructing guids given metadata', () => {
                 }
             }
         });
-        const id2 = new TestGUID({
+        const testGUIDB = new TestGUID({
             name: "Alice",
             age: 25,
             address: {
@@ -101,36 +97,24 @@ describe('when constructing guids given metadata', () => {
                 }
             }
         });
-        expect(id).toBeDefined();
-        expect(id).not.toBeNull();
-        expect(id2).toBeDefined();
-        expect(id2).not.toBeNull();
-        expect(id).toBe(id2);
+        expect(testGUIDA).toBe(testGUIDB);
     });
     it('should not have equality between two guids having different metadata', () => {
         const metadata1 = { Id: randomUUID() };
         const metadata2 = { Id: randomUUID() };
-        const id = new TestGUID(metadata1);
-        const id2 = new TestGUID(metadata2);
-        expect(id).toBeDefined();
-        expect(id).not.toBeNull();
-        expect(id2).toBeDefined();
-        expect(id2).not.toBeNull();
-        expect(id).not.toBe(id2);
+        const testGUIDA = new TestGUID(metadata1);
+        const testGUIDB = new TestGUID(metadata2);
+        expect(testGUIDA).not.toBe(testGUIDB);
     });
     it('should not have equality between two guids having different class metadata', () => {
         const dog1 = new Animal('dog', new Food('epol'), Dog);
         const dog2 = new Animal('dog', new Food('epol'), Cat);
-        const id = new TestGUID(dog1);
-        const id2 = new TestGUID(dog2);
-        expect(id).toBeDefined();
-        expect(id).not.toBeNull();
-        expect(id2).toBeDefined();
-        expect(id2).not.toBeNull();
-        expect(id).not.toBe(id2);
+        const testGUIDA = new TestGUID(dog1);
+        const testGUIDB = new TestGUID(dog2);
+        expect(testGUIDA).not.toBe(testGUIDB);
     });
     it('should not have equality between two guids having different complex metadata', () => {
-        const id = new TestGUID({
+        const testGUIDA = new TestGUID({
             name: "Alice",
             age: 25,
             address: {
@@ -156,7 +140,7 @@ describe('when constructing guids given metadata', () => {
                 }
             }
         });
-        const id2 = new TestGUID({
+        const testGUIDB = new TestGUID({
             name: "Alice",
             age: 25,
             address: {
@@ -182,17 +166,16 @@ describe('when constructing guids given metadata', () => {
                 }
             }
         });
-        expect(id).toBeDefined();
-        expect(id).not.toBeNull();
-        expect(id2).toBeDefined();
-        expect(id2).not.toBeNull();
-        expect(id).not.toBe(id2);
+        expect(testGUIDA).not.toBe(testGUIDB);
     });
     it('should return a string representation of the guid', () => {
         const metadata = { Id: randomUUID() };
-        const id = new TestGUID(metadata);
-        expect(id).toBeDefined();
-        expect(id).not.toBeNull();
-        expect(id.toString()).toBeInstanceOf(String);
+        const testGUID = new TestGUID(metadata);
+        expect(testGUID.toString()).toBeInstanceOf(String);
+    });
+    it('should return an Id as a GUID type', () => {
+        const metadata = { Id: randomUUID() };
+        const testGUID = new TestGUID(metadata);
+        expect(testGUID.Id).toBeInstanceOf(GUID);
     });
 });

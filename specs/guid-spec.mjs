@@ -178,4 +178,9 @@ describe('when constructing guids given metadata', () => {
         const testGUID = new TestGUID(metadata);
         expect(testGUID.Id).toBeInstanceOf(GUID);
     });
+    it('should turn a guid string into a guid object.', () => {
+        const metadata = 'a6305cb1-51fe-4883-922c-0ceb131de273';
+        const testGUID = new TestGUID(metadata);
+        expect(testGUID.Id).toBeInstanceOf(GUID);
+    });
 });

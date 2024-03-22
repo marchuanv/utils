@@ -25,27 +25,31 @@ class Animal {
 }
 class Cat { }
 class Dog { }
-class TestGUID extends GUID { }
 describe('when constructing guids given metadata', () => {
     it('should have equality between two guids having the same metadata', () => {
         let metadata = { Id: randomUUID() };
-        let testGUIDA = new TestGUID(metadata);
-        let testGUIDB = new TestGUID(metadata);
+        let testGUIDA = new GUID(metadata);
+        let testGUIDB = new GUID(metadata);
         expect(testGUIDA).toBe(testGUIDB);
         metadata = randomUUID();
-        testGUIDA = new TestGUID(metadata);
-        testGUIDB = new TestGUID(metadata);
-        expect(testGUIDA).toBe(testGUIDB);
+        testGUIDA = new GUID(metadata);
+        testGUIDB = new GUID(metadata);
+        expect(testGUIDA.toString()).toBe(testGUIDB.toString());
+    });
+    it('should have not equality between two guids created without metadata', () => {
+        let testGUIDA = new GUID();
+        let testGUIDB = new GUID();
+        expect(testGUIDA).not.toBe(testGUIDB);
     });
     it('should have equality between two guids having the same class metadata', () => {
         const dog1 = new Animal('dog', new Food('epol'), Dog);
         const dog2 = new Animal('dog', new Food('epol'), Dog);
-        const testGUIDA = new TestGUID(dog1);
-        const testGUIDB = new TestGUID(dog2);
+        const testGUIDA = new GUID(dog1);
+        const testGUIDB = new GUID(dog2);
         expect(testGUIDA).toBe(testGUIDB);
     });
     it('should have equality between two guids having the same complex metadata', () => {
-        const testGUIDA = new TestGUID({
+        const testGUIDA = new GUID({
             name: "Alice",
             age: 25,
             address: {
@@ -71,7 +75,7 @@ describe('when constructing guids given metadata', () => {
                 }
             }
         });
-        const testGUIDB = new TestGUID({
+        const testGUIDB = new GUID({
             name: "Alice",
             age: 25,
             address: {
@@ -102,19 +106,19 @@ describe('when constructing guids given metadata', () => {
     it('should not have equality between two guids having different metadata', () => {
         const metadata1 = { Id: randomUUID() };
         const metadata2 = { Id: randomUUID() };
-        const testGUIDA = new TestGUID(metadata1);
-        const testGUIDB = new TestGUID(metadata2);
+        const testGUIDA = new GUID(metadata1);
+        const testGUIDB = new GUID(metadata2);
         expect(testGUIDA).not.toBe(testGUIDB);
     });
     it('should not have equality between two guids having different class metadata', () => {
         const dog1 = new Animal('dog', new Food('epol'), Dog);
         const dog2 = new Animal('dog', new Food('epol'), Cat);
-        const testGUIDA = new TestGUID(dog1);
-        const testGUIDB = new TestGUID(dog2);
+        const testGUIDA = new GUID(dog1);
+        const testGUIDB = new GUID(dog2);
         expect(testGUIDA).not.toBe(testGUIDB);
     });
     it('should not have equality between two guids having different complex metadata', () => {
-        const testGUIDA = new TestGUID({
+        const testGUIDA = new GUID({
             name: "Alice",
             age: 25,
             address: {
@@ -140,7 +144,7 @@ describe('when constructing guids given metadata', () => {
                 }
             }
         });
-        const testGUIDB = new TestGUID({
+        const testGUIDB = new GUID({
             name: "Alice",
             age: 25,
             address: {
@@ -170,12 +174,12 @@ describe('when constructing guids given metadata', () => {
     });
     it('should return a string representation of the guid', () => {
         const metadata = { Id: randomUUID() };
-        const testGUID = new TestGUID(metadata);
+        const testGUID = new GUID(metadata);
         expect(testGUID.toString()).toBeInstanceOf(String);
     });
     it('should turn a guid string into a guid object.', () => {
         const metadata = 'a6305cb1-51fe-4883-922c-0ceb131de273';
-        const testGUID = new TestGUID(metadata);
+        const testGUID = new GUID(metadata);
         expect(testGUID.toString()).toBe('a6305cb1-51fe-4883-922c-0ceb131de273');
     });
 });

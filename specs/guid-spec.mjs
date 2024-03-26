@@ -35,6 +35,8 @@ describe('when constructing guids given metadata', () => {
         testGUIDA = new GUID(metadata);
         testGUIDB = new GUID(metadata);
         expect(testGUIDA.toString()).toBe(testGUIDB.toString());
+        testGUIDA.destroy();
+        testGUIDB.destroy();
     });
     it('should have not equality between two guids created without metadata', () => {
         let testGUIDA = new GUID();
@@ -47,6 +49,8 @@ describe('when constructing guids given metadata', () => {
         const testGUIDA = new GUID(dog1);
         const testGUIDB = new GUID(dog2);
         expect(testGUIDA).toBe(testGUIDB);
+        testGUIDA.destroy();
+        testGUIDB.destroy();
     });
     it('should have equality between two guids having the same complex metadata', () => {
         const testGUIDA = new GUID({
@@ -102,6 +106,8 @@ describe('when constructing guids given metadata', () => {
             }
         });
         expect(testGUIDA).toBe(testGUIDB);
+        testGUIDA.destroy();
+        testGUIDB.destroy();
     });
     it('should not have equality between two guids having different metadata', () => {
         const metadata1 = { Id: randomUUID() };
@@ -109,6 +115,8 @@ describe('when constructing guids given metadata', () => {
         const testGUIDA = new GUID(metadata1);
         const testGUIDB = new GUID(metadata2);
         expect(testGUIDA).not.toBe(testGUIDB);
+        testGUIDA.destroy();
+        testGUIDB.destroy();
     });
     it('should not have equality between two guids having different class metadata', () => {
         const dog1 = new Animal('dog', new Food('epol'), Dog);
@@ -116,6 +124,8 @@ describe('when constructing guids given metadata', () => {
         const testGUIDA = new GUID(dog1);
         const testGUIDB = new GUID(dog2);
         expect(testGUIDA).not.toBe(testGUIDB);
+        testGUIDA.destroy();
+        testGUIDB.destroy();
     });
     it('should not have equality between two guids having different complex metadata', () => {
         const testGUIDA = new GUID({
@@ -171,15 +181,19 @@ describe('when constructing guids given metadata', () => {
             }
         });
         expect(testGUIDA).not.toBe(testGUIDB);
+        testGUIDA.destroy();
+        testGUIDB.destroy();
     });
     it('should return a string representation of the guid', () => {
         const metadata = { Id: randomUUID() };
         const testGUID = new GUID(metadata);
         expect(testGUID.toString()).toBeInstanceOf(String);
+        testGUID.destroy();
     });
     it('should turn a guid string into a guid object.', () => {
         const metadata = 'a6305cb1-51fe-4883-922c-0ceb131de273';
         const testGUID = new GUID(metadata);
         expect(testGUID.toString()).toBe('a6305cb1-51fe-4883-922c-0ceb131de273');
+        testGUID.destroy();
     });
 });

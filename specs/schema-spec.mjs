@@ -1,4 +1,4 @@
-import { Schema } from '../registry.mjs';
+import { Schema, TypeInfo } from '../registry.mjs';
 describe('when creating a schema', () => {
     const expectedErrorMessage = 'The properties argument is null, undefined, not an array, an empty array or contains invalid elements.';
     it('should raise an error if targeting schema directly', () => {
@@ -77,7 +77,7 @@ describe('when creating a schema', () => {
     it('should NOT raise an error if the properties argument is array with valid elements', () => {
         class TestSchema extends Schema { }
         try {
-            new TestSchema([{ key: 'somekey', type: String }]);
+            new TestSchema([{ key: 'somekey', type: new TypeInfo({ type: String }) }]);
         } catch (error) {
             console.log(error);
             fail('did not expect any errors');

@@ -16,7 +16,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The info argument is null or undefined.');
+            expect(error.message).toBe('The info argument is null, undefined or not an object.');
         }
     });
     it('should raise an error if the info type is not a function', () => {

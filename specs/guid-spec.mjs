@@ -1,4 +1,4 @@
-import { GUID, Schema, randomUUID } from '../registry.mjs';
+import { GUID, Schema, TypeInfo, randomUUID } from '../registry.mjs';
 class Food {
     constructor(name) {
         this._name = name;
@@ -188,12 +188,12 @@ describe('when constructing guids given metadata', () => {
 
         class TestSchemaA extends Schema {
             constructor(properties = []) {
-                super(properties.concat([{ key: 'key1', type: String }]));
+                super(properties.concat([{ key: 'key1', type: new TypeInfo({ type: String }) }]));
             }
         }
         class TestSchemaB extends Schema {
             constructor(properties = []) {
-                super(properties.concat([{ key: 'key2', type: String }]));
+                super(properties.concat([{ key: 'key2', type: new TypeInfo({ type: String }) }]));
             }
         }
 

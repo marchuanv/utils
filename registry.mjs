@@ -10,6 +10,7 @@ import { Import } from './lib/import.mjs';
 import { Reflection } from './lib/reflection.mjs';
 import { Security } from './lib/security.mjs';
 export { sha1 } from 'js-sha1';
+export { Schema } from './lib/schema.mjs';
 
 const importExtended = new Import();
 const security = new Security();

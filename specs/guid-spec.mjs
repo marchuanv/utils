@@ -184,6 +184,21 @@ describe('when constructing guids given metadata', () => {
         testGUIDA.destroy();
         testGUIDB.destroy();
     });
+    it('should not have equality between two guids having different array metadata', () => {
+        class Schema extends Array { }
+
+        const schemaA = new Schema();
+        schemaA.push({ key: 'key1', type: String });
+
+        const schemaB = new Schema();
+        schemaB.push({ key: 'key2', type: String });
+
+        const testGUIDA = new GUID({ Id: '7ef3fda1-a2c3-418e-893f-e47b7579f111', schemaA });
+        const testGUIDB = new GUID({ Id: '7ef3fda1-a2c3-418e-893f-e47b7579f111', schemaB });
+        expect(testGUIDA).not.toBe(testGUIDB);
+        testGUIDA.destroy();
+        testGUIDB.destroy();
+    });
     it('should return a string representation of the guid', () => {
         const metadata = { Id: randomUUID() };
         const testGUID = new GUID(metadata);

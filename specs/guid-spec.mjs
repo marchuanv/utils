@@ -188,12 +188,12 @@ describe('when constructing guids given metadata', () => {
 
         class TestSchemaA extends Schema {
             constructor(properties = []) {
-                super(properties.concat([{ key: 'key1', type: new TypeInfo({ type: String }) }]));
+                super(properties.concat([{ name: 'key1', typeInfo: new TypeInfo({ type: String }) }]));
             }
         }
         class TestSchemaB extends Schema {
             constructor(properties = []) {
-                super(properties.concat([{ key: 'key2', type: new TypeInfo({ type: String }) }]));
+                super(properties.concat([{ name: 'key2', typeInfo: new TypeInfo({ type: String }) }]));
             }
         }
 

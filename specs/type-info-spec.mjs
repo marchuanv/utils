@@ -55,6 +55,16 @@ describe('when creating type info', () => {
             expect(error.message).toBe(invalidNameAndTypeErrorMessage);
         }
     });
+    it('should NOT raise an error if info name is null and type is a class.', () => {
+        try {
+            class SomeDog { bark() { } get colour() { } };
+            const type = new TypeInfo({ name: undefined, type: SomeDog });
+            expect(type.members.length).toBeGreaterThan(0);
+        } catch (error) {
+            console.log(error);
+            fail('did not expected any errors');
+        }
+    });
     it('should NOT raise an error if info name is null and type is a valid.', () => {
         try {
             new TypeInfo({ name: undefined, type: String });
@@ -74,7 +84,7 @@ describe('when creating type info', () => {
     it('should not run all the validations if the type has been created before and an type info id is available.', () => {
         try {
             const typeInfo = new TypeInfo({ name: 'number', type: Number });
-            const typeInfoExist = new TypeInfo(null, typeInfo.toString());
+            const typeInfoExist = TypeInfo.get(typeInfo.toString());
             expect(typeInfo).toBe(typeInfoExist);
         } catch (error) {
             console.log(error);
@@ -84,11 +94,11 @@ describe('when creating type info', () => {
     it('should not match if the wrong type info is provided.', () => {
         const guid = (new GUID()).toString();
         try {
-            new TypeInfo(null, guid);
+            TypeInfo.get(guid);
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(`TypeInfo with Id: ${guid} was not found.`);
+            expect(error.message).toBe(`typeInfo not found by by Id.`);
         }
     });
 });

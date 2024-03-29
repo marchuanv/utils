@@ -22,6 +22,7 @@ export { constants, createHash, createHmac, generateKeyPairSync, privateDecrypt,
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 export { basename, dirname, extname, join, relative, resolve } from 'node:path';
 export { Serialiser } from './lib/serialiser.mjs';
+export { Bag } from './lib/bag.mjs';
 export { NULL, TypeInfo, UNDEFINED, UNKNOWN } from './lib/type-info.mjs';
 export { TypeMemberInfo } from './lib/type-member-info.mjs';
 

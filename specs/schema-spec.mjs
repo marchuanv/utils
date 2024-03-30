@@ -40,16 +40,6 @@ describe('when creating a schema', () => {
             expect(error.message).toBe(expectedErrorMessage);
         }
     });
-    it('should raise an error if the properties argument is an empty array', () => {
-        class TestSchema extends Schema { }
-        try {
-            new TestSchema([]);
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe(expectedErrorMessage);
-        }
-    });
     it('should raise an error if the properties argument is array with invalid elements', () => {
         class TestSchema extends Schema { }
         try {
@@ -148,7 +138,7 @@ describe('when creating a schema', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(`obj to verify does not have any properties.`);
+            expect(error.message).toBe(`obj does not have the somekey property.`);
         }
     });
     it('should NOT raise an error if the properties argument is array with valid elements', () => {

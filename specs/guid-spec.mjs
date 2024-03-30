@@ -56,7 +56,7 @@ class ComplexSchema extends Schema {
 }
 class Cat { }
 class Dog { }
-fdescribe('when constructing guids given data and/or a data schema', () => {
+describe('when constructing guids given data and/or a data schema', () => {
     it('should have equality between two guids having the same data', () => {
         let data = {  IdStr: randomUUID() };
         let testGUIDA = new GUID(data);
@@ -71,12 +71,12 @@ fdescribe('when constructing guids given data and/or a data schema', () => {
         let testGUIDB = new GUID();
         expect(testGUIDA).not.toBe(testGUIDB);
     });
-    it('should have equality between two guids having the same instance of a class data', () => {
-        const dog1 = new Animal('dog', new Food('epol'), Dog);
-        const dog2 = new Animal('dog', new Food('epol'), Dog);
-        const animalSchema = new DogSchema();
-        const testGUIDA = new GUID(dog1, animalSchema);
-        const testGUIDB = new GUID(dog2, animalSchema);
+    it('should have equality between two guids having the same instance of a class', () => {
+        const dog1 = new Animal('dog1', new Food('epol'), Dog);
+        const dog2 = new Animal('dog1', new Food('epol'), Dog);
+        const dogSchema = new DogSchema();
+        const testGUIDA = new GUID(dog1, dogSchema);
+        const testGUIDB = new GUID(dog2, dogSchema);
         expect(testGUIDA).toBe(testGUIDB);
         testGUIDA.destroy();
         testGUIDB.destroy();
@@ -149,8 +149,8 @@ fdescribe('when constructing guids given data and/or a data schema', () => {
         testGUIDB.destroy();
     });
     it('should not have equality between two guids having different class data', () => {
-        const dog = new Animal('dog', new Food('epol'), Dog);
-        const cat = new Animal('cat', new Food('epol'), Cat);
+        const dog = new Animal('dog2', new Food('epol'), Dog);
+        const cat = new Animal('cat2', new Food('epol'), Cat);
         const dogSchema = new DogSchema();
         const catSchema = new CatSchema();
         const testGUIDA = new GUID(dog, dogSchema);
@@ -159,10 +159,10 @@ fdescribe('when constructing guids given data and/or a data schema', () => {
         testGUIDA.destroy();
         testGUIDB.destroy();
     });
-    it('should not have equality between two guids having different complex data', () => {
+    it('should NOT have equality between two guids having different complex data', () => {
         const complexSchema = new ComplexSchema();
         const testGUIDA = new GUID({
-            name: "Alice",
+            name: "John",
             age: 25,
             address: {
                 street: "123 Main St",
@@ -188,7 +188,7 @@ fdescribe('when constructing guids given data and/or a data schema', () => {
             }
         }, complexSchema);
         const testGUIDB = new GUID({
-            name: "Alice",
+            name: "John",
             age: 25,
             address: {
                 street: "123 Main St",

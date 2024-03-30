@@ -98,7 +98,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(`typeInfo not found by by Id.`);
+            expect(error.message).toBe(`${guid} not found.`);
         }
     });
 });

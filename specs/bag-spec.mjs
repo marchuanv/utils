@@ -15,7 +15,7 @@ describe('when creating a bag', () => {
             const testSchema = new TestSchema();
             const typeInfo = new TypeInfo({ type: Object });
             Bag.set(Id, instance, testSchema, typeInfo, secureContext);
-            const bagKey = Bag.getBagKey(Id, secureContext);
+            const bagKey = Bag.getKey(Id, secureContext);
             expect(Bag.has(bagKey)).toBeTrue();
         } catch (error) {
             console.log(error);

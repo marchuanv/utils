@@ -84,7 +84,7 @@ describe('when creating type info', () => {
     it('should not run all the validations if the type has been created before and an type info id is available.', () => {
         try {
             const typeInfo = new TypeInfo({ name: 'number', type: Number });
-            const typeInfoExist = TypeInfo.get(typeInfo.toString());
+            const typeInfoExist = TypeInfo.get(typeInfo.Id);
             expect(typeInfo).toBe(typeInfoExist);
         } catch (error) {
             console.log(error);

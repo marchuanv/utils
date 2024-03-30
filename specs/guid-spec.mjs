@@ -1,4 +1,4 @@
-import { GUID, Schema, TypeInfo, randomUUID } from '../registry.mjs';
+import { GUID, Schema, SecureContext, TypeInfo, randomUUID } from '../registry.mjs';
 class Food {
     constructor(name) {
         this._name = name;
@@ -56,34 +56,34 @@ class ComplexSchema extends Schema {
 }
 class Cat { }
 class Dog { }
-describe('when constructing guids given data and/or a data schema', () => {
+describe('when constructing guids given a secure context', () => {
     it('should have equality between two guids having the same data', () => {
-        let data = {  IdStr: randomUUID() };
-        let testGUIDA = new GUID(data);
-        let testGUIDB = new GUID(data);
+        let data = { IdStr: randomUUID() };
+        const secureContext = new SecureContext();
+        let testGUIDA = new GUID(secureContext, data);
+        let testGUIDB = new GUID(secureContext, data);
         expect(testGUIDA).toBe(testGUIDB);
         expect(testGUIDA.toString()).toBe(testGUIDB.toString());
-        testGUIDA.destroy();
-        testGUIDB.destroy();
     });
     it('should have not equality between two guids created without data', () => {
-        let testGUIDA = new GUID();
-        let testGUIDB = new GUID();
+        const secureContext = new SecureContext();
+        let testGUIDA = new GUID(secureContext);
+        let testGUIDB = new GUID(secureContext);
         expect(testGUIDA).not.toBe(testGUIDB);
     });
-    it('should have equality between two guids having the same instance of a class', () => {
+    it('should have equality between two guids having the same instance of a class and a schema', () => {
+        const secureContext = new SecureContext();
         const dog1 = new Animal('dog1', new Food('epol'), Dog);
         const dog2 = new Animal('dog1', new Food('epol'), Dog);
         const dogSchema = new DogSchema();
-        const testGUIDA = new GUID(dog1, dogSchema);
-        const testGUIDB = new GUID(dog2, dogSchema);
+        const testGUIDA = new GUID(secureContext, dog1, dogSchema);
+        const testGUIDB = new GUID(secureContext, dog2, dogSchema);
         expect(testGUIDA).toBe(testGUIDB);
-        testGUIDA.destroy();
-        testGUIDB.destroy();
     });
-    it('should have equality between two guids having the same complex data', () => {
+    it('should have equality between two guids having the same complex data and a schema', () => {
         const complexSchema = new ComplexSchema();
-        const testGUIDA = new GUID({
+        const secureContext = new SecureContext();
+        const testGUIDA = new GUID(secureContext, {
             name: "Alice",
             age: 25,
             address: {
@@ -109,7 +109,7 @@ describe('when constructing guids given data and/or a data schema', () => {
                 }
             }
         }, complexSchema);
-        const testGUIDB = new GUID({
+        const testGUIDB = new GUID(secureContext, {
             name: "Alice",
             age: 25,
             address: {
@@ -136,32 +136,29 @@ describe('when constructing guids given data and/or a data schema', () => {
             }
         }, complexSchema);
         expect(testGUIDA).toBe(testGUIDB);
-        testGUIDA.destroy();
-        testGUIDB.destroy();
     });
     it('should not have equality between two guids having different data', () => {
+        const secureContext = new SecureContext();
         const data1 = { IdStr: randomUUID() };
         const data2 = { IdStr: randomUUID() };
-        const testGUIDA = new GUID(data1);
-        const testGUIDB = new GUID(data2);
+        const testGUIDA = new GUID(secureContext, data1);
+        const testGUIDB = new GUID(secureContext, data2);
         expect(testGUIDA).not.toBe(testGUIDB);
-        testGUIDA.destroy();
-        testGUIDB.destroy();
     });
-    it('should not have equality between two guids having different class data', () => {
+    it(`should not have equality between two guids having different instances of a class and schema's`, () => {
+        const secureContext = new SecureContext();
         const dog = new Animal('dog2', new Food('epol'), Dog);
         const cat = new Animal('cat2', new Food('epol'), Cat);
         const dogSchema = new DogSchema();
         const catSchema = new CatSchema();
-        const testGUIDA = new GUID(dog, dogSchema);
-        const testGUIDB = new GUID(cat, catSchema );
+        const testGUIDA = new GUID(secureContext, dog, dogSchema);
+        const testGUIDB = new GUID(secureContext, cat, catSchema);
         expect(testGUIDA).not.toBe(testGUIDB);
-        testGUIDA.destroy();
-        testGUIDB.destroy();
     });
-    it('should NOT have equality between two guids having different complex data', () => {
+    it('should NOT have equality between two guids having different complex data with the same schema', () => {
         const complexSchema = new ComplexSchema();
-        const testGUIDA = new GUID({
+        const secureContext = new SecureContext();
+        const testGUIDA = new GUID(secureContext, {
             name: "John",
             age: 25,
             address: {
@@ -187,7 +184,7 @@ describe('when constructing guids given data and/or a data schema', () => {
                 }
             }
         }, complexSchema);
-        const testGUIDB = new GUID({
+        const testGUIDB = new GUID(secureContext, {
             name: "John",
             age: 25,
             address: {
@@ -214,19 +211,17 @@ describe('when constructing guids given data and/or a data schema', () => {
             }
         }, complexSchema);
         expect(testGUIDA).not.toBe(testGUIDB);
-        testGUIDA.destroy();
-        testGUIDB.destroy();
     });
     it('should return a string representation of the guid', () => {
+        const secureContext = new SecureContext();
         const data = { IdStr: randomUUID() };
-        const testGUID = new GUID(data);
+        const testGUID = new GUID(secureContext, data);
         expect(testGUID.toString()).toBeInstanceOf(String);
-        testGUID.destroy();
     });
     it('should turn a guid string into a guid object.', () => {
+        const secureContext = new SecureContext();
         const data = 'a6305cb1-51fe-4883-922c-0ceb131de273';
-        const testGUID = new GUID(data);
+        const testGUID = new GUID(secureContext, data);
         expect(testGUID.toString()).toBe('a6305cb1-51fe-4883-922c-0ceb131de273');
-        testGUID.destroy();
     });
 });

@@ -1,4 +1,4 @@
-import { GUID, TypeInfo } from '../registry.mjs';
+import { GUID, SecureContext, TypeInfo } from '../registry.mjs';
 describe('when creating type info', () => {
     const invalidNameAndTypeErrorMessage = 'The info.name is null, undefined, not a string, empty string or unknown, and the info.type is null, undefined, not a function or unknown.';
     it('should raise an error if the info argument is undefined', () => {
@@ -92,7 +92,8 @@ describe('when creating type info', () => {
         }
     });
     it('should not match if the wrong type info is provided.', () => {
-        const guid = (new GUID()).toString();
+        const secureContext = new SecureContext();
+        const guid = (new GUID(secureContext)).toString();
         try {
             TypeInfo.get(guid);
             fail('expected an error');

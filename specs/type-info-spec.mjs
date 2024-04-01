@@ -7,7 +7,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(invalidNameAndTypeErrorMessage);
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
         }
     });
     it('should raise an error if the info argument is null', () => {
@@ -25,7 +25,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(invalidNameAndTypeErrorMessage);
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
         }
     });
     it('should raise an error if the info name is not a string', () => {
@@ -34,7 +34,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(invalidNameAndTypeErrorMessage);
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
         }
     });
     it('should raise an error if both info name and type is null.', () => {
@@ -43,7 +43,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(invalidNameAndTypeErrorMessage);
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
         }
     });
     it('should raise an error if both info name and type is undefined.', () => {
@@ -52,7 +52,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(invalidNameAndTypeErrorMessage);
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
         }
     });
     it('should NOT raise an error if info name is null and type is a class.', () => {

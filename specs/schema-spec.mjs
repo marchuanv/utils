@@ -134,7 +134,8 @@ describe('when creating a schema', () => {
         class TestSchema extends Schema { }
         try {
             const schema = new TestSchema([{ name: 'somekey', typeInfo: new TypeInfo({ type: String }) }]);
-            schema.validate({ obj: {} });
+            const data = {};
+            schema.validate({ data });
             fail('expected an error');
         } catch (error) {
             console.log(error);
@@ -154,13 +155,25 @@ describe('when creating a schema', () => {
         class TestSchema extends Schema { }
         try {
             const schema = new TestSchema([{ name: 'somekey', typeInfo: new TypeInfo({ type: String }) }]);
-            schema.validate({ obj: { somekey: 'a string' } });
+            schema.validate({ data: { somekey: 'a string' } });
         } catch (error) {
             console.log(error);
             fail('did not expect any errors');
         }
     });
-    it('should NOT raise an error when validating and passing a key and/or an obj with properties for verification', () => {
+    it('should create an empty object from a schema', () => {
+        class TestSchema extends Schema { }
+        try {
+            const typeInfo = new TypeInfo({ type: String });
+            const schema = new TestSchema([{ name: 'message', typeInfo }]);
+            const data = schema.empty;
+            schema.validate({ data });
+        } catch (error) {
+            console.log(error);
+            fail('did not expect any errors');
+        }
+    });
+    fit('should NOT raise an error when validating and passing a key and/or an obj with properties for verification', () => {
         class TestSchema extends Schema { }
         class Addresses extends Array {
             constructor() {
@@ -170,35 +183,35 @@ describe('when creating a schema', () => {
         }
         try {
             const schema = new TestSchema([{ name: 'somekey', typeInfo: new TypeInfo({ type: Object }) }]);
-            schema.validate({ key: 'somekey', obj: { somekey: { message: 'Hello World' } } });
+            schema.validate({ key: 'somekey', data: { somekey: { message: 'Hello World' } } });
         } catch (error) {
             console.log(error);
             fail('did not expect any errors');
         }
         try {
             const schema = new TestSchema([{ name: 'addresses', typeInfo: new TypeInfo({ type: Array }) }]);
-            schema.validate({ obj: { addresses: ['Vause Road'] } });
+            schema.validate({ data: { addresses: ['Vause Road'] } });
         } catch (error) {
             console.log(error);
             fail('did not expect any errors');
         }
         try {
             const schema = new TestSchema([{ name: 'addresses', typeInfo: new TypeInfo({ type: Array }) }]);
-            schema.validate({ key: 'addresses', obj: { addresses: ['Vause Road'] } });
+            schema.validate({ key: 'addresses', data: { addresses: ['Vause Road'] } });
         } catch (error) {
             console.log(error);
             fail('did not expect any errors');
         }
         try {
             const schema = new TestSchema([{ name: 'addresses', typeInfo: new TypeInfo({ type: Addresses }) }]);
-            schema.validate({ key: 'addresses', obj: { addresses: new Addresses() } });
+            schema.validate({ key: 'addresses', data: { addresses: new Addresses() } });
         } catch (error) {
             console.log(error);
             fail('did not expect any errors');
         }
         try {
             const schema = new TestSchema([{ name: 'addresses', typeInfo: new TypeInfo({ type: Addresses }) }]);
-            schema.validate({ obj: { addresses: new Addresses() } });
+            schema.validate({ data: { addresses: new Addresses() } });
         } catch (error) {
             console.log(error);
             fail('did not expect any errors');

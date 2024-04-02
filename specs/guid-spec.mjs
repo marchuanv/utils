@@ -23,6 +23,7 @@ class Animal {
         return this._food;
     }
 }
+
 class DogSchema extends Schema {
     constructor() {
         super([
@@ -50,12 +51,16 @@ class ComplexSchema extends Schema {
             { name: 'hobbies', typeInfo: new TypeInfo({ type: Array }) },
             { name: 'birthday', typeInfo: new TypeInfo({ type: Date }) },
             { name: 'regex', typeInfo: new TypeInfo({ type: RegExp }) },
-            { name: 'nestedObjects', typeInfo: new TypeInfo({ type:  Object }) }
+            { name: 'nestedObjects', typeInfo: new TypeInfo({ type: Object }) }
         ]);
     }
 }
 class Cat { }
 class Dog { }
+TypeInfo.register(Cat);
+TypeInfo.register(Dog);
+TypeInfo.register(Food);
+TypeInfo.register(Animal);
 describe('when constructing guids given a secure context', () => {
     it('should have equality between two guids having the same data', () => {
         let data = { IdStr: randomUUID() };

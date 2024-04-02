@@ -57,6 +57,7 @@ describe('when creating type info', () => {
     it('should NOT raise an error if info name is null and type is a class.', () => {
         try {
             class SomeDog { bark() { } get colour() { } };
+            TypeInfo.register(SomeDog);
             const type = new TypeInfo({ name: undefined, type: SomeDog });
             expect(type.members.length).toBeGreaterThan(0);
         } catch (error) {

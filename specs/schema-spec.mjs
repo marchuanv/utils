@@ -116,7 +116,7 @@ describe('when creating a schema', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(`obj to verify is null, undefined or not an object.`);
+            expect(error.message).toBe(`data to verify is null, undefined or not an object.`);
         }
     });
     it('should raise an error when validating and only a key is passed for verification', () => {
@@ -127,7 +127,7 @@ describe('when creating a schema', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(`obj to verify is null, undefined or not an object.`);
+            expect(error.message).toBe(`data to verify is null, undefined or not an object.`);
         }
     });
     it('should raise an error when validating and an obj with no properties are passed for verification', () => {
@@ -139,7 +139,7 @@ describe('when creating a schema', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(`obj does not have the somekey property.`);
+            expect(error.message).toBe(`data does not have the somekey property.`);
         }
     });
     it('should NOT raise an error if the properties argument is array with valid elements', () => {

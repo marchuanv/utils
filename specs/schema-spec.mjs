@@ -173,7 +173,7 @@ describe('when creating a schema', () => {
             fail('did not expect any errors');
         }
     });
-    fit('should NOT raise an error when validating and passing a key and/or an obj with properties for verification', () => {
+    it('should NOT raise an error when validating and passing a key and/or an obj with properties for verification', () => {
         class TestSchema extends Schema { }
         class Addresses extends Array {
             constructor() {
@@ -181,6 +181,7 @@ describe('when creating a schema', () => {
                 super.push('Vause Road');
             }
         }
+        TypeInfo.register(Addresses);
         try {
             const schema = new TestSchema([{ name: 'somekey', typeInfo: new TypeInfo({ type: Object }) }]);
             schema.validate({ key: 'somekey', data: { somekey: { message: 'Hello World' } } });

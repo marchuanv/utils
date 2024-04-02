@@ -1,13 +1,12 @@
 import { GUID, SecureContext, TypeInfo } from '../registry.mjs';
 describe('when creating type info', () => {
-    const invalidNameAndTypeErrorMessage = 'The info.name is null, undefined, not a string, empty string or unknown, and the info.type is null, undefined, not a function or unknown.';
     it('should raise an error if the info argument is undefined', () => {
         try {
             new TypeInfo(undefined);
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
         }
     });
     it('should raise an error if the info argument is null', () => {
@@ -25,7 +24,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
         }
     });
     it('should raise an error if the info name is not a string', () => {
@@ -34,7 +33,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
         }
     });
     it('should raise an error if both info name and type is null.', () => {
@@ -43,7 +42,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
         }
     });
     it('should raise an error if both info name and type is undefined.', () => {
@@ -52,7 +51,7 @@ describe('when creating type info', () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string or unknown.');
+            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
         }
     });
     it('should NOT raise an error if info name is null and type is a class.', () => {

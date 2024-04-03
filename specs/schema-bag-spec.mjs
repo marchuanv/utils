@@ -1,19 +1,19 @@
 import {
     SchemaBag,
-    SecureContext,
+    Bag,
     TypeInfo,
     GUIDSchema
 } from '../registry.mjs';
 describe('when creating schema bags given a secure context', () => {
     it('should have equality between two schema bag instances that have default schemas', () => {
-        const secureContext = new SecureContext();
+        const secureContext = Bag.getSecureContext();
         let schemaBagA = new SchemaBag(secureContext);
         let schemaBagB = new SchemaBag(secureContext);
         expect(schemaBagA).toBe(schemaBagB);
         expect(schemaBagA.toString()).toBe(schemaBagB.toString());
     });
     it('should have equality between two schema bag instances that have similar schemas', () => {
-        const secureContext = new SecureContext();
+        const secureContext = Bag.getSecureContext();
         class SchemaA extends GUIDSchema {
             constructor() {
                 super([{
@@ -38,7 +38,7 @@ describe('when creating schema bags given a secure context', () => {
         expect(schemaBagA.toString()).toBe(schemaBagB.toString());
     });
     it('should NOT have equality between two schema bag instances that have different schemas', () => {
-        const secureContext = new SecureContext();
+        const secureContext = Bag.getSecureContext();
         class SchemaA extends GUIDSchema {
             constructor() {
                 super([{

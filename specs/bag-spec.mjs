@@ -8,7 +8,7 @@ describe('when creating a bag', () => {
     it('should set bag without error', () => {
         try {
             const Id = new UUID();
-            const secureContext = new SecureContext();
+            const secureContext = Bag.getSecureContext();
             const instance = {
                 message: 'Hello World'
             };
@@ -24,7 +24,7 @@ describe('when creating a bag', () => {
     it('should raise context does not exist error', () => {
         const Id = new UUID();
         try {
-            const secureContext = new SecureContext();
+            const secureContext = Bag.getSecureContext();
             Bag.get(Id, secureContext);
             fail('expected an error');
         } catch (error) {
@@ -39,7 +39,7 @@ describe('when creating a bag', () => {
                 message: 'Hello World'
             };
             const testSchema = new TestSchema();
-            const secureContext = new SecureContext();
+            const secureContext = Bag.getSecureContext();
             Bag.set(Id, secureContext, instance, testSchema);
             Bag.set(Id, secureContext, instance, testSchema);
             fail('expected an error');

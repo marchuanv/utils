@@ -2,6 +2,8 @@ import { registerSchema, setMetaSchemaOutputFormat, validate } from "@hyperjump/
 import { VERBOSE } from "@hyperjump/json-schema/experimental";
 import Jasmine from 'jasmine';
 import { sha1 } from 'js-sha1';
+import { General } from './lib/general.mjs';
+
 import { fileURLToPath, pathToFileURL } from 'url';
 import { UUID } from './lib/uuid.mjs';
 import { SecureContext } from './lib/secure-context.mjs';
@@ -24,7 +26,6 @@ export { Buffer } from 'node:buffer';
 export { constants, createHash, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, randomUUID } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 export { basename, dirname, extname, join, relative, resolve } from 'node:path';
-export { General } from './lib/general.mjs';
 export { SchemaBag } from './lib/schema-bag.mjs';
 export { GUIDSchema } from './lib/guid-schema.mjs';
 export { Serialiser } from './lib/serialiser.mjs';
@@ -36,6 +37,6 @@ export {
     Bag, Jasmine, NULL, Reflection, UNDEFINED, VERBOSE, base64ToString, fileURLToPath, importExtended,
     pathToFileURL, registerSchema, security, stringToBase64, validate as validateSchema,
     vm, sha1, ANY,
-    walkDir, Schema, TypeInfo, UUID, Type, UNKNOWN, SecureContext
+    walkDir, Schema, TypeInfo, UUID, Type, UNKNOWN, SecureContext, General
 };
 

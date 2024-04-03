@@ -1,8 +1,8 @@
 import { Bag, Schema, SecureContext, TypeInfo, UUID } from '../registry.mjs';
-fdescribe('when creating a bag', () => {
+describe('when creating a bag', () => {
     class TestSchema extends Schema {
         constructor() {
-            super([{ name: 'message', typeInfo: new TypeInfo({ type: String }) }]);
+            super([{ name: 'message', typeInfo: new TypeInfo(String) }]);
         }
     }
     it('should set bag without error', () => {

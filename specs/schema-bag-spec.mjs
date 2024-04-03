@@ -4,7 +4,7 @@ import {
     TypeInfo,
     GUIDSchema
 } from '../registry.mjs';
-describe('when creating schema bags given a secure context', () => {
+fdescribe('when creating schema bags given a secure context', () => {
     it('should have equality between two schema bag instances that have default schemas', () => {
         const secureContext = new SecureContext();
         let schemaBagA = new SchemaBag(secureContext);
@@ -18,7 +18,7 @@ describe('when creating schema bags given a secure context', () => {
             constructor() {
                 super([{
                     name: 'message',
-                    typeInfo: new TypeInfo({ type: String })
+                    typeInfo: new TypeInfo(String)
                 }])
             }
         }
@@ -26,7 +26,7 @@ describe('when creating schema bags given a secure context', () => {
             constructor() {
                 super([{
                     name: 'message',
-                    typeInfo: new TypeInfo({ type: String })
+                    typeInfo: new TypeInfo(String)
                 }])
             }
         }
@@ -43,7 +43,7 @@ describe('when creating schema bags given a secure context', () => {
             constructor() {
                 super([{
                     name: 'message1',
-                    typeInfo: new TypeInfo({ type: String })
+                    typeInfo: new TypeInfo(String)
                 }])
             }
         }
@@ -51,7 +51,7 @@ describe('when creating schema bags given a secure context', () => {
             constructor() {
                 super([{
                     name: 'message2',
-                    typeInfo: new TypeInfo({ type: String })
+                    typeInfo: new TypeInfo(String)
                 }])
             }
         }

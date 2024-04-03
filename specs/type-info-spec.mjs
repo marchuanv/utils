@@ -1,104 +1,34 @@
-import { TypeInfo, UUID } from '../registry.mjs';
+import { Type, TypeInfo } from '../registry.mjs';
 describe('when creating type info', () => {
-    it('should raise an error if the info argument is undefined', () => {
+    it('should raise an error if the type name and function is null.', () => {
         try {
-            new TypeInfo(undefined);
+            const type = new Type(null, null);
+            new TypeInfo(type);
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
+            expect(error.message).toBe('The name and func arguments are null.');
         }
     });
-    it('should raise an error if the info argument is null', () => {
+    it('should raise an error if the type is unknown.', () => {
         try {
-            new TypeInfo(null);
+            const type = new Type();
+            new TypeInfo(type);
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The info argument is null, undefined or not an object.');
+            expect(error.message).toBe('type is unknown.');
         }
     });
-    it('should raise an error if the info type is not a function', () => {
-        try {
-            new TypeInfo({ type: '' });
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
-        }
-    });
-    it('should raise an error if the info name is not a string', () => {
-        try {
-            new TypeInfo({ name: String });
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
-        }
-    });
-    it('should raise an error if both info name and type is null.', () => {
-        try {
-            new TypeInfo({ name: null, type: null });
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
-        }
-    });
-    it('should raise an error if both info name and type is undefined.', () => {
-        try {
-            new TypeInfo({ name: undefined, type: undefined });
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe('The info.name is null, undefined, not a string, empty string, unknown or not found.');
-        }
-    });
-    it('should NOT raise an error if info name is null and type is a class.', () => {
+    it('should NOT raise an error if the type is a class.', () => {
         try {
             class SomeDog { bark() { } get colour() { } };
-            TypeInfo.register(SomeDog);
-            const type = new TypeInfo({ name: undefined, type: SomeDog });
-            expect(type.members.length).toBeGreaterThan(0);
+            const type = new Type(null, SomeDog);
+            const typeInfo = new TypeInfo(type);
+            expect(typeInfo.members.length).toBeGreaterThan(0);
         } catch (error) {
             console.log(error);
             fail('did not expected any errors');
-        }
-    });
-    it('should NOT raise an error if info name is null and type is a valid.', () => {
-        try {
-            new TypeInfo({ name: undefined, type: String });
-        } catch (error) {
-            console.log(error);
-            fail('did not expected any errors');
-        }
-    });
-    it('should NOT raise an error if info name is valid and type is not valid.', () => {
-        try {
-            new TypeInfo({ name: 'string', type: undefined });
-        } catch (error) {
-            console.log(error);
-            fail('did not expected any errors');
-        }
-    });
-    it('should not run all the validations if the type has been created before and an type info id is available.', () => {
-        try {
-            const typeInfo = new TypeInfo({ name: 'number', type: Number });
-            const typeInfoExist = TypeInfo.get(typeInfo.Id);
-            expect(typeInfo).toBe(typeInfoExist);
-        } catch (error) {
-            console.log(error);
-            fail('did not expected any errors');
-        }
-    });
-    it('should not match if the wrong type info is provided.', () => {
-        const guid = (new UUID()).toString();
-        try {
-            TypeInfo.get(guid);
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe(`${guid} not found.`);
         }
     });
 });

@@ -26,8 +26,6 @@ export { Buffer } from 'node:buffer';
 export { constants, createHash, createHmac, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, randomUUID } from 'node:crypto';
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 export { basename, dirname, extname, join, relative, resolve } from 'node:path';
-export { SchemaBag } from './lib/schema-bag.mjs';
-export { GUIDSchema } from './lib/guid-schema.mjs';
 export { Serialiser } from './lib/serialiser.mjs';
 export { TypeMemberInfo } from './lib/type-member-info.mjs';
 

@@ -4,7 +4,7 @@ import {
     TypeInfo,
     GUIDSchema
 } from '../registry.mjs';
-fdescribe('when creating schema bags given a secure context', () => {
+describe('when creating schema bags given a secure context', () => {
     it('should have equality between two schema bag instances that have default schemas', () => {
         const secureContext = new SecureContext();
         let schemaBagA = new SchemaBag(secureContext);

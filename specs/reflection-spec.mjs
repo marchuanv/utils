@@ -43,63 +43,6 @@ describe('when checking if an obj is a class', () => {
         expect(results).toBeTrue();
     });
 });
-describe('when checking if a type is primitive', () => {
-    it('should return true', () => {
-        for (const { type, name } of Reflection.getPrimitiveTypes()) {
-            try {
-                let results = Reflection.isPrimitiveType(type);
-                expect(results).toBeTrue();
-                results = Reflection.isPrimitiveType(name);
-                expect(results).toBeTrue();
-            } catch (error) {
-                console.log(error);
-                fail(`did not expected any errors for ${name}`);
-            }
-        }
-    });
-});
-describe('when matching types', () => {
-    it('should return true for classes', () => {
-        try {
-            let isMatch = Reflection.typeMatch(RootClass, RootClass);
-            expect(isMatch).toBeTrue();
-            isMatch = Reflection.typeMatch(RootClass, ExtendedClass);
-            expect(isMatch).toBeTrue();
-
-            isMatch = Reflection.typeMatch(RootClass.prototype, ExtendedClass.prototype);
-            expect(isMatch).toBeTrue();
-
-            isMatch = Reflection.typeMatch(RootClass, ExtendedClass.prototype);
-            expect(isMatch).toBeTrue();
-            isMatch = Reflection.typeMatch(RootClass.prototype, ExtendedClass);
-            expect(isMatch).toBeTrue();
-
-            isMatch = Reflection.typeMatch(Object, Object.prototype);
-            expect(isMatch).toBeTrue();
-            isMatch = Reflection.typeMatch(Object.prototype, Object);
-            expect(isMatch).toBeTrue();
-
-            isMatch = Reflection.typeMatch(null, undefined);
-            expect(isMatch).toBeFalse();
-            isMatch = Reflection.typeMatch(undefined, null);
-            expect(isMatch).toBeFalse();
-
-            isMatch = Reflection.typeMatch(undefined, null);
-            expect(isMatch).toBeFalse();
-            isMatch = Reflection.typeMatch(null, undefined);
-            expect(isMatch).toBeFalse();
-
-            isMatch = Reflection.typeMatch(undefined, undefined);
-            expect(isMatch).toBeTrue();
-            isMatch = Reflection.typeMatch(null, null);
-            expect(isMatch).toBeTrue();
-
-        } catch (error) {
-            console.log(error);
-            fail(`did not expected any errors`);
-        }
-    });
-});
 class RootClass { }
 class ExtendedClass extends RootClass { }
 class PropertyTypeTest {

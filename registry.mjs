@@ -9,8 +9,8 @@ import vm from "vm";
 import { Bag } from './lib/bag.mjs';
 import { Import } from './lib/import.mjs';
 import { NULL, Reflection, UNDEFINED } from './lib/reflection.mjs';
-import { Schema } from './lib/schema.mjs';
 import { SecureContext } from './lib/secure-context.mjs';
+import { Schema } from './lib/schema.mjs';
 import { Security } from './lib/security.mjs';
 import { UUID } from './lib/uuid.mjs';
 

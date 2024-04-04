@@ -1,4 +1,4 @@
-import { Schema, Type, TypeInfo } from '../registry.mjs';
+import { Schema, TypeInfo } from '../registry.mjs';
 describe('when creating a schema', () => {
     const expectedErrorMessage = 'The properties argument is null, undefined, not an array, an empty array or contains invalid elements.';
     it('should raise an error if targeting schema directly', () => {

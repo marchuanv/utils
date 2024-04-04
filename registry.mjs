@@ -5,17 +5,14 @@ import { sha1 } from 'js-sha1';
 import { General } from './lib/general.mjs';
 
 import { fileURLToPath, pathToFileURL } from 'url';
-import { UUID } from './lib/uuid.mjs';
-import { SecureContext } from './lib/secure-context.mjs';
+import vm from "vm";
+import { Bag } from './lib/bag.mjs';
+import { Import } from './lib/import.mjs';
 import { NULL, Reflection, UNDEFINED } from './lib/reflection.mjs';
 import { Schema } from './lib/schema.mjs';
-import { Bag } from './lib/bag.mjs';
-import { Type, UNKNOWN, ANY } from './lib/type.mjs';
-import { TypeInfo } from './lib/type-info.mjs';
-import vm from "vm";
-import { base64ToString, stringToBase64, walkDir } from './lib/general.mjs';
-import { Import } from './lib/import.mjs';
+import { SecureContext } from './lib/secure-context.mjs';
 import { Security } from './lib/security.mjs';
+import { UUID } from './lib/uuid.mjs';
 
 const importExtended = new Import();
 const security = new Security();
@@ -27,14 +24,15 @@ export { constants, createHash, createHmac, generateKeyPairSync, privateDecrypt,
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 export { basename, dirname, extname, join, relative, resolve } from 'node:path';
 export { Serialiser } from './lib/serialiser.mjs';
+export { TypeInfo } from './lib/type-info.mjs';
 export { TypeMemberInfo } from './lib/type-member-info.mjs';
+export { ANY, Type, UNKNOWN } from './lib/type.mjs';
 
 setMetaSchemaOutputFormat(VERBOSE);
 
 export {
-    Bag, Jasmine, NULL, Reflection, UNDEFINED, VERBOSE, base64ToString, fileURLToPath, importExtended,
-    pathToFileURL, registerSchema, security, stringToBase64, validate as validateSchema,
-    vm, sha1, ANY,
-    walkDir, Schema, TypeInfo, UUID, Type, UNKNOWN, SecureContext, General
+    Bag, General, Jasmine, NULL, Reflection, Schema, SecureContext, UNDEFINED, UUID, VERBOSE, fileURLToPath, importExtended,
+    pathToFileURL, registerSchema, security, sha1, validate as validateSchema,
+    vm
 };
 

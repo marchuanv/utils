@@ -1,4 +1,4 @@
-import { Bag, Schema, SecureContext, TypeInfo, UUID } from '../registry.mjs';
+import { Bag, Schema, TypeInfo, UUID } from '../registry.mjs';
 describe('when creating a bag', () => {
     class TestSchema extends Schema {
         constructor() {

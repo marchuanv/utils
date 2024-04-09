@@ -29,7 +29,6 @@ export { TypeInfo } from './lib/export-b/type-info.mjs';
 export { ANY, Type, UNKNOWN } from './lib/export-b/type.mjs';
 export { TypeInfoSchema } from './lib/export-c/type-info-schema.mjs';
 export { TypeMemberInfo } from './lib/export-c/type-member-info.mjs';
-export { Schema } from './lib/export-d/schema.mjs';
 export { TypeMemberInfoSchema } from './lib/export-e/type-member-info-schema.mjs';
 export { TypeSchema } from './lib/export-e/type-schema.mjs';
 export { Serialiser } from './lib/serialiser.mjs';

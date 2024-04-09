@@ -160,16 +160,21 @@ describe('when creating type info', () => {
         }
     });
     fit('should create an empty object from a schema', () => {
+        class StringTypeInfoSchema extends TypeInfoSchema {
+            constructor() {
+                super(String);
+            }
+        }
         class TestG {
             get name() { }
             get surname() { }
         }
         class TestSchemaG extends TypeInfoSchema {
             get name() {
-                return new TypeInfoSchema(String);
+                return new StringTypeInfoSchema(String);
             }
             get surname() {
-                return new TypeInfoSchema(String);
+                return new StringTypeInfoSchema(String);
             }
         }
         try {

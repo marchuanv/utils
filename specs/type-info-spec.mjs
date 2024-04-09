@@ -1,8 +1,18 @@
 import { Type, TypeInfo, TypeInfoSchema } from '../registry.mjs';
 describe('when creating type info', () => {
     it('should raise an error if the type name and function is null.', () => {
+        class Cat {
+            meow() { }
+            get colour() { }
+            get name() { }
+        };
+        class CatTypeInfoSchema extends TypeInfoSchema {
+            constructor() {
+                super(null);
+            }
+        }
         try {
-            const type = new Type(null, null);
+            const type = new CatTypeInfoSchema();
             new TypeInfo(type);
             fail('expected an error');
         } catch (error) {
@@ -20,14 +30,15 @@ describe('when creating type info', () => {
             expect(error.message).toBe('type is unknown.');
         }
     });
-    fit('should NOT raise an error if the type is a class.', () => {
+    it('should NOT raise an error if the type is a class.', () => {
         class Dog {
             bark() { }
             get colour() { }
             get name() { }
         };
+        class DogTypeInfoSchema extends TypeInfoSchema { }
         try {
-            const typeInfoSchema = new TypeInfoSchema(Dog);
+            const typeInfoSchema = new DogTypeInfoSchema(Dog);
             expect(typeInfoSchema.members.length).toBeGreaterThan(0);
         } catch (error) {
             console.log(error);
@@ -148,8 +159,12 @@ describe('when creating type info', () => {
             fail('did not expect any errors');
         }
     });
-    it('should create an empty object from a schema', () => {
-        class TestSchemaG extends Schema {
+    fit('should create an empty object from a schema', () => {
+        class TestG {
+            get name() { }
+            get surname() { }
+        }
+        class TestSchemaG extends TypeInfoSchema {
             get name() {
                 return new TypeInfoSchema(String);
             }
@@ -158,9 +173,35 @@ describe('when creating type info', () => {
             }
         }
         try {
-            const schema = new TestSchemaG();
+            const schema = new TestSchemaG(TestG);
             const data = schema.default;
             schema.validate(data);
+        } catch (error) {
+            console.log(error);
+            fail('did not expect any errors');
+        }
+    });
+    it('should create string type info without error.', () => {
+        class StringTypeSchema extends TypeInfoSchema {
+            constructor() {
+                super(String);
+            }
+        }
+        try {
+            new StringTypeSchema();
+        } catch (error) {
+            console.log(error);
+            fail('did not expect any errors');
+        }
+    });
+    it('should create boolean type info without error', () => {
+        class BooleanTypeSchema extends TypeInfoSchema {
+            constructor() {
+                super(Boolean);
+            }
+        }
+        try {
+            new BooleanTypeSchema();
         } catch (error) {
             console.log(error);
             fail('did not expect any errors');

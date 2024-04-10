@@ -179,7 +179,7 @@ describe('when creating type info', () => {
         }
         try {
             const schema = new TestSchemaG(TestG);
-            const data = schema.default;
+            const data = schema.defaultValue;
             schema.validate(data);
         } catch (error) {
             console.log(error);

@@ -20,6 +20,16 @@ describe('when creating type info', () => {
             expect(error.message).toBe('The name and func arguments are null.');
         }
     });
+    fit(`should raise a schema error if the type info is not extended by the ${}.`, () => {
+        try {
+            const type = new Type(undefined, undefined, new SecureContext());
+            new TypeInfo(type);
+            fail('expected an error');
+        } catch (error) {
+            console.log(error);
+            expect(error.message).toBe('type is unknown.');
+        }
+    });
     fit('should raise an error if the type is unknown.', () => {
         try {
             const type = new Type(undefined, undefined, new SecureContext());

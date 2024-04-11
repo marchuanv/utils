@@ -1,6 +1,6 @@
 import { SecureContext, Type, TypeInfo, TypeInfoSchema } from '../registry.mjs';
 describe('when creating type info', () => {
-    fit('should raise an error if the type name and function is null.', () => {
+    it('should successfully create type info from a schema.', () => {
         class Cat {
             meow() { }
             get colour() { }
@@ -20,24 +20,24 @@ describe('when creating type info', () => {
             expect(error.message).toBe('The name and func arguments are null.');
         }
     });
-    fit(`should raise a schema error if the type info is not extended by the ${}.`, () => {
+    it(`should raise a schema error if the type info is not extended by the ${TypeInfoSchema.name}.`, () => {
         try {
             const type = new Type(undefined, undefined, new SecureContext());
             new TypeInfo(type);
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('type is unknown.');
+            expect(error.message).toBe('targeting TypeInfoSchema or TypeInfo not allowed.');
         }
     });
-    fit('should raise an error if the type is unknown.', () => {
+    it('should raise an error if the type is unknown.', () => {
         try {
             const type = new Type(undefined, undefined, new SecureContext());
             new TypeInfo(type);
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('type is unknown.');
+            expect(error.message).toBe('targeting TypeInfoSchema or TypeInfo not allowed.');
         }
     });
     it('should NOT raise an error if the type is a class.', () => {

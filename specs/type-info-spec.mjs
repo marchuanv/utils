@@ -1,6 +1,6 @@
-import { Type, TypeInfo, TypeInfoSchema } from '../registry.mjs';
+import { SecureContext, Type, TypeInfo, TypeInfoSchema } from '../registry.mjs';
 describe('when creating type info', () => {
-    it('should raise an error if the type name and function is null.', () => {
+    fit('should raise an error if the type name and function is null.', () => {
         class Cat {
             meow() { }
             get colour() { }
@@ -20,9 +20,9 @@ describe('when creating type info', () => {
             expect(error.message).toBe('The name and func arguments are null.');
         }
     });
-    it('should raise an error if the type is unknown.', () => {
+    fit('should raise an error if the type is unknown.', () => {
         try {
-            const type = new Type();
+            const type = new Type(undefined, undefined, new SecureContext());
             new TypeInfo(type);
             fail('expected an error');
         } catch (error) {
@@ -159,7 +159,7 @@ describe('when creating type info', () => {
             fail('did not expect any errors');
         }
     });
-    fit('should create an empty object from a schema', () => {
+    it('should create an empty object from a schema', () => {
         class StringTypeInfoSchema extends TypeInfoSchema {
             constructor() {
                 super(String);

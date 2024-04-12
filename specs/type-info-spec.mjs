@@ -2,16 +2,8 @@ import { Interface, JSTypeMapping, SecureContext } from '../registry.mjs';
 class Cat { meow() { } get colour() { } get name() { } };
 class InvalidCatInterface extends Interface { };
 class CatInterfaceInvalidMembers extends Interface { meow() { } get colour() { } get name() { } };
-class StringInterface extends Interface {
-    constructor() {
-        super(String, false, new SecureContext());
-    }
-}
-class BooleanInterface extends Interface {
-    constructor() {
-        super(Boolean, false, new SecureContext());
-    }
-}
+class StringInterface extends Interface { }
+class BooleanInterface extends Interface { }
 class CatInterface extends Interface {
     meow() {
         return new BooleanInterface();
@@ -23,7 +15,7 @@ class CatInterface extends Interface {
         return new StringInterface();
     }
 };
-JSTypeMapping.register(Cat, Cat, new Cat(), false);
+JSTypeMapping.register(Cat, CatInterface, new Cat(), false);
 JSTypeMapping.register(StringInterface, String, '', false);
 JSTypeMapping.register(BooleanInterface, Boolean, false, false);
 fdescribe(`when creating the ${Cat.name} interface`, () => {

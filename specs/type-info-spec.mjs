@@ -1,15 +1,15 @@
-import { Interface, SecureContext } from '../registry.mjs';
+import { Interface, JSTypeMapping, SecureContext } from '../registry.mjs';
 class Cat { meow() { } get colour() { } get name() { } };
 class InvalidCatInterface extends Interface { };
 class CatInterfaceInvalidMembers extends Interface { meow() { } get colour() { } get name() { } };
 class StringInterface extends Interface {
     constructor() {
-        super(String);
+        super(String, false, new SecureContext());
     }
 }
 class BooleanInterface extends Interface {
     constructor() {
-        super(Boolean);
+        super(Boolean, false, new SecureContext());
     }
 }
 class CatInterface extends Interface {
@@ -23,6 +23,9 @@ class CatInterface extends Interface {
         return new StringInterface();
     }
 };
+JSTypeMapping.register(Cat, Cat, new Cat(), false);
+JSTypeMapping.register(StringInterface, String, '', false);
+JSTypeMapping.register(BooleanInterface, Boolean, false, false);
 fdescribe(`when creating the ${Cat.name} interface`, () => {
     it(`should raise an error if the ${Cat.name} class does not match an interface.`, () => {
         try {
@@ -42,7 +45,7 @@ fdescribe(`when creating the ${Cat.name} interface`, () => {
             expect(error.message).toBe(`${CatInterfaceInvalidMembers.name}.meow member did not return an instance of an ${Interface.name}.`);
         }
     });
-    it(`should NOT raise an error if the ${Cat.name} class match the interface.`, () => {
+    fit(`should NOT raise an error if the ${Cat.name} class match the interface.`, () => {
         try {
             new CatInterface(Cat, false, new SecureContext());
             fail('expected an error');

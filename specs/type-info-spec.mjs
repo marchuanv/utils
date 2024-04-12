@@ -1,225 +1,54 @@
-import { SecureContext, Type, TypeInfo, TypeInfoSchema } from '../registry.mjs';
-describe('when creating type info', () => {
-    it('should successfully create type info from a schema.', () => {
-        class Cat {
-            meow() { }
-            get colour() { }
-            get name() { }
-        };
-        class CatTypeInfoSchema extends TypeInfoSchema {
-            constructor() {
-                super(null);
-            }
-        }
+import { Interface, SecureContext } from '../registry.mjs';
+class Cat { meow() { } get colour() { } get name() { } };
+class InvalidCatInterface extends Interface { };
+class CatInterfaceInvalidMembers extends Interface { meow() { } get colour() { } get name() { } };
+class StringInterface extends Interface {
+    constructor() {
+        super(String);
+    }
+}
+class BooleanInterface extends Interface {
+    constructor() {
+        super(Boolean);
+    }
+}
+class CatInterface extends Interface {
+    meow() {
+        return new BooleanInterface();
+    }
+    get colour() {
+        return new StringInterface();
+    }
+    get name() {
+        return new StringInterface();
+    }
+};
+fdescribe(`when creating the ${Cat.name} interface`, () => {
+    it(`should raise an error if the ${Cat.name} class does not match an interface.`, () => {
         try {
-            const type = new CatTypeInfoSchema();
-            new TypeInfo(type);
+            new InvalidCatInterface(Cat, false, new SecureContext());
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('The name and func arguments are null.');
+            expect(error.message).toBe(`${InvalidCatInterface.name} interface does not have the meow member or the member is incorrect.`);
         }
     });
-    it(`should raise a schema error if the type info is not extended by the ${TypeInfoSchema.name}.`, () => {
+    it(`should raise an error if the inteface members are not configured correctly.`, () => {
         try {
-            const type = new Type(undefined, undefined, new SecureContext());
-            new TypeInfo(type);
+            new CatInterfaceInvalidMembers(Cat, false, new SecureContext());
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('targeting TypeInfoSchema or TypeInfo not allowed.');
+            expect(error.message).toBe(`${CatInterfaceInvalidMembers.name}.meow member did not return an instance of an ${Interface.name}.`);
         }
     });
-    it('should raise an error if the type is unknown.', () => {
+    it(`should NOT raise an error if the ${Cat.name} class match the interface.`, () => {
         try {
-            const type = new Type(undefined, undefined, new SecureContext());
-            new TypeInfo(type);
+            new CatInterface(Cat, false, new SecureContext());
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe('targeting TypeInfoSchema or TypeInfo not allowed.');
-        }
-    });
-    it('should NOT raise an error if the type is a class.', () => {
-        class Dog {
-            bark() { }
-            get colour() { }
-            get name() { }
-        };
-        class DogTypeInfoSchema extends TypeInfoSchema { }
-        try {
-            const typeInfoSchema = new DogTypeInfoSchema(Dog);
-            expect(typeInfoSchema.members.length).toBeGreaterThan(0);
-        } catch (error) {
-            console.log(error);
-            fail('did not expected any errors');
-        }
-    });
-    it('should raise an error if targeting schema directly', () => {
-        try {
-            new Schema();
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe('Schema is an abstract class.');
-        }
-    });
-    it('should raise an error if the schema does not have any properties', () => {
-        class NoPropTestSchema extends Schema { }
-        try {
-            const testSchema = new NoPropTestSchema();
-            testSchema.validate({
-                message: 'something'
-            });
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe('NoPropTestSchema does not have any properties.');
-        }
-    });
-    it('should raise an error when validating and undefined is passed for verification', () => {
-        class TestSchemaA extends Schema {
-            get message() {
-                return new TypeInfoSchema(String);
-            }
-        }
-        try {
-            const schema = new TestSchemaA();
-            schema.validate(undefined);
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe(`data to validate is null, undefined, not an object or an empty object.`);
-        }
-    });
-    it('should raise an error when validating and null is passed for verification.', () => {
-        class TestSchemaB extends Schema {
-            get message() {
-                return new TypeInfoSchema(String);
-            }
-        }
-        try {
-            const schema = new TestSchemaB();
-            schema.validate(null);
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe(`data to validate is null, undefined, not an object or an empty object.`);
-        }
-    });
-    it('should raise an error when validating and a string is passed for verification', () => {
-        class TestSchemaC extends Schema {
-            get message() {
-                return new TypeInfoSchema(String);
-            }
-        }
-        try {
-            const schema = new TestSchemaC();
-            schema.validate('awdwad');
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe(`data to validate is null, undefined, not an object or an empty object.`);
-        }
-    });
-    it('should raise an error when validating and a number is passed for verification', () => {
-        class TestSchemaD extends Schema {
-            get message() {
-                return new TypeInfoSchema(String);
-            }
-        }
-        try {
-            const schema = new TestSchemaD();
-            schema.validate(0);
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe(`data to validate is null, undefined, not an object or an empty object.`);
-        }
-    });
-    it('should raise an error when validating and an empty object is passed for verification', () => {
-        class TestSchemaE extends Schema {
-            get message() {
-                return new TypeInfoSchema(String);
-            }
-        }
-        try {
-            const schema = new TestSchemaE();
-            schema.validate({});
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe(`data to validate is null, undefined, not an object or an empty object.`);
-        }
-    });
-    it('should NOT raise an error when validating and passing an obj with properties for verification', () => {
-        class TestSchemaF extends Schema {
-            get name() {
-                return new TypeInfoSchema(String);
-            }
-            get surname() {
-                return new TypeInfoSchema(String);
-            }
-        }
-        try {
-            const schema = new TestSchemaF();
-            schema.validate({ name: 'Joe', surname: 'Blogs', addresses: ['24 Romsey Grove', '173b Vaus Road'] });
-        } catch (error) {
-            console.log(error);
-            fail('did not expect any errors');
-        }
-    });
-    it('should create an empty object from a schema', () => {
-        class StringTypeInfoSchema extends TypeInfoSchema {
-            constructor() {
-                super(String);
-            }
-        }
-        class TestG {
-            get name() { }
-            get surname() { }
-        }
-        class TestSchemaG extends TypeInfoSchema {
-            get name() {
-                return new StringTypeInfoSchema(String);
-            }
-            get surname() {
-                return new StringTypeInfoSchema(String);
-            }
-        }
-        try {
-            const schema = new TestSchemaG(TestG);
-            const data = schema.defaultValue;
-            schema.validate(data);
-        } catch (error) {
-            console.log(error);
-            fail('did not expect any errors');
-        }
-    });
-    it('should create string type info without error.', () => {
-        class StringTypeSchema extends TypeInfoSchema {
-            constructor() {
-                super(String);
-            }
-        }
-        try {
-            new StringTypeSchema();
-        } catch (error) {
-            console.log(error);
-            fail('did not expect any errors');
-        }
-    });
-    it('should create boolean type info without error', () => {
-        class BooleanTypeSchema extends TypeInfoSchema {
-            constructor() {
-                super(Boolean);
-            }
-        }
-        try {
-            new BooleanTypeSchema();
-        } catch (error) {
-            console.log(error);
-            fail('did not expect any errors');
+            expect(error.message).toBe(`${CatInterface.name} interface does not have the meow member or the member is incorrect.`);
         }
     });
 });

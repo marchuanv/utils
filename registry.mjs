@@ -21,14 +21,15 @@ export { constants, createHash, createHmac, generateKeyPairSync, privateDecrypt,
 export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 export { basename, dirname, extname, join, relative, resolve } from 'node:path';
 export { Bag, State } from './lib/export-a/bag.mjs';
+export { JavaScriptType } from './lib/export-a/javascript-type.mjs';
 export { SecureContext } from './lib/export-a/secure-context.mjs';
 export { BagState } from './lib/export-b/bag-state.mjs';
 export { Property } from './lib/export-b/property.mjs';
-export { ANY, Type, UNKNOWN } from './lib/export-b/type.mjs';
+export { Type } from './lib/export-b/type.mjs';
 export { TypeInfo } from './lib/export-c/type-info.mjs';
-export { TypeInfoSchema } from './lib/export-d/type-info-schema.mjs';
+export { Interface } from './lib/export-d/interface.mjs';
 export { TypeMemberInfo } from './lib/export-d/type-member-info.mjs';
-export { TypeMemberInfoSchema } from './lib/export-e/type-member-info-schema.mjs';
+export { Schema } from './lib/export-e/schema.mjs';
 export { Serialiser } from './lib/serialiser.mjs';
 
 setMetaSchemaOutputFormat(VERBOSE);

@@ -39,8 +39,8 @@ fdescribe(`when creating the ${Cat.name} interface`, () => {
     });
     fit(`should NOT raise an error if the ${Cat.name} class match the interface.`, () => {
         try {
-            const catInterface = new CatInterface(Cat, false, new SecureContext());
-            console.log();
+            const catInterface = new CatInterface();
+            expect(catInterface.members).toContain(CatInterface.prototype.colour);
         } catch (error) {
             console.log(error);
             fail('did not expect any errors.');

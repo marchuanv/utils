@@ -15,7 +15,7 @@ class CatInterface extends Interface {
         return new StringInterface();
     }
 };
-JSTypeMap.register(Cat, CatInterface, new Cat(), false);
+JSTypeMap.register(Cat, CatInterface, null, false);
 JSTypeMap.register(StringInterface, String, '', false);
 JSTypeMap.register(BooleanInterface, Boolean, false, false);
 fdescribe(`when creating the ${Cat.name} interface`, () => {
@@ -41,6 +41,8 @@ fdescribe(`when creating the ${Cat.name} interface`, () => {
         try {
             const catInterface = new CatInterface();
             expect(catInterface.members).toContain(CatInterface.prototype.colour);
+            expect(catInterface.members).toContain(CatInterface.prototype.name);
+            expect(catInterface.members).toContain(CatInterface.prototype.meow());
         } catch (error) {
             console.log(error);
             fail('did not expect any errors.');

@@ -22,11 +22,10 @@ export { existsSync, lstatSync, readFileSync, readdirSync, statSync, writeFileSy
 export { basename, dirname, extname, join, relative, resolve } from 'node:path';
 export { Bag, State } from './lib/export-a/bag.mjs';
 export { SecureContext } from './lib/export-a/secure-context.mjs';
-export { Property } from './lib/export-b/property.mjs';
-export { JSTypeMap } from './lib/export-b/type-mapper.mjs';
-export { Factor } from './lib/export-c/factory.mjs';
-export { Interface } from './lib/export-d/interface.mjs';
+export { JSTypeMap } from './lib/export-b/js-type-map.mjs';
 export { InterfaceMember } from './lib/export-d/interface-member.mjs';
+export { Interface } from './lib/export-d/interface.mjs';
+export { SchemaMember } from './lib/export-e/schema-member.mjs';
 export { Schema } from './lib/export-e/schema.mjs';
 export { Serialiser } from './lib/serialiser.mjs';
 export { UUIDMap } from './lib/uuid-map.mjs';

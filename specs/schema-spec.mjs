@@ -30,7 +30,8 @@ fdescribe(`when creating a ${Cat.name} given a schema`, () => {
             JSTypeMap.register(BooleanInterface, Boolean, false, false);
             JSTypeMap.register(CatInterface, Cat, null, false);
             JSTypeMap.register(Cat, CatInterface, null, false);
-            new Cat();
+            const cat = new Cat();
+            cat.validate();
         } catch (error) {
             console.log(error);
             fail('did not expect any errors.');

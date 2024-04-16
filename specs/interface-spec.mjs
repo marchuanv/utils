@@ -1,7 +1,6 @@
-import { Interface, JSTypeMap, SecureContext } from '../registry.mjs';
+import { Bag, Interface, JSTypeMap, SecureContext } from '../registry.mjs';
 class Cat { meow() { } get colour() { } get name() { } };
-class InvalidCatInterface extends Interface { };
-class CatInterfaceInvalidMembers extends Interface { meow() { } get colour() { } get name() { } };
+class InvalidCatInterfaceMembers extends Interface { meow() { } get colour() { } get name() { } };
 class StringInterface extends Interface { }
 class BooleanInterface extends Interface { }
 class CatInterface extends Interface {
@@ -15,34 +14,54 @@ class CatInterface extends Interface {
         return new StringInterface();
     }
 };
-JSTypeMap.register(Cat, CatInterface, null, false);
-JSTypeMap.register(StringInterface, String, '', false);
-JSTypeMap.register(BooleanInterface, Boolean, false, false);
 fdescribe(`when creating the ${Cat.name} interface`, () => {
-    it(`should raise an error if the ${Cat.name} class does not match an interface.`, () => {
-        try {
-            new InvalidCatInterface(Cat, false, new SecureContext());
-            fail('expected an error');
-        } catch (error) {
-            console.log(error);
-            expect(error.message).toBe(`${InvalidCatInterface.name} interface does not have the meow member or the member is incorrect.`);
-        }
-    });
     it(`should raise an error if the inteface members are not configured correctly.`, () => {
         try {
-            new CatInterfaceInvalidMembers(Cat, false, new SecureContext());
+            JSTypeMap.register(InvalidCatInterfaceMembers, Cat, null, false);
+            new InvalidCatInterfaceMembers();
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(`${CatInterfaceInvalidMembers.name}.meow member did not return an instance of an ${Interface.name}.`);
+            expect(error.message).toBe(`${InvalidCatInterfaceMembers.name}.meow member did not return an instance of an ${Interface.name}.`);
         }
     });
-    fit(`should NOT raise an error if the ${Cat.name} class match the interface.`, () => {
+    it(`should raise an error if the inteface was not registered`, () => {
         try {
+            
+            JSTypeMap.register(StringInterface, String, '', false);
+            JSTypeMap.register(BooleanInterface, Boolean, false, false);
+            JSTypeMap.register(CatInterface, Cat, null, false);
+            JSTypeMap.unregister(CatInterface);
+
             const catInterface = new CatInterface();
-            expect(catInterface.members).toContain(CatInterface.prototype.colour);
-            expect(catInterface.members).toContain(CatInterface.prototype.name);
-            expect(catInterface.members).toContain(CatInterface.prototype.meow());
+
+            fail('expected an error');
+        } catch (error) {
+            console.log(error);
+            expect(error.message).toBe(`JSTypeMap does not have any mappings for ${CatInterface.name}.`);
+        }
+    });
+    it(`should NOT raise an error if the ${Cat.name} class match.`, () => {
+        try {
+
+            JSTypeMap.register(StringInterface, String, '', false);
+            JSTypeMap.register(BooleanInterface, Boolean, false, false);
+            JSTypeMap.register(CatInterface, Cat, null, false);
+            
+            const catInterface = new CatInterface();
+            
+            const colourMember = catInterface.members.find(x => x.name === 'colour');
+            const nameMember = catInterface.members.find(x => x.name === 'name');
+            const meowMember = catInterface.members.find(x => x.name === 'meow');
+
+            expect(colourMember).toBeDefined();
+            expect(nameMember).toBeDefined();
+            expect(meowMember).toBeDefined();
+
+            expect(colourMember.$interface).toBeInstanceOf(StringInterface);
+            expect(nameMember.$interface).toBeInstanceOf(StringInterface);
+            expect(meowMember.$interface).toBeInstanceOf(BooleanInterface);
+
         } catch (error) {
             console.log(error);
             fail('did not expect any errors.');

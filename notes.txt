@@ -1,2 +1,2 @@
 Problems:
- - When a type already exists, and type info that inherits from it, will overwrite the properties of the type in the bag.
+ - Any classess that extend the Interface class can override critical methods on the interface class.

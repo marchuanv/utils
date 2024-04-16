@@ -24,6 +24,8 @@ export { Bag, State } from './lib/export-a/bag.mjs';
 export { SecureContext } from './lib/export-a/secure-context.mjs';
 export { ClassMember } from './lib/export-b/class-member.mjs';
 export { JSTypeMap } from './lib/export-b/js-type-map.mjs';
+export { JSTypeRegister } from './lib/export-b/js-type-register.mjs';
+export { JSType } from './lib/export-b/js-type.mjs';
 export { Interface } from './lib/export-d/interface.mjs';
 export { Schema } from './lib/export-e/schema.mjs';
 export { Serialiser } from './lib/serialiser.mjs';

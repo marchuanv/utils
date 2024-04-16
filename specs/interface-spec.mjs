@@ -1,4 +1,4 @@
-import { Bag, Interface, JSTypeMap, SecureContext } from '../registry.mjs';
+import { Bag, Interface, JSTypeMap, SecureContext, State } from '../registry.mjs';
 class Cat { meow() { } get colour() { } get name() { } };
 class InvalidCatInterfaceMembers extends Interface { meow() { } get colour() { } get name() { } };
 class StringInterface extends Interface { }
@@ -33,7 +33,10 @@ fdescribe(`when creating the ${Cat.name} interface`, () => {
             JSTypeMap.register(CatInterface, Cat, null, false);
             JSTypeMap.unregister(CatInterface);
 
-            const catInterface = new CatInterface();
+            let catInterface = new CatInterface();
+            if (catInterface.dispose(State.REHYDRATE)) {
+                catInterface = new CatInterface();
+            }
 
             fail('expected an error');
         } catch (error) {
@@ -48,7 +51,10 @@ fdescribe(`when creating the ${Cat.name} interface`, () => {
             JSTypeMap.register(BooleanInterface, Boolean, false, false);
             JSTypeMap.register(CatInterface, Cat, null, false);
             
-            const catInterface = new CatInterface();
+            let catInterface = new CatInterface();
+            if (catInterface.dispose(State.REHYDRATE)) {
+                catInterface = new CatInterface();
+            }
             
             const colourMember = catInterface.members.find(x => x.name === 'colour');
             const nameMember = catInterface.members.find(x => x.name === 'name');

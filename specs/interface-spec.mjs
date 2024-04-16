@@ -44,7 +44,7 @@ describe(`when creating the ${Cat.name} interface`, () => {
             fail('expected an error');
         } catch (error) {
             console.log(error);
-            expect(error.message).toBe(`JSTypeMap does not have any mappings for ${CatInterface.name}.`);
+            expect(error.message).toBe(`no mapping found for CatInterface.`);
         }
     });
     it(`should NOT raise an error if the ${Cat.name} class match.`, () => {

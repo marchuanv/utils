@@ -1,4 +1,4 @@
-import { Interface, JSTypeRegister, Schema } from '../registry.mjs';
+import { Interface, JSTypeConstraint, JSTypeRegister, Schema } from '../registry.mjs';
 class Cat extends Schema {
     meow() {
         return true;
@@ -23,9 +23,21 @@ class CatInterface extends Interface {
         return new StringInterface();
     }
 };
+class CatInterfaceB extends Interface {
+    meow() {
+        return new BooleanInterface();
+    }
+    get colour() {
+        return new StringInterface();
+    }
+    get name() {
+        return new StringInterface();
+    }
+};
 fdescribe(`when creating a ${Cat.name} given a schema`, () => {
-    it(`should `, () => {
+    fit(`should validate the instance`, () => {
         try {
+            new JSTypeConstraint(Cat, CatInterface);
             new JSTypeRegister(StringInterface, String, '', false)
             new JSTypeRegister(BooleanInterface, Boolean, false, false);
             new JSTypeRegister(CatInterface, Cat, null, false);
@@ -35,6 +47,16 @@ fdescribe(`when creating a ${Cat.name} given a schema`, () => {
         } catch (error) {
             console.log(error);
             fail('did not expect any errors.');
+        }
+    });
+    it(`should raise error on constraint`, () => {
+        try {
+            new JSTypeConstraint(Cat, CatInterface);
+            new JSTypeRegister(Cat, CatInterfaceB);
+            fail('expected an error');
+        } catch (error) {
+            console.log(error);
+            expect(error.message).toBe(`constraint error, the relatedFunc argument is not of type CatInterface`);
         }
     });
 });

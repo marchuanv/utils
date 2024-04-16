@@ -14,7 +14,7 @@ class CatInterface extends Interface {
         return new StringInterface();
     }
 };
-fdescribe(`when creating the ${Cat.name} interface`, () => {
+describe(`when creating the ${Cat.name} interface`, () => {
     it(`should raise an error if the inteface members are not configured correctly.`, () => {
         try {
             JSTypeMap.register(InvalidCatInterfaceMembers, Cat, null, false);

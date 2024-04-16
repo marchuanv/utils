@@ -18,7 +18,10 @@ fdescribe(`when creating the ${Cat.name} interface`, () => {
     it(`should raise an error if the inteface members are not configured correctly.`, () => {
         try {
             JSTypeMap.register(InvalidCatInterfaceMembers, Cat, null, false);
-            new InvalidCatInterfaceMembers();
+            const invalidCatInterfaceMembers = new InvalidCatInterfaceMembers();
+            if (invalidCatInterfaceMembers.dispose(State.REHYDRATE)) {
+                invalidCatInterfaceMembers = new CatInterface();
+            }
             fail('expected an error');
         } catch (error) {
             console.log(error);

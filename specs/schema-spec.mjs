@@ -1,7 +1,7 @@
 import { Interface, JSTypeMap, Schema } from '../registry.mjs';
 class Cat extends Schema {
     meow() {
-        return 'meow meow';
+        return true;
     }
     get colour() {
         return 'grey'

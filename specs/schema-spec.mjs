@@ -1,4 +1,4 @@
-import { Interface, JSTypeMap, Schema } from '../registry.mjs';
+import { Interface, JSTypeRegister, Schema } from '../registry.mjs';
 class Cat extends Schema {
     meow() {
         return true;
@@ -26,10 +26,10 @@ class CatInterface extends Interface {
 fdescribe(`when creating a ${Cat.name} given a schema`, () => {
     it(`should `, () => {
         try {
-            JSTypeMap.register(StringInterface, String, '', false);
-            JSTypeMap.register(BooleanInterface, Boolean, false, false);
-            JSTypeMap.register(CatInterface, Cat, null, false);
-            JSTypeMap.register(Cat, CatInterface, null, false);
+            new JSTypeRegister(StringInterface, String, '', false)
+            new JSTypeRegister(BooleanInterface, Boolean, false, false);
+            new JSTypeRegister(CatInterface, Cat, null, false);
+            new JSTypeRegister(Cat, CatInterface, null, false);
             const cat = new Cat();
             cat.validate();
         } catch (error) {

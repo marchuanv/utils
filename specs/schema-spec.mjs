@@ -35,7 +35,7 @@ class CatInterfaceB extends Interface {
     }
 };
 fdescribe(`when creating a ${Cat.name} given a schema`, () => {
-    fit(`should validate the instance`, () => {
+    it(`should validate the instance`, () => {
         try {
             new JSTypeConstraint(Cat, CatInterface);
             new JSTypeRegister(StringInterface, String, '', false)

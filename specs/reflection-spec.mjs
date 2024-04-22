@@ -43,10 +43,17 @@ describe('when checking if an obj is a class', () => {
         expect(results).toBeTrue();
     });
 });
+fdescribe('when checking if a function is of one or more types', () => {
+    it('should return true if a string', () => {
+        const func = 'this is a function';
+        const results = Reflection.isTypeOf(func, String);
+        expect(results).toBeTrue();
+    });
+    it('should return true if it is a function', () => {
+        const func = () => { };
+        const results = Reflection.isTypeOf(func, Function);
+        expect(results).toBeTrue();
+    });
+});
 class RootClass { }
 class ExtendedClass extends RootClass { }
-class PropertyTypeTest {
-    get name() {
-        return super.get({ name: null }, String);
-    }
-}

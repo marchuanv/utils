@@ -31,7 +31,7 @@ describe(`when creating the ${Cat.name} interface`, () => {
             expect(error.message).toBe(`${InvalidCatInterfaceMembers.name}.meow member did not return an instance of an ${Interface.name}.`);
         }
     });
-    fit(`should raise an error if the inteface was not registered`, () => {
+    it(`should raise an error if the inteface was not registered`, () => {
         try {
             const jsTypeRegister = new JSTypeRegister(InvalidCatInterfaceMembers, Cat, null, false);
             const stringJsTypeMap = new JSTypeMap(StringInterface, String, '', false);

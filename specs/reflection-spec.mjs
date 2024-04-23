@@ -43,15 +43,48 @@ describe('when checking if an obj is a class', () => {
         expect(results).toBeTrue();
     });
 });
-fdescribe('when checking if a function is of one or more types', () => {
+fdescribe('when checking if an object is of one or more types', () => {
     it('should return true if a string', () => {
-        const func = 'this is a function';
-        const results = Reflection.isTypeOf(func, String);
+        const results = Reflection.isTypeOf('this is a function', String);
+        expect(results).toBeTrue();
+    });
+    it('should return true if a number', () => {
+        const results = Reflection.isTypeOf(1, Number);
+        expect(results).toBeTrue();
+    });
+    it('should return true if a big int', () => {
+        const results = Reflection.isTypeOf(BigInt(1), BigInt);
         expect(results).toBeTrue();
     });
     it('should return true if it is a function', () => {
-        const func = () => { };
-        const results = Reflection.isTypeOf(func, Function);
+        const results = Reflection.isTypeOf(() => { }, Function);
+        expect(results).toBeTrue();
+    });
+    it('should return true if it is an object', () => {
+        const results = Reflection.isTypeOf({ message: 'test' }, Object);
+        expect(results).toBeTrue();
+    });
+    it('should return true if instance of Cat class', () => {
+        class Cat { }
+        const results = Reflection.isTypeOf(new Cat(), Cat);
+        expect(results).toBeTrue();
+    });
+    it('should return true if instance of Cat class is an Animal', () => {
+        class Animal { }
+        class Cat extends Animal { }
+        const results = Reflection.isTypeOf(new Cat(), Animal);
+        expect(results).toBeTrue();
+    });
+    it('should return true type Cat class is Cat class', () => {
+        class Cat { }
+        const results = Reflection.isTypeOf(Cat, Cat);
+        expect(results).toBeTrue();
+    });
+    it('should return true type Cat class extends Animal', () => {
+        class Biological { }
+        class Animal extends Biological { }
+        class Cat extends Animal { }
+        const results = Reflection.isTypeOf(Cat, [ Animal, Biological ]);
         expect(results).toBeTrue();
     });
 });

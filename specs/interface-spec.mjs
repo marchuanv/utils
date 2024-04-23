@@ -14,7 +14,7 @@ class CatInterface extends Interface {
         return new StringInterface();
     }
 };
-describe(`when creating the ${Cat.name} interface`, () => {
+fdescribe(`when creating the ${Cat.name} interface`, () => {
     it(`should raise an error if the inteface members are not configured correctly.`, () => {
         try {
             const jsTypeRegister = new JSTypeRegister(InvalidCatInterfaceMembers, Cat, null, false);
@@ -31,7 +31,7 @@ describe(`when creating the ${Cat.name} interface`, () => {
             expect(error.message).toBe(`${InvalidCatInterfaceMembers.name}.meow member did not return an instance of an ${Interface.name}.`);
         }
     });
-    it(`should raise an error if the inteface was not registered`, () => {
+    fit(`should raise an error if the inteface was not registered`, () => {
         try {
             const jsTypeRegister = new JSTypeRegister(InvalidCatInterfaceMembers, Cat, null, false);
             const stringJsTypeMap = new JSTypeMap(StringInterface, String, '', false);

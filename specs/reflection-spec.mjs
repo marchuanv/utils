@@ -43,7 +43,7 @@ describe('when checking if an obj is a class', () => {
         expect(results).toBeTrue();
     });
 });
-fdescribe('when checking if an object is of one or more types', () => {
+describe('when checking if an object is of one or more types', () => {
     it('should return true if a string', () => {
         const results = Reflection.isTypeOf('this is a function', String);
         expect(results).toBeTrue();
